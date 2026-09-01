@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementos de Análisis · Unidad 1 — Teoría de Conjuntos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Análisis · <b>Matemático</b></span>
+    <nav class="topnav">
+      <a href="#lenguajes">Lenguajes</a>
+      <a href="#simbolos">Símbolos</a>
+      <a href="#conjunto">Conjuntos</a>
+      <a href="#definir">Extensión / Comprensión</a>
+      <a href="#tipos">Tipos</a>
+      <a href="#pertenencia">Pertenencia</a>
+      <a href="#operaciones">Operaciones</a>
+      <a href="#numericos">Números</a>
+      <a href="#ejercicios">Ejercicios</a>
+      <a href="#parcial">Mini-parcial</a>
+      <a href="#cartesiano">Producto Cartesiano</a>
+      <a href="#matrices" style="color:var(--red);font-weight:600;">Matrices</a>
+      <a href="#determinantes">Determinantes</a>
+      <a href="#escalonada">Escalón / Gauss-Jordan</a>
+      <a href="#cramer">Inversa y Cramer</a>
+      <a href="#aumentada">Matriz aumentada</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Elementos de Análisis Matemático</div>
+  <h1>Teoría de <span class="u">Conjuntos</span> y los conjuntos numéricos</h1>
+  <p class="lead">Toda la base en un solo lugar: teoría de conjuntos, tipos, pertenencia e inclusión, operaciones, los números (naturales → complejos) y el arranque de la Unidad 2 con el <strong>producto cartesiano</strong>. Todo con ejercicios resueltos paso a paso.</p>
+
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Cada vez que veas una palabra <span class="term term-demo" data-def="conjunto" tabindex="0">como esta</span>, tocala: se abre un panel con la <strong>definición</strong>, y si el concepto se <em>calcula</em>, también te muestra <strong>cómo se calcula</strong> y un ejemplo. Al final tenés un índice con todos los términos y un mini-parcial para autoevaluarte.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 01 LENGUAJES ============ -->
+<section class="section" id="lenguajes">
+  <div class="section-head"><span class="section-num">01</span><h2>Los tres lenguajes de la Matemática</h2></div>
+  <p>En Matemática todo se puede decir de tres formas. Entender esto es clave, porque los ejercicios te piden traducir de una a otra.</p>
+
+  <table class="data">
+    <tr><th style="width:26%">Lenguaje</th><th>Qué es</th><th>Ejemplo</th></tr>
+    <tr><td><strong>Coloquial</strong></td><td>El de todos los días, con palabras.</td><td>“Los números naturales menores que 6.”</td></tr>
+    <tr><td><strong>Simbólico</strong></td><td>El propio de la Matemática: símbolos que dicen mucho en poco espacio.</td><td><span class="set">A = {x / x ∈ ℕ ∧ x &lt; 6}</span></td></tr>
+    <tr><td><strong>Gráfico</strong></td><td>Dibujos, diagramas, esquemas.</td><td>Un <span class="term" data-def="venn" tabindex="0">diagrama de Venn</span> o la recta numérica.</td></tr>
+  </table>
+
+  <div class="callout c-tip"><span class="tag">Idea clave</span>
+    <p>Casi toda la Unidad 1 consiste en <strong>pasar del lenguaje coloquial al simbólico y viceversa</strong>. Los dos ejercicios que vas a resolver más abajo son exactamente eso.</p>
+  </div>
+</section>
+
+<!-- ============ 02 SÍMBOLOS ============ -->
+<section class="section" id="simbolos">
+  <div class="section-head"><span class="section-num">02</span><h2>Símbolos y signos más usados</h2></div>
+  <p>Esta es tu tabla de traducción. Los que están en rojo son clickeables porque además son conceptos.</p>
+
+  <div class="symgrid">
+    <div class="symrow"><span class="s">=</span><span class="m">igual a</span></div>
+    <div class="symrow"><span class="s">≠</span><span class="m">distinto de</span></div>
+    <div class="symrow"><span class="s">&gt;</span><span class="m">mayor</span></div>
+    <div class="symrow"><span class="s">≥</span><span class="m">mayor o igual</span></div>
+    <div class="symrow"><span class="s">&lt;</span><span class="m">menor</span></div>
+    <div class="symrow"><span class="s">≤</span><span class="m">menor o igual</span></div>
+    <div class="symrow"><span class="s">∃</span><span class="m"><span class="term" data-def="existencial" tabindex="0">existe</span></span></div>
+    <div class="symrow"><span class="s">∄</span><span class="m">no existe</span></div>
+    <div class="symrow"><span class="s">∧</span><span class="m">y (ambas cosas)</span></div>
+    <div class="symrow"><span class="s">∨</span><span class="m">o (al menos una)</span></div>
+    <div class="symrow"><span class="s">⇒</span><span class="m"><span class="term" data-def="implica" tabindex="0">entonces / implica</span></span></div>
+    <div class="symrow"><span class="s">⇔</span><span class="m"><span class="term" data-def="dobleimplica" tabindex="0">si y sólo si</span></span></div>
+    <div class="symrow"><span class="s">∈</span><span class="m"><span class="term" data-def="pertenece" tabindex="0">pertenece</span></span></div>
+    <div class="symrow"><span class="s">∉</span><span class="m">no pertenece</span></div>
+    <div class="symrow"><span class="s">⊂</span><span class="m"><span class="term" data-def="incluido" tabindex="0">incluido en</span></span></div>
+    <div class="symrow"><span class="s">⊄</span><span class="m">no incluido</span></div>
+    <div class="symrow"><span class="s">#</span><span class="m"><span class="term" data-def="cardinal" tabindex="0">cardinal</span></span></div>
+    <div class="symrow"><span class="s">/</span><span class="m"><span class="term" data-def="talque" tabindex="0">tal que</span></span></div>
+    <div class="symrow"><span class="s">∀</span><span class="m"><span class="term" data-def="universal" tabindex="0">para todo</span></span></div>
+    <div class="symrow"><span class="s">η̇</span><span class="m"><span class="term" data-def="multiplo" tabindex="0">múltiplo de η</span></span></div>
+  </div>
+</section>
+
+<!-- ============ 03 QUÉ ES UN CONJUNTO ============ -->
+<section class="section" id="conjunto">
+  <div class="section-head"><span class="section-num">03</span><h2>¿Qué es un conjunto?</h2></div>
+  <p>Un <span class="term" data-def="conjunto" tabindex="0">conjunto</span> es una <strong>colección de objetos bien definidos</strong>. A cada objeto lo llamamos <span class="term" data-def="elemento" tabindex="0">elemento</span>. La relación entre un elemento y su conjunto es la <span class="term" data-def="pertenece" tabindex="0">pertenencia</span>.</p>
+
+  <ul class="clean">
+    <li>Los conjuntos se nombran con <strong>mayúsculas</strong>: <span class="set">A</span>, <span class="set">B</span>, <span class="set">V</span>.</li>
+    <li>Los elementos se escriben entre <strong>llaves</strong> <span class="set">{ }</span> y separados por comas: <span class="set">A = {2, 4, 6, 8}</span>.</li>
+    <li>“Bien definidos” significa que <strong>siempre podés decidir</strong> si algo está o no está. “Los números lindos” no es un conjunto; “los números pares” sí.</li>
+  </ul>
+
+  <div class="callout c-warn"><span class="tag">Dos reglas que se olvidan</span>
+    <p><strong>1. No se repiten elementos.</strong> En la palabra <em>planta</em> la letra <span class="mono">a</span> aparece dos veces, pero el conjunto es <span class="set">{p, l, a, n, t}</span> (una sola <span class="mono">a</span>).</p>
+    <p><strong>2. No importa el orden.</strong> <span class="set">{1, 2, 3}</span> y <span class="set">{3, 1, 2}</span> son el <span class="term" data-def="iguales" tabindex="0">mismo conjunto</span>.</p>
+  </div>
+
+  <p>El <span class="term" data-def="cardinal" tabindex="0">cardinal</span> de un conjunto es la <strong>cantidad de elementos</strong> que tiene. Se escribe <span class="set">#A</span>. Por ejemplo, si <span class="set">A = {2, 4, 6, 8}</span>, entonces <span class="set">#A = 4</span>.</p>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Un conjunto es una <strong>bolsa donde metés cosas que comparten algo</strong>. La única regla es que tenés que poder decir sin dudar si algo está en la bolsa o no. La bolsa “días de la semana”: <em>lunes</em> está, <em>enero</em> no. El cardinal es cuántas cosas hay en la bolsa.</p>
+  </div>
+</section>
+
+<!-- ============ 04 EXTENSIÓN / COMPRENSIÓN ============ -->
+<section class="section" id="definir">
+  <div class="section-head"><span class="section-num">04</span><h2>Definir un conjunto: extensión y comprensión</h2></div>
+  <p>Hay dos maneras de describir el mismo conjunto. Esto es <strong>el corazón de los dos ejercicios</strong> de esta unidad.</p>
+
+  <h3>Por extensión</h3>
+  <p>Definir <span class="term" data-def="extension" tabindex="0">por extensión</span> es <strong>listar uno por uno</strong> todos los elementos, entre llaves.</p>
+  <div class="fbox">V = { a, e, i, o, u }</div>
+
+  <h3>Por comprensión</h3>
+  <p>Definir <span class="term" data-def="comprension" tabindex="0">por comprensión</span> es <strong>dar la propiedad</strong> que cumplen todos los elementos, sin listarlos.</p>
+  <div class="fbox">V = { x <span style="color:var(--red)">/</span> x es una vocal }</div>
+  <p style="font-size:15px;color:var(--ink-soft)">Se lee: “<em>V es el conjunto de los x <span class="term" data-def="talque" tabindex="0">tal que</span> x es una vocal</em>”. La barra <span class="mono">/</span> significa “tal que”; la <span class="mono">x</span> es un elemento genérico.</p>
+
+  <div class="callout c-calc"><span class="tag">Cómo pasar de una forma a la otra</span>
+    <p><strong>De comprensión → extensión:</strong> leé la propiedad y <em>escribí todos</em> los elementos que la cumplen. Mirá con lupa los símbolos <span class="mono">&lt;</span> (no incluye) vs <span class="mono">≤</span> (sí incluye), y si el <span class="mono">0</span> cuenta como <span class="term" data-def="naturales" tabindex="0">natural</span>.</p>
+    <p><strong>De extensión → comprensión:</strong> buscá <em>qué tienen en común</em> todos los elementos y describilo con una frase. Fijate en su tipo (números, colores, letras, días…).</p>
+  </div>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p><strong>Por extensión</strong> es escribir la lista completa, como pasar lista nombrando a cada alumno. <strong>Por comprensión</strong> es dar la regla, como decir “los de 3°B” sin nombrar a nadie. Es la misma clase, contada de dos maneras: <span class="set">{2, 4, 6}</span> (la lista) = <span class="set">{los pares entre 1 y 7}</span> (la regla).</p>
+  </div>
+</section>
+
+<!-- ============ 05 TIPOS DE CONJUNTOS ============ -->
+<section class="section" id="tipos">
+  <div class="section-head"><span class="section-num">05</span><h2>Tipos de conjuntos</h2></div>
+  <p>Según cuántos elementos tienen y cómo se relacionan entre sí, los conjuntos reciben nombres. Todos son clickeables.</p>
+
+  <table class="data">
+    <tr><th style="width:30%">Tipo</th><th>Definición corta</th><th>Ejemplo</th></tr>
+    <tr><td><span class="term" data-def="vacio" tabindex="0">Conjunto vacío</span></td><td>No tiene ningún elemento.</td><td><span class="set">∅</span> ó <span class="set">{ }</span></td></tr>
+    <tr><td><span class="term" data-def="unitario" tabindex="0">Conjunto unitario</span></td><td>Tiene exactamente un elemento.</td><td><span class="set">{ José Hernández }</span></td></tr>
+    <tr><td><span class="term" data-def="finito" tabindex="0">Conjunto finito</span></td><td>Se pueden contar sus elementos (termina).</td><td><span class="set">{ a, e, i, o, u }</span></td></tr>
+    <tr><td><span class="term" data-def="infinito" tabindex="0">Conjunto infinito</span></td><td>No termina nunca.</td><td><span class="set">ℕ = {0, 1, 2, 3, …}</span></td></tr>
+    <tr><td><span class="term" data-def="universal" tabindex="0">Conjunto universal</span></td><td>El “marco” con todo lo que consideramos.</td><td><span class="set">U</span></td></tr>
+    <tr><td><span class="term" data-def="iguales" tabindex="0">Conjuntos iguales</span></td><td>Tienen exactamente los mismos elementos.</td><td><span class="set">{1,2} = {2,1}</span></td></tr>
+    <tr><td><span class="term" data-def="disjuntos" tabindex="0">Conjuntos disjuntos</span></td><td>No comparten ningún elemento.</td><td><span class="set">{1,2}</span> y <span class="set">{7,8}</span></td></tr>
+    <tr><td><span class="term" data-def="incluido" tabindex="0">Subconjunto</span></td><td>Todos sus elementos están en otro conjunto.</td><td><span class="set">{2,4} ⊂ {2,4,6}</span></td></tr>
+    <tr><td><span class="term" data-def="partes" tabindex="0">Conjunto de partes</span></td><td>El conjunto de todos los subconjuntos.</td><td><span class="set">P(A)</span></td></tr>
+    <tr><td><span class="term" data-def="referencial" tabindex="0">Conjunto referencial</span></td><td>El universal del tema. Se usa para el complemento.</td><td><span class="set">𝒰</span></td></tr>
+  </table>
+</section>
+
+<!-- ============ 06 PERTENENCIA VS INCLUSIÓN ============ -->
+<section class="section" id="pertenencia">
+  <div class="section-head"><span class="section-num">06</span><h2>Pertenencia vs. Inclusión</h2></div>
+  <p>Esta es <strong>la confusión que más puntos hace perder en el parcial</strong>. Parecen lo mismo, pero no lo son.</p>
+
+  <table class="data">
+    <tr><th>Relación</th><th>Va entre…</th><th>Símbolos</th><th>Pregunta que responde</th></tr>
+    <tr><td><span class="term" data-def="pertenece" tabindex="0">Pertenencia</span></td><td>un <strong>elemento</strong> y un <strong>conjunto</strong></td><td class="mono">∈ / ∉</td><td>¿ese elemento está adentro?</td></tr>
+    <tr><td><span class="term" data-def="incluido" tabindex="0">Inclusión</span></td><td>un <strong>conjunto</strong> y otro <strong>conjunto</strong></td><td class="mono">⊂ / ⊄</td><td>¿todos los elementos de uno están en el otro?</td></tr>
+  </table>
+
+  <div class="callout c-calc"><span class="tag">El truco para no fallar nunca</span>
+    <p>Mirá <strong>qué hay a la izquierda</strong> del signo:</p>
+    <p>• Si es <strong>un elemento suelto</strong> (un número, una letra, un nombre) → va <span class="mono">∈</span> o <span class="mono">∉</span>.</p>
+    <p>• Si es <strong>un conjunto</strong> (está entre llaves, o es una mayúscula que nombra un conjunto) → va <span class="mono">⊂</span> o <span class="mono">⊄</span>.</p>
+  </div>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p><strong>Pertenecer (∈)</strong> es “ser una cosa que está adentro”. <strong>Incluir (⊂)</strong> es “ser una bolsa más chica metida dentro de una más grande”. Un jugador <em>pertenece</em> al equipo (∈); el equipo entero <em>está incluido</em> en el club (⊂). Uno es una cosa, el otro es una bolsa.</p>
+  </div>
+
+  <h3>Ejercicio resuelto 1</h3>
+  <p style="font-size:15px;">Dados <span class="set">A = {0,1,2,3,4,5}</span>, <span class="set">B = {2,4}</span>, <span class="set">C = {1,3,5}</span>, <span class="set">D = {3,4,5,6}</span>, completá con <span class="mono">∈ , ∉ , ⊂ , ⊄</span>.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">B __ A &nbsp;·&nbsp; C __ A &nbsp;·&nbsp; 5 __ A &nbsp;·&nbsp; 3 __ B &nbsp;·&nbsp; D __ A &nbsp;·&nbsp; 5 __ C &nbsp;·&nbsp; A __ B &nbsp;·&nbsp; 3 __ C &nbsp;·&nbsp; 6 __ A &nbsp;·&nbsp; 4 __ B</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">B ⊂ A · C ⊂ A · 5 ∈ A · 3 ∉ B · D ⊄ A · 5 ∈ C · A ⊄ B · 3 ∈ C · 6 ∉ A · 4 ∈ B</div>
+      <p class="why"><strong>Los conjuntos (mayúscula) usan ⊂/⊄:</strong> <span class="mono">B⊂A</span> porque 2 y 4 están en A; <span class="mono">C⊂A</span> porque 1, 3, 5 están en A; <span class="mono">D⊄A</span> porque el 6 no está en A; <span class="mono">A⊄B</span> porque 0 y 1 no están en B.<br><strong>Los elementos sueltos (número) usan ∈/∉:</strong> <span class="mono">5∈A</span>, <span class="mono">3∉B</span> (B solo tiene 2 y 4), <span class="mono">5∈C</span>, <span class="mono">3∈C</span>, <span class="mono">6∉A</span>, <span class="mono">4∈B</span>.</p>
+    </div>
+  </div>
+
+  <h3>Ejercicio resuelto 2</h3>
+  <p style="font-size:15px;">H = habitantes de Argentina · F = habitantes femeninas · M = ciudadanos masculinos argentinos radicados en el país · D = ciudadanas argentinas radicadas en su país.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">a</span><span class="consigna">Signo entre: F __ H &nbsp;·&nbsp; H __ M &nbsp;·&nbsp; D __ H &nbsp;·&nbsp; D __ F</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">F ⊂ H · H ⊄ M · D ⊂ H · D ⊂ F</div>
+      <p class="why">Todas son relaciones entre conjuntos → ⊂ / ⊄. Las mujeres (F) son habitantes → <span class="mono">F⊂H</span>. H incluye varones, extranjeros, etc., así que no está contenido en M → <span class="mono">H⊄M</span>. Las ciudadanas D son habitantes → <span class="mono">D⊂H</span>, y además son mujeres → <span class="mono">D⊂F</span>.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">b</span><span class="consigna">¿Qué pares son disjuntos? &nbsp; F y M · F y D · H y D · M y D</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">Disjuntos: F y M · M y D</div>
+      <p class="why">Son disjuntos los que no comparten a nadie: mujeres (F) vs varones (M), y varones (M) vs ciudadanas mujeres (D). En cambio F y D comparten (D son mujeres), y H y D también (D son habitantes).</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">c</span><span class="consigna">Definí E tal que: E ⊂ H, E ⊃ D, E ⊃ M</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">E = {x / x es ciudadano/a argentino/a radicado/a en la República Argentina}</div>
+      <p class="why">E tiene que <em>contener</em> a las ciudadanas (D) y a los ciudadanos varones (M), y a la vez <em>estar dentro</em> de los habitantes (H). El conjunto de todos los ciudadanos argentinos radicados en el país cumple las tres cosas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 OPERACIONES ============ -->
+<section class="section" id="operaciones">
+  <div class="section-head"><span class="section-num">07</span><h2>Operaciones entre conjuntos</h2></div>
+  <p>Con dos conjuntos <span class="set">A</span> y <span class="set">B</span> podés armar otros nuevos. Las zonas pintadas muestran el resultado.</p>
+
+  <div class="venn-grid">
+    <div class="venn-card">
+      <h4><span class="term" data-def="union" tabindex="0">Unión</span></h4>
+      <div class="op">A ∪ B</div>
+      <svg viewBox="0 0 200 120"><defs></defs>
+        <circle cx="78" cy="60" r="46" fill="#153A5B" fill-opacity=".22"/><circle cx="122" cy="60" r="46" fill="#153A5B" fill-opacity=".22"/>
+        <circle cx="78" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/><circle cx="122" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/>
+        <text x="55" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">A</text><text x="138" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">B</text>
+      </svg>
+      <p>Todo lo que está en A <em>o</em> en B (o en los dos).</p>
+    </div>
+    <div class="venn-card">
+      <h4><span class="term" data-def="interseccion" tabindex="0">Intersección</span></h4>
+      <div class="op">A ∩ B</div>
+      <svg viewBox="0 0 200 120">
+        <clipPath id="cA"><circle cx="78" cy="60" r="46"/></clipPath>
+        <circle cx="78" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/><circle cx="122" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/>
+        <g clip-path="url(#cA)"><circle cx="122" cy="60" r="46" fill="#C42430" fill-opacity=".35"/></g>
+        <text x="50" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">A</text><text x="140" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">B</text>
+      </svg>
+      <p>Sólo lo que está en A <em>y</em> en B a la vez.</p>
+    </div>
+    <div class="venn-card">
+      <h4><span class="term" data-def="diferencia" tabindex="0">Diferencia</span></h4>
+      <div class="op">A − B</div>
+      <svg viewBox="0 0 200 120">
+        <clipPath id="cB"><circle cx="122" cy="60" r="46"/></clipPath>
+        <mask id="mB"><rect width="200" height="120" fill="#fff"/><circle cx="122" cy="60" r="46" fill="#000"/></mask>
+        <circle cx="78" cy="60" r="46" fill="#153A5B" fill-opacity=".28" mask="url(#mB)"/>
+        <circle cx="78" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/><circle cx="122" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/>
+        <text x="52" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">A</text><text x="140" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">B</text>
+      </svg>
+      <p>Lo que está en A pero <em>no</em> en B.</p>
+    </div>
+    <div class="venn-card">
+      <h4><span class="term" data-def="complemento" tabindex="0">Complemento</span></h4>
+      <div class="op">A′</div>
+      <svg viewBox="0 0 200 120">
+        <mask id="mC"><rect width="200" height="120" fill="#fff"/><circle cx="100" cy="60" r="46" fill="#000"/></mask>
+        <rect x="6" y="8" width="188" height="104" rx="8" fill="#153A5B" fill-opacity=".2" mask="url(#mC)"/>
+        <rect x="6" y="8" width="188" height="104" rx="8" fill="none" stroke="#51616B" stroke-width="1.5"/>
+        <circle cx="100" cy="60" r="46" fill="none" stroke="#153A5B" stroke-width="2"/>
+        <text x="93" y="65" font-family="JetBrains Mono" font-size="16" fill="#0D2942">A</text><text x="16" y="26" font-family="JetBrains Mono" font-size="13" fill="#51616B">U</text>
+      </svg>
+      <p>Todo lo del universal que <em>no</em> está en A.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 CONJUNTOS NUMÉRICOS (SIGNATURE) ============ -->
+<section class="section" id="numericos">
+  <div class="section-head"><span class="section-num">08</span><h2>Los conjuntos numéricos</h2></div>
+  <p>Los números se agrupan en conjuntos que están <strong>uno dentro del otro</strong>. Tocá cada caja para ver qué números incluye y ejemplos. Cada conjunto contiene a todos los de adentro.</p>
+
+  <div class="numsets">
+    <div class="nest">
+      <div class="ring ring-C" data-set="C">
+        <span class="rlabel" data-set="C">ℂ · Complejos</span>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <div class="ring" data-set="R" style="flex:1;min-width:240px;">
+            <span class="rlabel" data-set="R">ℝ · Reales</span>
+            <div class="split">
+              <div class="ring" data-set="Q">
+                <span class="rlabel" data-set="Q">ℚ · Racionales</span>
+                <div class="ring" data-set="Z">
+                  <span class="rlabel" data-set="Z">ℤ · Enteros</span>
+                  <div class="ring" data-set="N">
+                    <span class="rlabel" data-set="N">ℕ · Naturales</span>
+                    <div style="font-size:13px;color:var(--ink-soft);padding-top:6px;">0, 1, 2, 3, …</div>
+                  </div>
+                </div>
+              </div>
+              <div class="ring" data-set="I" style="min-width:150px;">
+                <span class="rlabel" data-set="I">𝕀 · Irracionales</span>
+                <div style="font-size:13px;color:var(--ink-soft);padding-top:6px;">√2, π, e …</div>
+              </div>
+            </div>
+          </div>
+          <div style="align-self:center;font-size:13px;color:var(--ink-soft);min-width:120px;padding:8px;">
+            <span style="color:var(--red);font-weight:700;">Imaginarios</span><br>2i, −5i, √−1 …
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="setinfo" id="setinfo">
+      <h4>Tocá un conjunto para ver los detalles</h4>
+      <p style="color:var(--ink-soft)">Empezá por ℕ (el más chico, en el centro) e id saliendo hacia ℂ.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:26px;">La cadena de inclusiones completa es:</p>
+  <div class="fbox" style="font-size:18px;">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ</div>
+  <p style="font-size:15px;color:var(--ink-soft)">Y los <span class="term" data-def="irracionales" tabindex="0">irracionales</span> (𝕀) son la parte de ℝ que <em>no</em> es racional: <span class="set">ℝ = ℚ ∪ 𝕀</span>.</p>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Son <strong>muñecas rusas</strong>. Arrancás con los naturales (para contar). Los metés adentro de los enteros (le agregás los negativos), esos adentro de los racionales (le sumás las fracciones), y todo eso adentro de los reales (le agregás cosas raras como π o √2). Cada conjunto es una muñeca que contiene a la anterior.</p>
+  </div>
+
+  <table class="data">
+    <tr><th>Conjunto</th><th>Qué incluye</th><th>Ejemplos</th></tr>
+    <tr><td><span class="term" data-def="naturales" tabindex="0">Naturales ℕ</span></td><td>Para contar. (Acá el 0 se toma como natural.)</td><td><span class="mono">0, 1, 2, 3…</span></td></tr>
+    <tr><td><span class="term" data-def="enteros" tabindex="0">Enteros ℤ</span></td><td>Naturales + sus negativos.</td><td><span class="mono">…−2, −1, 0, 1, 2…</span></td></tr>
+    <tr><td><span class="term" data-def="racionales" tabindex="0">Racionales ℚ</span></td><td>Fracciones (decimales exactos o periódicos).</td><td><span class="mono">1/2, −3/4, 0,25, 0,333…</span></td></tr>
+    <tr><td><span class="term" data-def="irracionales" tabindex="0">Irracionales 𝕀</span></td><td>Decimales infinitos <em>no</em> periódicos.</td><td><span class="mono">√2, π, e</span></td></tr>
+    <tr><td><span class="term" data-def="reales" tabindex="0">Reales ℝ</span></td><td>Racionales + irracionales: toda la recta.</td><td><span class="mono">−1, ½, √2, π</span></td></tr>
+    <tr><td><span class="term" data-def="imaginarios" tabindex="0">Imaginarios / Complejos ℂ</span></td><td>Incluyen √−1 = i, para raíces de negativos.</td><td><span class="mono">3i, 2 + 5i</span></td></tr>
+  </table>
+</section>
+
+<!-- ============ 08 INTERVALOS ============ -->
+<section class="section" id="intervalos">
+  <div class="section-head"><span class="section-num">09</span><h2>Intervalos (mini-anticipo útil)</h2></div>
+  <p>En Análisis vas a trabajar todo el tiempo con <span class="term" data-def="intervalo" tabindex="0">intervalos</span>: pedazos “continuos” de la recta real. Van con <strong>corchete</strong> si el extremo entra y <strong>paréntesis</strong> si no entra.</p>
+  <table class="data">
+    <tr><th>Notación</th><th>Significa</th><th>Con desigualdad</th></tr>
+    <tr><td><span class="set">[a, b]</span></td><td>Cerrado: incluye a y b.</td><td><span class="mono">a ≤ x ≤ b</span></td></tr>
+    <tr><td><span class="set">(a, b)</span></td><td>Abierto: no incluye extremos.</td><td><span class="mono">a &lt; x &lt; b</span></td></tr>
+    <tr><td><span class="set">[a, b)</span></td><td>Semiabierto: entra a, no entra b.</td><td><span class="mono">a ≤ x &lt; b</span></td></tr>
+    <tr><td><span class="set">(a, +∞)</span></td><td>Todo lo mayor que a.</td><td><span class="mono">x &gt; a</span></td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">Conexión</span><p>El símbolo <span class="mono">≤</span> ↔ corchete, y <span class="mono">&lt;</span> ↔ paréntesis. Es la misma diferencia que te hace incluir o no un número en el ejercicio de conjuntos.</p></div>
+</section>
+
+<!-- ============ 09 EJERCICIOS ============ -->
+<section class="section" id="ejercicios">
+  <div class="section-head"><span class="section-num">10</span><h2>Los ejercicios, resueltos paso a paso</h2></div>
+  <p>Probá resolverlos vos primero y después tocá <strong>“Ver solución”</strong>. Recordá: <span class="term" data-def="naturales" tabindex="0">acá el 0 es natural</span>.</p>
+
+  <h3>Ejercicio 1 · De comprensión → extensión</h3>
+  <p style="font-size:15px;color:var(--ink-soft)">Te dan la propiedad y tenés que <em>listar todos</em> los elementos.</p>
+
+  <div class="ex">
+    <div class="q"><span class="badge">A</span><span class="consigna">A = {x / x ∈ ℕ ∧ x &lt; 6}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">A = {0, 1, 2, 3, 4, 5}</div>
+      <p class="why">Naturales <em>menores que 6</em>. El <span class="mono">&lt;</span> no incluye al 6. Como el 0 es natural, arranca en 0.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">B</span><span class="consigna">B = {x / x ∈ ℕ ∧ 1 &lt; x &lt; 9}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">B = {2, 3, 4, 5, 6, 7, 8}</div><p class="why">Entre 1 y 9 <em>sin incluir</em> a ninguno de los dos extremos.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">C</span><span class="consigna">C = {x / x ∈ ℕ ∧ 4 &lt; x ≤ 12}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">C = {5, 6, 7, 8, 9, 10, 11, 12}</div><p class="why">El <span class="mono">&lt;</span> deja afuera al 4; el <span class="mono">≤</span> deja adentro al 12.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">D</span><span class="consigna">D = {x / x ∈ ℕ ∧ 5 ≤ x ≤ 9}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">D = {5, 6, 7, 8, 9}</div><p class="why">Los dos <span class="mono">≤</span> incluyen ambos extremos.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">E</span><span class="consigna">E = {x / x es un autor del <i>Martín Fierro</i>}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">E = {José Hernández}</div><p class="why">Lo escribió una sola persona → es un <span class="term" data-def="unitario" tabindex="0">conjunto unitario</span>.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">F</span><span class="consigna">F = {x / x es uno de los tres poderes del gobierno nacional}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">F = {Ejecutivo, Legislativo, Judicial}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">G</span><span class="consigna">G = {x / x ∈ al reino de la naturaleza}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">G = {animal, vegetal, mineral}</div><p class="why">Los tres reinos clásicos de la naturaleza.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">H</span><span class="consigna">H = {x / x ∈ ℕ pares, x &lt; 8}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">H = {0, 2, 4, 6}</div><p class="why">Pares menores que 8. El 0 es par y es natural, así que entra.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">I</span><span class="consigna">I = {x / x es una estación del año}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">I = {verano, otoño, invierno, primavera}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">J</span><span class="consigna">J = {x / x es letra de la palabra <i>planta</i>}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">J = {p, l, a, n, t}</div><p class="why">La <span class="mono">a</span> aparece dos veces en “planta”, pero en un conjunto <strong>no se repite</strong>.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">K</span><span class="consigna">K = {x / x es el día de la semana cuya inicial es m}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">K = {martes, miércoles}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">L</span><span class="consigna">L = {x / x es una consonante}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">L = {b, c, d, f, g, h, j, k, l, m, n, ñ, p, q, r, s, t, v, w, x, y, z}</div><p class="why">Todas las letras del abecedario que no son vocales.</p></div>
+  </div>
+
+  <h3 style="margin-top:44px;">Ejercicio 2 · De extensión → comprensión</h3>
+  <p style="font-size:15px;color:var(--ink-soft)">Te dan la lista y tenés que encontrar la <em>propiedad común</em> y escribirla como <span class="set">{x / …}</span>.</p>
+
+  <div class="ex">
+    <div class="q"><span class="badge">A</span><span class="consigna">A = {2, 4, 6, 8}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">A = {x / x ∈ ℕ pares, 1 &lt; x &lt; 9}</div><p class="why">Son los pares que están entre 1 y 9.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">B</span><span class="consigna">B = {azul, rojo, blanco}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">B = {x / x es color de la bandera de Francia}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">C</span><span class="consigna">C = {Bernardino Rivadavia}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">C = {x / x es el primer presidente argentino}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">D</span><span class="consigna">D = {Mendoza, Garay}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">D = {x / x es fundador de la ciudad de Buenos Aires}</div><p class="why">Pedro de Mendoza (1536) y Juan de Garay (1580).</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">E</span><span class="consigna">E = {acuático, terrestre, aéreo}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">E = {x / x es un tipo de ambiente natural}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">F</span><span class="consigna">F = {natación, vuelo, reptación, marcha}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">F = {x / x es forma de locomoción animal}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">G</span><span class="consigna">G = {3, 6, 9, 12, 15}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">G = {x / x ∈ ℕ, x = 3̇ , 0 &lt; x &lt; 16}</div><p class="why"><span class="mono">3̇</span> significa “<span class="term" data-def="multiplo" tabindex="0">múltiplo de 3</span>” entre 0 y 16.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">H</span><span class="consigna">H = {1, 3, 5, 7, 9}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">H = {x / x ∈ ℕ impares menores que 10}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">I</span><span class="consigna">I = {marzo, mayo}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">I = {x / x es mes del año que empieza con m}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">J</span><span class="consigna">J = {p, u, e, r, t, a}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">J = {x / x es letra de la palabra puerta}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">K</span><span class="consigna">K = {a, e, i, o, u}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">K = {x / x es vocal}</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">L</span><span class="consigna">L = {lunes, martes, miércoles, jueves, viernes}</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">L = {x / x es día hábil}</div></div>
+  </div>
+
+  <h3 style="margin-top:44px;">Ejercicio 3 · ¿Vacío, unitario, finito o infinito?</h3>
+  <p style="font-size:15px;color:var(--ink-soft)">La clave es <strong>contar cuántos elementos tiene</strong> sin listarlos todos: 0 → <span class="term" data-def="vacio" tabindex="0">vacío</span>, 1 → <span class="term" data-def="unitario" tabindex="0">unitario</span>, una cantidad que termina → <span class="term" data-def="finito" tabindex="0">finito</span>, no termina → <span class="term" data-def="infinito" tabindex="0">infinito</span>. Ojo con las de rectas y geometría.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">A–N</span><span class="consigna">Clasificá cada conjunto (probá vos primero).</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución completa</button>
+    <div class="sol">
+      <div class="ans" style="line-height:1.9">
+        A satélite natural de la Tierra → <strong>unitario</strong> (la Luna)<br>
+        B = {x∈ℕ; 0&lt;x&lt;1} → <strong>vacío</strong> (no hay natural entre 0 y 1)<br>
+        C integrante de la Orquesta Filarmónica → <strong>finito</strong><br>
+        D actual presidente de Argentina → <strong>unitario</strong> (una sola persona)<br>
+        E = {x∈ℕ; 5&lt;x&lt;7} → <strong>unitario</strong> (solo el 6)<br>
+        F intersección de dos rectas paralelas → <strong>vacío</strong> (nunca se cortan)<br>
+        G puntos de la recta a → <strong>infinito</strong> (una recta tiene infinitos puntos)<br>
+        H intersección de dos rectas perpendiculares → <strong>unitario</strong> (se cortan en 1 punto)<br>
+        I = {x∈ℕ; x&gt;3} → <strong>infinito</strong><br>
+        J = {x∈ℕ; x&lt;5} → <strong>finito</strong> ({0,1,2,3,4})<br>
+        K = {x∈ℕ; x=1} → <strong>unitario</strong><br>
+        L = {x∈ℕ; x&lt;0} → <strong>vacío</strong> (no hay naturales negativos)<br>
+        LL juguete de una juguetería → <strong>finito</strong><br>
+        M = {x∈ℕ; x=5̇} → <strong>infinito</strong> (múltiplos de 5: 5,10,15,…)<br>
+        N intersección de circunferencia y recta secante → <strong>finito</strong> (2 puntos)
+      </div>
+      <p class="why"><strong>Sobre M:</strong> en tu apunte figura como <span class="mono">x=5̇</span> (“múltiplo de 5”), por eso es infinito. Si dijera literalmente <span class="mono">x=5</span>, sería unitario ({5}). Fijate bien si tiene el puntito.</p>
+      <p class="why"><strong>Geometría útil:</strong> paralelas no se cortan (∅), perpendiculares/secantes se cortan en 1 punto, una recta <em>secante</em> a una circunferencia la corta en 2 puntos, una recta tiene infinitos puntos.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:44px;">Ejercicio 4 · Operaciones</h3>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">A = {1,2,3,4} · B = {0,2,4,6,8}. Hallar A∪B, A∩B, A−B, B−A.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">A ∪ B = {0,1,2,3,4,6,8} &nbsp;·&nbsp; A ∩ B = {2,4} &nbsp;·&nbsp; A − B = {1,3} &nbsp;·&nbsp; B − A = {0,6,8}</div>
+      <p class="why"><strong>Unión:</strong> junto todo sin repetir. <strong>Intersección:</strong> solo los comunes (2 y 4). <strong>A−B:</strong> lo de A que no está en B. <strong>B−A:</strong> lo de B que no está en A. Notá que <span class="mono">A−B ≠ B−A</span>.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">𝒰 = {a,e,i,o,u} · A = {a,e}. Hallar el complemento Ā.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">Ā = {i, o, u}</div>
+      <p class="why">El <span class="term" data-def="complemento" tabindex="0">complemento</span> es <span class="mono">Ā = 𝒰 − A</span>: todo lo del referencial que no está en A.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 MINI PARCIAL ============ -->
+<section class="section" id="parcial">
+  <div class="section-head"><span class="section-num">11</span><h2>Mini-parcial de autoevaluación</h2></div>
+  <p>Seis preguntas para ver si lo tenés. Tocá la opción que creas correcta.</p>
+
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">1. ¿Cuál de estos <b>no</b> es un conjunto bien definido?</div>
+    <button class="opt" data-k="a">{ x / x es un número par }</button>
+    <button class="opt" data-k="b">{ x / x es una película divertida }</button>
+    <button class="opt" data-k="c">{ x / x ∈ ℕ ∧ x &lt; 3 }</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">2. Si A = {x / x ∈ ℕ ∧ 2 ≤ x &lt; 6}, entonces por extensión A es…</div>
+    <button class="opt" data-k="a">{2, 3, 4, 5, 6}</button>
+    <button class="opt" data-k="b">{3, 4, 5}</button>
+    <button class="opt" data-k="c">{2, 3, 4, 5}</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">3. El cardinal del conjunto de letras de la palabra “ratatata” es…</div>
+    <button class="opt" data-k="a">3</button>
+    <button class="opt" data-k="b">8</button>
+    <button class="opt" data-k="c">4</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">4. ¿Cuál es la cadena de inclusiones correcta?</div>
+    <button class="opt" data-k="a">ℝ ⊂ ℚ ⊂ ℤ ⊂ ℕ</button>
+    <button class="opt" data-k="b">ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ</button>
+    <button class="opt" data-k="c">ℤ ⊂ ℕ ⊂ ℚ ⊂ ℝ</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">5. El número √2 es…</div>
+    <button class="opt" data-k="a">racional</button>
+    <button class="opt" data-k="b">entero</button>
+    <button class="opt" data-k="c">irracional</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">6. {2, 4} ∩ {4, 6, 8} es igual a…</div>
+    <button class="opt" data-k="a">{4}</button>
+    <button class="opt" data-k="b">{2, 4, 6, 8}</button>
+    <button class="opt" data-k="c">∅</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ UNIDAD 2 DIVIDER ============ -->
+<div style="margin:80px 0 0;text-align:center;">
+  <div style="font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:600;">Unidad 2</div>
+  <div style="font-family:var(--display);font-size:clamp(24px,4vw,34px);color:var(--navy-deep);font-weight:600;letter-spacing:-.02em;margin-top:6px;">Relaciones y Funciones</div>
+  <div style="width:60px;height:3px;background:var(--red);margin:16px auto 0;border-radius:3px;"></div>
+</div>
+
+<!-- ============ 12 PRODUCTO CARTESIANO ============ -->
+<section class="section" id="cartesiano">
+  <div class="section-head"><span class="section-num">12</span><h2>Producto cartesiano</h2></div>
+  <p>Arranca la Unidad 2 con dos ideas nuevas: el <span class="term" data-def="parordenado" tabindex="0">par ordenado</span> y el <span class="term" data-def="productocartesiano" tabindex="0">producto cartesiano</span>. Son la base de las relaciones y funciones que vienen después.</p>
+
+  <h3>Par ordenado</h3>
+  <p>Un <strong>par ordenado</strong> <span class="set">(a ; b)</span> son dos elementos <strong>en un orden fijo</strong>: <span class="mono">a</span> es la <em>primera componente</em> y <span class="mono">b</span> la <em>segunda componente</em>.</p>
+  <div class="callout c-warn"><span class="tag">El orden importa</span><p><span class="mono">(a ; b) ≠ (b ; a)</span> salvo que a = b. No es lo mismo (2 ; 5) que (5 ; 2).</p></div>
+
+  <h3>Producto cartesiano A × B</h3>
+  <p>Es el conjunto de <strong>todos los pares ordenados posibles</strong> donde la 1ª componente sale de A y la 2ª sale de B.</p>
+  <div class="fbox">A × B = { (a ; b) / a ∈ A ∧ b ∈ B }</div>
+  <div class="callout c-calc"><span class="tag">Cómo se calcula el cardinal</span><p><span class="mono">#(A × B) = #A · #B</span>. Si A tiene 3 elementos y B tiene 2, entonces A × B tiene <strong>3 · 2 = 6 pares</strong>. Sirve para chequear que no te olvidaste ninguno.</p></div>
+  <div class="callout c-warn"><span class="tag">No es conmutativo</span><p><span class="mono">A × B ≠ B × A</span>. Tienen la misma cantidad de pares, pero los pares están al revés, así que son conjuntos distintos.</p></div>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Es armar <strong>todas las combinaciones posibles</strong>, poniendo siempre primero uno de A y después uno de B. Como cuando combinás 3 remeras con 2 pantalones: te salen 3×2 = 6 “combos” (los pares). Y no es lo mismo (remera; pantalón) que (pantalón; remera): por eso el orden importa.</p>
+  </div>
+
+  <h3>Las 4 formas de representarlo</h3>
+  <p>Ejemplo base: <span class="set">A = {0, 2, 4}</span> y <span class="set">B = {1, 3}</span>.</p>
+
+  <h4>1 · Por extensión</h4>
+  <div class="fbox">A × B = { (0;1), (0;3), (2;1), (2;3), (4;1), (4;3) }</div>
+  <p style="font-size:14.5px;color:var(--ink-soft)">Son 3 · 2 = 6 pares. Tomás cada elemento de A y lo combinás con <em>todos</em> los de B.</p>
+
+  <h4>2 · Por diagrama de Venn (flechas)</h4>
+  <p style="font-size:15px">Dibujás A y B como dos óvalos y trazás una flecha desde cada elemento de A hacia cada elemento de B. Cada flecha es un par ordenado.</p>
+
+  <h4>3 · Por tabla de doble entrada</h4>
+  <table class="data" style="max-width:360px">
+    <tr><th style="background:var(--navy-deep)">A \ B</th><th>1</th><th>3</th></tr>
+    <tr><td><strong>0</strong></td><td class="mono">(0;1)</td><td class="mono">(0;3)</td></tr>
+    <tr><td><strong>2</strong></td><td class="mono">(2;1)</td><td class="mono">(2;3)</td></tr>
+    <tr><td><strong>4</strong></td><td class="mono">(4;1)</td><td class="mono">(4;3)</td></tr>
+  </table>
+
+  <h4>4 · Por gráfico cartesiano</h4>
+  <p style="font-size:15px">Cada par es un <span class="term" data-def="graficocartesiano" tabindex="0">punto</span>: la 1ª componente en el eje horizontal (A) y la 2ª en el vertical (B).</p>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);max-width:340px;">
+    <svg viewBox="0 0 260 200" style="width:100%;height:auto;">
+      <line x1="40" y1="170" x2="240" y2="170" stroke="#51616B" stroke-width="1.5"/>
+      <line x1="40" y1="170" x2="40" y2="20" stroke="#51616B" stroke-width="1.5"/>
+      <polygon points="240,170 232,166 232,174" fill="#51616B"/>
+      <polygon points="40,20 36,28 44,28" fill="#51616B"/>
+      <text x="245" y="174" font-family="JetBrains Mono" font-size="12" fill="#51616B">A</text>
+      <text x="30" y="20" font-family="JetBrains Mono" font-size="12" fill="#51616B">B</text>
+      <!-- x ticks 0,2,4 -->
+      <text x="37" y="185" font-family="JetBrains Mono" font-size="11" fill="#51616B">0</text>
+      <text x="97" y="185" font-family="JetBrains Mono" font-size="11" fill="#51616B">2</text>
+      <text x="157" y="185" font-family="JetBrains Mono" font-size="11" fill="#51616B">4</text>
+      <!-- y ticks 1,3 -->
+      <text x="26" y="135" font-family="JetBrains Mono" font-size="11" fill="#51616B">1</text>
+      <text x="26" y="75" font-family="JetBrains Mono" font-size="11" fill="#51616B">3</text>
+      <!-- points: x: 0->40,2->100,4->160 ; y:1->130,3->70 -->
+      <g fill="#C42430">
+        <circle cx="40" cy="130" r="4.5"/><circle cx="40" cy="70" r="4.5"/>
+        <circle cx="100" cy="130" r="4.5"/><circle cx="100" cy="70" r="4.5"/>
+        <circle cx="160" cy="130" r="4.5"/><circle cx="160" cy="70" r="4.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <h3 style="margin-top:40px;">Ejercicios resueltos</h3>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">A = {1,2,3} · B = {4,6}. Hallar A×B y B×A. ¿Son iguales?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">A×B = {(1;4),(1;6),(2;4),(2;6),(3;4),(3;6)}<br>B×A = {(4;1),(4;2),(4;3),(6;1),(6;2),(6;3)}</div>
+      <p class="why">Los dos tienen 6 pares (3·2), pero <strong>no son iguales</strong>: en A×B la primera componente sale de A; en B×A sale de B. El producto cartesiano <em>no es conmutativo</em>.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">C = {x∈ℕ impares, 2&lt;x&lt;6} · D = {x∈ℕ pares, 1&lt;x&lt;9}. Definilos por extensión y hallá C×D.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">C = {3, 5} &nbsp;·&nbsp; D = {2, 4, 6, 8}<br>C×D = {(3;2),(3;4),(3;6),(3;8),(5;2),(5;4),(5;6),(5;8)}</div>
+      <p class="why">Primero pasás C y D a extensión. C tiene 2 elementos, D tiene 4 → C×D debe tener 2·4 = <strong>8 pares</strong>. Combinás cada impar de C con cada par de D.</p>
+    </div>
+  </div>
+
+  <h4 style="margin-top:30px;">Autoevaluación rápida</h4>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">Si #A = 4 y #B = 5, ¿cuántos pares tiene A × B?</div>
+    <button class="opt" data-k="a">9</button>
+    <button class="opt" data-k="b">20</button>
+    <button class="opt" data-k="c">45</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">¿Cuál afirmación es verdadera?</div>
+    <button class="opt" data-k="a">(2 ; 5) = (5 ; 2)</button>
+    <button class="opt" data-k="b">A × B siempre es igual a B × A</button>
+    <button class="opt" data-k="c">En (a ; b), a es la primera componente y b la segunda</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ ÁLGEBRA LINEAL DIVIDER ============ -->
+<div style="margin:80px 0 0;text-align:center;">
+  <div style="font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:600;">Álgebra Lineal</div>
+  <div style="font-family:var(--display);font-size:clamp(24px,4vw,34px);color:var(--navy-deep);font-weight:600;letter-spacing:-.02em;margin-top:6px;">Matrices y Determinantes</div>
+  <div style="width:60px;height:3px;background:var(--red);margin:16px auto 0;border-radius:3px;"></div>
+</div>
+
+<!-- ============ 14 MATRICES ============ -->
+<section class="section" id="matrices">
+  <div class="section-head"><span class="section-num">13</span><h2>Matrices</h2></div>
+  <p>Una <span class="term" data-def="matriz" tabindex="0">matriz</span> es un arreglo rectangular de números ordenados en <strong>filas</strong> y <strong>columnas</strong>. Su <span class="term" data-def="dimension" tabindex="0">dimensión</span> es <span class="mono">m × n</span> (m filas por n columnas) y se lee “m por n”.</p>
+
+  <div class="mrow">
+    <span class="mtx-lbl">A =</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>2</span><span>-1</span><span>0</span><span>4</span><span>3</span><span>5</span></span>
+    <span style="font-family:var(--body);font-size:15px;color:var(--ink-soft)">&nbsp; es de dimensión 2 × 3</span>
+  </div>
+  <p style="font-size:15px">Cada número es un <strong>elemento</strong> <span class="mono">a<sub>ij</sub></span>, donde <span class="mono">i</span> es la fila y <span class="mono">j</span> la columna. En el ejemplo, <span class="mono">a<sub>23</sub> = 5</span> (fila 2, columna 3). La <span class="term" data-def="diagonalprincipal" tabindex="0">diagonal principal</span> son los <span class="mono">a<sub>ii</sub></span>: a<sub>11</sub>, a<sub>22</sub>, …</p>
+
+  <div class="callout c-tip"><span class="tag">Igualdad de matrices</span>
+    <p>Dos matrices son <span class="term" data-def="igualdadmatrices" tabindex="0">iguales</span> si tienen <strong>la misma dimensión</strong> y coinciden en <strong>todos</strong> sus elementos: <span class="mono">A(i,j) = B(i,j)</span> para todo (i,j).</p>
+  </div>
+
+  <h3>Tipos de matrices</h3>
+  <table class="data">
+    <tr><th style="width:30%">Tipo</th><th>Cómo es</th><th>Ejemplo</th></tr>
+    <tr><td><span class="term" data-def="matrizcuadrada" tabindex="0">Cuadrada</span></td><td>Igual cantidad de filas y columnas (m = n). Su “orden” es n.</td><td class="mono">2×2, 3×3</td></tr>
+    <tr><td><span class="term" data-def="matrizrectangular" tabindex="0">Rectangular</span></td><td>Filas y columnas distintas (m ≠ n).</td><td class="mono">2×3</td></tr>
+    <tr><td><span class="term" data-def="matrizfila" tabindex="0">Fila / Columna</span></td><td>Una sola fila (1×n) o una sola columna (m×1). Es un vector.</td><td class="mono">[1 2 3]</td></tr>
+    <tr><td><span class="term" data-def="matriznula" tabindex="0">Nula</span></td><td>Todos sus elementos son 0.</td><td class="mono">[0 0 ; 0 0]</td></tr>
+    <tr><td><span class="term" data-def="matrizdiagonal" tabindex="0">Diagonal</span></td><td>Cuadrada; fuera de la diagonal todo es 0.</td><td class="mono">[3 0 ; 0 7]</td></tr>
+    <tr><td><span class="term" data-def="matrizidentidad" tabindex="0">Identidad</span></td><td>Diagonal de unos, resto 0. Sólo puede ser cuadrada. Es el “1” de las matrices.</td><td class="mono">I</td></tr>
+    <tr><td><span class="term" data-def="matriztriangular" tabindex="0">Triangular</span></td><td>Ceros por encima (inferior) o por debajo (superior) de la diagonal.</td><td class="mono">△</td></tr>
+    <tr><td><span class="term" data-def="matrizsimetrica" tabindex="0">Simétrica</span></td><td>Es igual a su traspuesta: A = Aᵀ.</td><td class="mono">a<sub>ij</sub>=a<sub>ji</sub></td></tr>
+  </table>
+
+  <h3>Operaciones</h3>
+
+  <h4>Suma y resta</h4>
+  <p>Sólo se pueden sumar o restar matrices de <strong>la misma dimensión</strong>, y se hace <span class="term" data-def="sumamatrices" tabindex="0">elemento a elemento</span>.</p>
+  <div class="mrow">
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>2</span><span>3</span><span>4</span></span>
+    <span class="eq">+</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>5</span><span>6</span><span>7</span><span>8</span></span>
+    <span class="eq">=</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>6</span><span>8</span><span>10</span><span>12</span></span>
+  </div>
+
+  <h4>Matriz opuesta</h4>
+  <p>La <span class="term" data-def="matrizopuesta" tabindex="0">opuesta</span> de A, escrita <span class="mono">−A</span>, tiene cada elemento con el signo cambiado. Sirve para restar: <span class="mono">A − B = A + (−B)</span>.</p>
+  <div class="mrow">
+    <span class="mtx-lbl">A =</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>-1</span><span>2</span><span>3</span><span>-2</span><span>0</span><span>1</span></span>
+    <span style="margin:0 10px;font-family:var(--body)">→</span>
+    <span class="mtx-lbl">−A =</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>-2</span><span>-3</span><span>2</span><span>0</span><span>-1</span></span>
+  </div>
+
+  <h4>Producto por un escalar</h4>
+  <p>Se <span class="term" data-def="productoescalar" tabindex="0">multiplica cada elemento</span> por el número.</p>
+  <div class="mrow">
+    <span>3 ·</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>2</span><span>3</span><span>4</span></span>
+    <span class="eq">=</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>3</span><span>6</span><span>9</span><span>12</span></span>
+  </div>
+
+  <h4>Producto de matrices</h4>
+  <p>El <span class="term" data-def="productomatrices" tabindex="0">producto A · B</span> se hace <strong>fila por columna</strong>. Sólo se puede si <strong>las columnas de A = las filas de B</strong>, y el resultado tiene <em>filas de A × columnas de B</em>.</p>
+  <div class="mrow">
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></span>
+    <span class="eq">·</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></span>
+    <span class="eq">=</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>58</span><span>64</span><span>139</span><span>154</span></span>
+  </div>
+  <div class="callout c-calc"><span class="tag">Cómo sale cada casillero</span>
+    <p>El elemento (fila i, columna j) del resultado es la <strong>suma de los productos</strong> de la fila i de A por la columna j de B. Por ejemplo, el casillero (1,1):</p>
+    <p class="mono">1·7 + 2·9 + 3·11 = 7 + 18 + 33 = 58</p>
+  </div>
+  <div class="callout c-warn"><span class="tag">No es conmutativo</span><p>En general <span class="mono">A · B ≠ B · A</span>. Y ojo: puede que A·B se pueda calcular pero B·A no (por las dimensiones).</p></div>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Vas <strong>“fila contra columna”</strong>: agarrás una fila de la primera matriz, la parás sobre una columna de la segunda, multiplicás uno a uno y sumás todo. Ese numerito va en el casillero donde se cruzan. Por eso lo del medio tiene que coincidir: las <em>columnas</em> de A con las <em>filas</em> de B.</p>
+  </div>
+
+  <h4>Traspuesta</h4>
+  <p><span class="term" data-def="traspuesta" tabindex="0">Trasponer</span> es dar vuelta la matriz: las <strong>filas pasan a ser columnas</strong>. Una matriz m×n queda n×m.</p>
+  <div class="mrow">
+    <span class="mtx-lbl">A =</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></span>
+    <span style="margin:0 10px;font-family:var(--body)">→</span>
+    <span class="mtx-lbl">Aᵀ =</span>
+    <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>4</span><span>2</span><span>5</span><span>3</span><span>6</span></span>
+  </div>
+
+  <h4>“División” de matrices</h4>
+  <div class="callout c-warn"><span class="tag">No existe la división</span>
+    <p>No se “divide” una matriz por otra. Lo que se hace es multiplicar por la <span class="term" data-def="matrizinversa" tabindex="0">matriz inversa</span>: en lugar de <span class="mono">A ÷ B</span> se calcula <span class="mono">A · B⁻¹</span> (o <span class="mono">B⁻¹ · A</span> — el orden importa). La inversa la vemos en la sección 16.</p>
+  </div>
+</section>
+
+<!-- ============ 15 DETERMINANTES ============ -->
+<section class="section" id="determinantes">
+  <div class="section-head"><span class="section-num">14</span><h2>Determinantes</h2></div>
+  <p>El <span class="term" data-def="determinante" tabindex="0">determinante</span> es un <strong>número</strong> que se le asocia a una matriz <strong>cuadrada</strong> (sólo cuadradas). Se escribe <span class="mono">|A|</span> ó <span class="mono">det(A)</span> y puede dar positivo, negativo o cero.</p>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>El determinante es un <strong>número que te dice si la matriz “sirve”</strong> (si tiene inversa). Si da <strong>0</strong>, la matriz está pinchada: no tiene inversa. En 2×2 se saca fácil, multiplicando en cruz y restando.</p>
+  </div>
+
+  <h4>Orden 1 y orden 2</h4>
+  <p>Orden 1: es el propio elemento, <span class="mono">|a| = a</span>. Orden 2: se multiplica en cruz y se resta.</p>
+  <div class="fbox">| a&nbsp;&nbsp;b ;&nbsp; c&nbsp;&nbsp;d | = a·d − b·c</div>
+  <div class="mrow">
+    <span class="mtx det-bar" style="grid-template-columns:repeat(2,auto)"><span>3</span><span>1</span><span>2</span><span>4</span></span>
+    <span class="eq">=</span>
+    <span class="mono">3·4 − 1·2 = 12 − 2 = 10</span>
+  </div>
+
+  <h4>Orden 3 · Regla de Sarrus</h4>
+  <p>Para 3×3 se repiten las dos primeras columnas al costado y se suman las tres diagonales “↘” menos las tres diagonales “↙”.</p>
+  <div class="callout c-calc"><span class="tag">Cómo se calcula (Sarrus)</span>
+    <p class="mono">|A| = (a₁₁a₂₂a₃₃ + a₁₂a₂₃a₃₁ + a₁₃a₂₁a₃₂) − (a₁₃a₂₂a₃₁ + a₁₁a₂₃a₃₂ + a₁₂a₂₁a₃₃)</p>
+    <p style="font-family:var(--body)">Ejemplo con <span class="mono">A = [1 2 3 ; 0 1 4 ; 5 6 0]</span>:</p>
+    <p class="mono">= (1·1·0 + 2·4·5 + 3·0·6) − (3·1·5 + 1·4·6 + 2·0·0) = 40 − 39 = 1</p>
+  </div>
+
+  <h4>Menores, cofactores y desarrollo</h4>
+  <p>Para matrices más grandes se usan menores y cofactores. El <span class="term" data-def="menor" tabindex="0">menor</span> <span class="mono">M<sub>ij</sub></span> es el determinante que queda al <strong>tachar la fila i y la columna j</strong>. El <span class="term" data-def="cofactor" tabindex="0">cofactor</span> es ese menor con signo:</p>
+  <div class="fbox">C<sub>ij</sub> = (−1)<sup>i+j</sup> · M<sub>ij</sub></div>
+  <p style="font-size:15px">El signo sigue un tablero de ajedrez: <span class="mono">+ − + / − + − / + − +</span>. El <span class="term" data-def="sarrus" tabindex="0">determinante</span> se puede desarrollar por cualquier fila o columna sumando <span class="mono">elemento · su cofactor</span>. <strong>Truco:</strong> elegí la fila o columna con <em>más ceros</em>, porque esos términos se anulan.</p>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Elegís una fila y, por cada número, <strong>tapás su fila y su columna</strong> con el dedo: lo que queda es un determinante más chico (el <em>menor</em>). A ese menor le ponés el signo del tablero <span class="mono">+ − +</span> y ya tenés el <em>cofactor</em>. Recién cuando lo multiplicás por el número, tenés el <em>término</em> que se suma. Menor → (con signo) cofactor → (por el número) término.</p>
+  </div>
+
+  <h4>Matriz triangular · atajo</h4>
+  <div class="callout c-tip"><span class="tag">Regla rápida</span><p>El determinante de una matriz <strong>triangular</strong> (o diagonal) es directamente el <strong>producto de los elementos de la diagonal</strong>: <span class="mono">|A| = a₁₁ · a₂₂ · … · a<sub>nn</sub></span>.</p></div>
+
+  <h4>Propiedades clave</h4>
+  <ul class="clean">
+    <li>Si una fila o columna es toda de ceros → <span class="mono">det = 0</span>.</li>
+    <li>Si hay dos filas (o columnas) iguales o proporcionales → <span class="mono">det = 0</span>.</li>
+    <li>Intercambiar dos filas (o columnas) → el determinante cambia de signo.</li>
+    <li>Multiplicar una fila por un escalar c → el determinante queda multiplicado por c.</li>
+    <li>Sumar a una fila un múltiplo de otra → el determinante <strong>no cambia</strong> (así se “hace ceros”).</li>
+    <li><span class="mono">det(A · B) = det(A) · det(B)</span> &nbsp;·&nbsp; <span class="mono">det(c·A) = cⁿ · det(A)</span></li>
+    <li><span class="mono">det(Aᵀ) = det(A)</span> &nbsp;·&nbsp; <span class="mono">det(A⁻¹) = 1 / det(A)</span></li>
+  </ul>
+  <div class="callout c-warn"><span class="tag">Lo más importante para exámenes</span><p>Una matriz tiene inversa <strong>si y sólo si</strong> su determinante es distinto de 0. Si <span class="mono">det(A) = 0</span>, la matriz es <em>singular</em> (no invertible).</p></div>
+
+  <h3>Ejercicios resueltos</h3>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Calcular el determinante de [ 5 −4 ; 2 3 ].</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">|A| = 5·3 − (−4)·2 = 15 + 8 = 23</div><p class="why">Producto de la diagonal principal menos producto de la otra diagonal. Cuidado con los signos de los negativos.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Calcular el determinante de [ 1 2 3 ; 0 1 4 ; 5 6 0 ] por Sarrus.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">= (0 + 40 + 0) − (15 + 24 + 0) = 40 − 39 = 1</div><p class="why">Diagonales ↘: 1·1·0, 2·4·5, 3·0·6. Diagonales ↙: 3·1·5, 1·4·6, 2·0·0. Restás el segundo grupo del primero.</p></div>
+  </div>
+</section>
+
+<!-- ============ 15 OPERACIONES ELEMENTALES Y ESCALÓN ============ -->
+<section class="section" id="escalonada">
+  <div class="section-head"><span class="section-num">15</span><h2>Operaciones de fila y forma escalonada</h2></div>
+  <p>Trabajar “por filas” (o renglones) es la herramienta con la que después se calcula la inversa por Gauss-Jordan y se resuelven sistemas. Dos matrices son <strong>equivalentes por filas</strong> si una se obtiene de la otra con estas operaciones.</p>
+
+  <h3>Las 3 operaciones elementales de fila</h3>
+  <table class="data">
+    <tr><th style="width:34%">Operación</th><th>Qué hacés</th><th>Notación</th></tr>
+    <tr><td><span class="term" data-def="operacioneselementales" tabindex="0">Intercambiar filas</span></td><td>Das vuelta dos filas de lugar.</td><td class="mono">R₁ ↔ R₂</td></tr>
+    <tr><td>Multiplicar una fila</td><td>Multiplicás toda una fila por un número ≠ 0.</td><td class="mono">½ R₂</td></tr>
+    <tr><td>Combinar filas</td><td>A una fila le sumás un múltiplo de otra.</td><td class="mono">R₂ − 2R₁</td></tr>
+  </table>
+  <p style="font-size:14.5px;color:var(--ink-soft)">El símbolo <span class="mono">∼</span> entre dos matrices significa “son equivalentes por filas”. Notación como <span class="mono">R₃ − 3R₁</span> al lado de una matriz indica que esa fila 3 se obtuvo restándole 3 veces la fila 1.</p>
+
+  <h3>Forma escalonada reducida</h3>
+  <p>Una matriz está en <span class="term" data-def="formaescalonada" tabindex="0">forma escalonada reducida</span> cuando cumple estas 4 condiciones:</p>
+  <ul class="clean">
+    <li>Las filas de <strong>solo ceros</strong> quedan todas abajo.</li>
+    <li>El primer número distinto de cero de cada fila es un <strong>1</strong> (se llama <em>1 delantero</em> o pivote).</li>
+    <li>Cada 1 delantero está <strong>más a la derecha</strong> que el de la fila de arriba (forma de “escalera”).</li>
+    <li>En la columna de un 1 delantero, el <strong>resto son ceros</strong>.</li>
+  </ul>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Llevar A = [ 2 1 4 ; 1 3 2 ; 3 −1 6 ] a forma escalonada reducida.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">Forma escalonada reducida: [ 1 0 2 ; 0 1 0 ; 0 0 0 ]</div>
+      <p class="why">Se ordena para tener un 1 arriba a la izquierda (por ejemplo <span class="mono">R₁ ↔ R₂</span>), después con <span class="mono">R₂ − 2R₁</span> y <span class="mono">R₃ − 3R₁</span> se hacen ceros debajo del primer pivote, y se sigue así columna por columna hasta que cada pivote sea 1 y tenga ceros arriba y abajo. La última fila quedó de ceros, lo que indica que las tres filas no eran independientes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 INVERSA Y CRAMER ============ -->
+<section class="section" id="cramer">
+  <div class="section-head"><span class="section-num">16</span><h2>Matriz inversa, sistemas y Cramer</h2></div>
+
+  <h3>Matriz inversa</h3>
+  <p>La <span class="term" data-def="matrizinversa" tabindex="0">inversa</span> de A, escrita <span class="mono">A⁻¹</span>, es la que cumple <span class="mono">A · A⁻¹ = A⁻¹ · A = I</span> (la identidad). <strong>Existe sólo si</strong> <span class="mono">det(A) ≠ 0</span>.</p>
+  <div class="fbox">A⁻¹ = <span class="frac" style="font-size:14px"><span class="n">1</span><span class="d">det(A)</span></span> · adj(A)</div>
+  <p style="font-size:15px">donde <span class="term" data-def="adjunta" tabindex="0">adj(A)</span> es la <strong>traspuesta de la matriz de cofactores</strong>.</p>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La inversa es la matriz que <strong>“deshace”</strong> a la otra, como el equivalente de dividir. Si multiplicás una matriz por su inversa, volvés a la identidad (el “1” de las matrices). Y no todas la tienen: solo existe si el determinante <strong>no es 0</strong>.</p>
+  </div>
+
+  <div class="callout c-calc"><span class="tag">Atajo para 2×2</span>
+    <p>Para <span class="mono">A = [a b ; c d]</span>: intercambiás a con d, cambiás de signo b y c, y dividís por el determinante.</p>
+    <div class="mrow" style="margin:6px 0 0">
+      <span class="mtx-lbl">A⁻¹ =</span>
+      <span class="frac"><span class="n">1</span><span class="d">ad − bc</span></span>
+      <span>·</span>
+      <span class="mtx" style="grid-template-columns:repeat(2,auto)"><span>d</span><span>-b</span><span>-c</span><span>a</span></span>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Hallar la inversa de A = [ 3 1 ; 2 4 ].</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">det(A) = 3·4 − 1·2 = 10 &nbsp;→&nbsp; A⁻¹ = (1/10)·[ 4 −1 ; −2 3 ] = [ 0,4 −0,1 ; −0,2 0,3 ]</div>
+      <p class="why">Como det ≠ 0, la inversa existe. Aplicás el atajo: swap 3↔4, signo a 1 y 2, dividís todo por 10.</p>
+    </div>
+  </div>
+
+  <h3>Inversa por Gauss-Jordan (matriz aumentada)</h3>
+  <p>Para matrices más grandes conviene otro método, que usa las <span class="term" data-def="operacioneselementales" tabindex="0">operaciones de fila</span> de la sección anterior. Es el <span class="term" data-def="gaussjordan" tabindex="0">método de la matriz aumentada</span>:</p>
+  <ul class="clean">
+    <li>Armás la matriz aumentada <span class="mono">[ A | I ]</span> (A a la izquierda, la identidad a la derecha).</li>
+    <li>Con operaciones de fila transformás la parte izquierda hasta que sea la identidad.</li>
+    <li>Lo que quede a la derecha es <span class="mono">A⁻¹</span>: terminás en <span class="mono">[ I | A⁻¹ ]</span>.</li>
+  </ul>
+  <div class="callout c-warn"><span class="tag">Cuándo NO hay inversa</span><p>Si al reducir aparece una <strong>fila entera de ceros</strong> en la parte izquierda, A no es equivalente a la identidad y <strong>no tiene inversa</strong> (es singular, det = 0).</p></div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Hallar la inversa de A = [ 2 5 4 ; 1 4 3 ; 1 −3 −2 ].</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">Partís de [ A | I ] y reducís hasta [ I | A⁻¹ ]. Resultado:<br>A⁻¹ = [ −1 2 1 ; −5 8 2 ; 7 −11 −3 ]</div>
+      <p class="why">Se aplican operaciones de fila (R₂ − 2R₁, R₃ − R₁, etc.) hasta que la izquierda sea la identidad. Podés verificar que <span class="mono">A · A⁻¹ = I</span>: por ejemplo la 1ª fila de A por la 1ª columna de A⁻¹ da 2·(−1)+5·(−5)+4·7 = 1. (Acá det(A) = −1, así que la inversa existe.)</p>
+    </div>
+  </div>
+
+  <h3>Ecuaciones con matrices</h3>
+  <p>Un sistema de ecuaciones se puede escribir de forma compacta como <span class="term" data-def="ecuacionmatricial" tabindex="0">A · X = B</span>, donde A son los coeficientes, X las incógnitas y B los términos independientes. Si A tiene inversa, se despeja igual que en una ecuación común:</p>
+  <div class="fbox">A · X = B &nbsp;&nbsp;⟹&nbsp;&nbsp; X = A⁻¹ · B</div>
+  <p style="font-size:14.5px;color:var(--ink-soft)">Ojo: la inversa se multiplica <strong>por la izquierda</strong> en ambos lados, porque el producto de matrices no es conmutativo.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Resolver [ 7 −5 ; 2 −3 ]·[ x ; y ] = [ 12 ; 6 ].</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">A⁻¹ = (1/−11)·[ −3 5 ; −2 7 ] = [ 3/11 −5/11 ; 2/11 −7/11 ]<br>X = A⁻¹·B → x = 6/11 · y = −18/11</div>
+      <p class="why">det(A) = 7·(−3) − (−5)·2 = −11 ≠ 0, así que existe la inversa. Después <span class="mono">X = A⁻¹·B</span>: x = (3·12 − 5·6)/11 = 6/11 · y = (2·12 − 7·6)/11 = −18/11. Verificás en las ecuaciones y cierran.</p>
+    </div>
+  </div>
+
+  <h3>Regla de Cramer</h3>
+  <p>Sirve para resolver <strong>sistemas de n ecuaciones con n incógnitas</strong> cuando el determinante de la matriz de coeficientes es <span class="mono">≠ 0</span> (solución única).</p>
+  <div class="callout c-calc"><span class="tag">Cómo se aplica</span>
+    <p>Cada incógnita sale como un cociente de determinantes:</p>
+    <p class="mono">xᵢ = det(Aᵢ) / det(A)</p>
+    <p style="font-family:var(--body)">donde <span class="mono">Aᵢ</span> es la matriz de coeficientes pero con la <strong>columna i reemplazada por la columna de términos independientes</strong> (los números del otro lado del igual).</p>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Resolver por Cramer: &nbsp; −x + 2y − 3z = 1 &nbsp;·&nbsp; 2x + z = 0 &nbsp;·&nbsp; 3x − 4y + 4z = 2</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">det(A) = 10 &nbsp;→&nbsp; x = 8/10 = 4/5 &nbsp;·&nbsp; y = −15/10 = −3/2 &nbsp;·&nbsp; z = −16/10 = −8/5</div>
+      <p class="why">La matriz de coeficientes es [−1 2 −3 ; 2 0 1 ; 3 −4 4], con det = 10 ≠ 0, así que hay solución única. Para <span class="mono">x</span> reemplazás la 1ª columna por (1, 0, 2) y calculás su determinante (da 8); para <span class="mono">y</span> reemplazás la 2ª columna (da −15); para <span class="mono">z</span> la 3ª (da −16). Cada uno dividido por 10. Podés verificar reemplazando en las tres ecuaciones: cierran.</p>
+    </div>
+  </div>
+
+  <h3>¿Cuántas soluciones tiene un sistema?</h3>
+  <p>El determinante de los coeficientes (lo llamamos <span class="mono">D</span>) te dice de antemano qué tipo de sistema tenés, <strong>sin resolverlo</strong>.</p>
+  <table class="data">
+    <tr><th style="width:30%">Si el determinante…</th><th>El sistema es…</th><th>¿Cramer sirve?</th></tr>
+    <tr><td><span class="mono">D ≠ 0</span></td><td><strong>Compatible determinado</strong>: una única solución.</td><td>Sí</td></tr>
+    <tr><td><span class="mono">D = 0</span></td><td><strong>Incompatible</strong> (ninguna solución) <em>o</em> <strong>indeterminado</strong> (infinitas).</td><td>No</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Pensá el determinante como un semáforo. Si <strong>no da 0</strong> (verde), hay una sola respuesta y Cramer te la encuentra. Si <strong>da 0</strong> (rojo), Cramer se frena: puede que no haya solución, o que haya infinitas, y hay que mirarlo con otro método.</p>
+  </div>
+
+  <h3>Sistemas homogéneos</h3>
+  <p>Un sistema es <span class="term" data-def="homogeneo" tabindex="0">homogéneo</span> cuando <strong>todos los términos independientes son 0</strong> (todo lo que está del otro lado del igual es cero): <span class="mono">A · X = 0</span>.</p>
+  <ul class="clean">
+    <li>Siempre tiene al menos la <strong>solución trivial</strong>: todas las incógnitas valen 0.</li>
+    <li>Tiene <strong>otras</strong> soluciones (distintas de la trivial) <strong>solo si</strong> <span class="mono">D = 0</span>.</li>
+    <li>Si <span class="mono">D ≠ 0</span>, la <em>única</em> solución es la trivial (todo 0).</li>
+  </ul>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Un sistema homogéneo es el que tiene <strong>todo 0 a la derecha</strong>. Siempre le podés contestar “que todo valga 0” (la solución aburrida). La gracia es saber si hay <em>otra</em> respuesta más interesante: la hay únicamente cuando el determinante da 0.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">¿El sistema &nbsp; 2x + y = 0 &nbsp;·&nbsp; x − 3y = 0 &nbsp; tiene solución distinta de la trivial?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">D = |2 1 ; 1 −3| = −6 − 1 = −7 ≠ 0 → solo la trivial (x = 0, y = 0)</div>
+      <p class="why">Como el determinante no es 0, la única solución es la trivial. Si hubiera dado 0, habría infinitas soluciones además de la trivial.</p>
+    </div>
+  </div>
+
+  <h4 style="margin-top:30px;">Autoevaluación rápida</h4>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">¿Cuándo tiene inversa una matriz cuadrada A?</div>
+    <button class="opt" data-k="a">Siempre</button>
+    <button class="opt" data-k="b">Sólo si det(A) ≠ 0</button>
+    <button class="opt" data-k="c">Sólo si es simétrica</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">Para multiplicar A (2×3) por B, ¿qué dimensión debe tener B?</div>
+    <button class="opt" data-k="a">2 × 2</button>
+    <button class="opt" data-k="b">2 × 3</button>
+    <button class="opt" data-k="c">3 × cualquiera</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">El determinante de [ 2 0 0 ; 0 5 0 ; 0 0 3 ] es…</div>
+    <button class="opt" data-k="a">30</button>
+    <button class="opt" data-k="b">10</button>
+    <button class="opt" data-k="c">0</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 17 MATRIZ AUMENTADA ============ -->
+<section class="section" id="aumentada">
+  <div class="section-head"><span class="section-num">17</span><h2>Resolver sistemas con la matriz aumentada</h2></div>
+  <p>Ya viste dos formas de resolver un sistema: con la <strong>inversa</strong> (X = A⁻¹·B) y con <strong>Cramer</strong>. Acá va una tercera, la más general: la <span class="term" data-def="matrizaumentada" tabindex="0">matriz aumentada</span> + reducción por filas. Es la más potente porque también funciona cuando el sistema tiene <em>infinitas</em> soluciones.</p>
+
+  <h3>La matriz aumentada</h3>
+  <p>Escribís los coeficientes a la izquierda y las constantes (los números después del <span class="mono">=</span>) a la derecha, separados por una raya.</p>
+  <div class="mrow">
+    <span style="font-family:var(--mono);font-size:15px">x + y = 5<br>x − y = 1</span>
+    <span style="margin:0 14px;font-family:var(--body)">→</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>1</span><span style="border-left:2px solid var(--red);padding-left:10px">5</span><span>1</span><span>-1</span><span style="border-left:2px solid var(--red);padding-left:10px">1</span></span>
+  </div>
+
+  <h3>El método</h3>
+  <p>Reducís la parte izquierda hasta la identidad (<span class="term" data-def="formaescalonada" tabindex="0">forma escalonada reducida</span>) con <span class="term" data-def="operacioneselementales" tabindex="0">operaciones de fila</span>. Lo que quede a la derecha <strong>es la solución</strong>.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo paso a paso</span>
+    <p class="mono">[1 1 | 5 ; 1 −1 | 1]</p>
+    <p class="mono">R₂ − R₁ → [1 1 | 5 ; 0 −2 | −4]</p>
+    <p class="mono">−½ R₂ → [1 1 | 5 ; 0 1 | 2]</p>
+    <p class="mono">R₁ − R₂ → [1 0 | 3 ; 0 1 | 2]</p>
+    <p style="font-family:var(--body)">La izquierda quedó identidad, así que <strong>x = 3, y = 2</strong>.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Es <strong>despejar por sustitución, pero ordenado en una tabla</strong>. Vas haciendo ceros con las filas hasta que cada incógnita queda sola (un 1 en su columna) con su valor justo al lado de la raya. Ahí lo leés directo.</p>
+  </div>
+
+  <h3>Cuando hay infinitas soluciones</h3>
+  <p>Si al reducir queda una <strong>variable libre</strong> (una incógnita sin pivote propio), el sistema es <span class="term" data-def="homogeneo" tabindex="0">indeterminado</span>: tiene infinitas soluciones que se escriben en función de esa variable.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Resolver: &nbsp; x₁ + 2x₂ − x₃ = 0 &nbsp;·&nbsp; 3x₁ + 5x₂ = 1</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">La forma reducida da: x₁ + 5x₃ = 2 y x₂ − 3x₃ = −1<br>→ Solución: (2 − 5x₃ , −1 + 3x₃ , x₃) para cualquier x₃ real → <strong>infinitas soluciones</strong>.</div>
+      <p class="why">Hay 3 incógnitas y solo 2 ecuaciones, así que x₃ queda “libre”. Cada valor de x₃ te da una solución distinta que cumple el sistema.</p>
+    </div>
+  </div>
+  <div class="callout c-tip"><span class="tag">Cómo leer el resultado</span>
+    <p>Al reducir la matriz aumentada, mirás qué queda: cada incógnita con un valor único → <strong>compatible determinado</strong>; una variable libre → <strong>indeterminado</strong> (infinitas); una fila imposible tipo <span class="mono">0 = 5</span> → <strong>incompatible</strong> (sin solución). Es la misma clasificación de la sección 16, pero leída de la matriz.</p>
+  </div>
+
+  <h3>Potencias de una matriz</h3>
+  <p>Una <span class="term" data-def="potenciamatriz" tabindex="0">potencia</span> es multiplicar la matriz por sí misma: <span class="mono">A² = A · A</span>. Solo se puede si <strong>A es cuadrada</strong> (si no, las dimensiones no encajan para multiplicarla por sí misma).</p>
+  <div class="callout c-warn"><span class="tag">Ojo</span><p><span class="mono">A²</span> (y cualquier <span class="mono">Aⁿ</span> con n &gt; 1) <strong>existe solamente en matrices cuadradas</strong>. Si A es 2×3, no podés calcular A·A.</p></div>
+
+  <h3>Ejercicios de práctica</h3>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">A = [2 1 1 ; −1 −1 4], B = [2 −3 4 ; −3 1 −2]. Hallar A+B, A−B, 3A y 5A−2B.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">A+B = [4 −2 5 ; −4 0 2] &nbsp;·&nbsp; A−B = [0 4 −3 ; 2 −2 6]<br>3A = [6 3 3 ; −3 −3 12] &nbsp;·&nbsp; 5A−2B = [6 11 −3 ; 1 −7 24]</div>
+      <p class="why">Para 5A−2B: primero 5A = [10 5 5 ; −5 −5 20] y 2B = [4 −6 8 ; −6 2 −4], después restás casillero por casillero.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">A = [3 2 1] (1×3), B = [2 ; 3 ; 0] (3×1). Hallar AB, BA y A².</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">AB = [12] &nbsp;(1×1: 3·2 + 2·3 + 1·0)<br>BA = [6 4 2 ; 9 6 3 ; 0 0 0] &nbsp;(3×3)<br>A² = no existe (A no es cuadrada)</div>
+      <p class="why">Fijate que AB ≠ BA y ni siquiera tienen la misma dimensión: el orden y las dimensiones mandan.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">Resolver con la matriz aumentada: &nbsp; 2x + y = 5 &nbsp;·&nbsp; x − y = 1. <span class="dtag acc">Accesible</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">[2 1 | 5 ; 1 −1 | 1] se reduce a [1 0 | 2 ; 0 1 | 1] → <strong>x = 2, y = 1</strong>.</div>
+      <p class="why">Podés verificar: 2·2 + 1 = 5 ✓ y 2 − 1 = 1 ✓.</p>
+    </div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">Resolver el sistema de 4 ecuaciones con 4 incógnitas: <span class="dtag libro">Nivel libro</span><br>
+      x₂ + x₃ − 2x₄ = −3 &nbsp;·&nbsp; x₁ + 2x₂ − x₃ = 2 &nbsp;·&nbsp; 2x₁ + 4x₂ + x₃ − 3x₄ = −2 &nbsp;·&nbsp; x₁ − 4x₂ − 7x₃ − x₄ = −19</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans" style="line-height:1.95">
+        Matriz aumentada:<br>
+        <span class="mono">[ 0 &nbsp;1 &nbsp;1 &nbsp;−2 | −3 ; &nbsp;1 &nbsp;2 &nbsp;−1 &nbsp;0 | &nbsp;2 ; &nbsp;2 &nbsp;4 &nbsp;1 &nbsp;−3 | −2 ; &nbsp;1 &nbsp;−4 &nbsp;−7 &nbsp;−1 | −19 ]</span><br><br>
+        <strong>Reducción por filas (paso a paso):</strong><br>
+        1) <span class="mono">R₁ ↔ R₂</span> &nbsp;(subir una fila que empiece con 1)<br>
+        2) <span class="mono">R₃ − 2R₁</span> y <span class="mono">R₄ − R₁</span> &nbsp;→ ceros bajo el primer pivote<br>
+        3) <span class="mono">R₁ − 2R₂</span>, <span class="mono">(⅓)R₃</span>, <span class="mono">R₄ + 6R₂</span><br>
+        4) <span class="mono">R₁ + 3R₃</span>, <span class="mono">R₂ − R₃</span>, <span class="mono">(−1/13)R₄</span><br>
+        5) <span class="mono">R₁ − R₄</span>, <span class="mono">R₂ + R₄</span>, <span class="mono">R₃ + R₄</span> &nbsp;→ identidad<br><br>
+        Queda <span class="mono">[1 0 0 0 | −1 ; 0 1 0 0 | 2 ; 0 0 1 0 | 1 ; 0 0 0 1 | 3]</span><br>
+        → <strong>x₁ = −1 , x₂ = 2 , x₃ = 1 , x₄ = 3</strong>
+      </div>
+      <p class="why">Es <em>el mismo método</em> que el 2×2, pero con una matriz 4×5 y unas 9 operaciones encadenadas. El truco es ir <strong>columna por columna</strong> (primero armar la identidad de a un pivote) y no apurarse. Verificás reemplazando en las 4 ecuaciones: cierran todas. Por ejemplo, la 4ª: −1 − 4·2 − 7·1 − 3 = −19 ✓.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18 GLOSARIO ============ -->
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">18</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Elementos de Análisis Matemático — Unidad 1.</b> Guía de estudio interactiva.</p>
+  <p style="font-size:13px;margin-top:6px;">Esta unidad es la base. Cuando avances a <em>funciones</em>, <em>límite</em>, <em>continuidad</em> y <em>derivadas</em> (donde aparecen cosas como la <b>pendiente</b> y cómo calcularla), sumamos esas unidades con el mismo formato.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D = {
+  conjunto:{t:"Conjunto",sym:"A, B, C…",def:"Colección de objetos bien definidos, llamados elementos. “Bien definido” quiere decir que siempre podés decidir con certeza si algo pertenece o no. Se nombra con mayúscula y sus elementos van entre llaves { }.",ej:"A = {2, 4, 6, 8}",rel:["elemento","pertenece","cardinal"]},
+  elemento:{t:"Elemento",def:"Cada uno de los objetos que forman un conjunto. La relación entre un elemento y su conjunto es la pertenencia (∈).",ej:"En A = {2,4,6}, el 4 es un elemento: 4 ∈ A",rel:["conjunto","pertenece"]},
+  pertenece:{t:"Pertenencia",sym:"∈  /  ∉",def:"Indica si un elemento está (∈) o no está (∉) en un conjunto. Se usa entre un elemento y un conjunto.",ej:"3 ∈ {1,2,3}   ·   5 ∉ {1,2,3}",rel:["conjunto","incluido"]},
+  cardinal:{t:"Cardinal",sym:"#A",def:"Cantidad de elementos de un conjunto (sin contar repetidos).",calc:"Contá los elementos distintos. Si aparece uno repetido, cuenta una sola vez.",ej:"#{a, e, i, o, u} = 5   ·   #{r,a,t,a} = 2  (sólo r y a)",rel:["conjunto","vacio","unitario"]},
+  venn:{t:"Diagrama de Venn",def:"Representación gráfica de conjuntos con figuras (óvalos) dentro de un rectángulo que es el universal. Sirve para ver uniones, intersecciones y diferencias de un vistazo.",rel:["union","interseccion","universal"]},
+  talque:{t:"Tal que",sym:"/",def:"Barra que se lee “tal que”. Separa el elemento genérico de la propiedad que cumple, dentro de la definición por comprensión.",ej:"{ x / x es vocal }  →  “los x tal que x es vocal”",rel:["comprension"]},
+  universal:{t:"Cuantificador universal",sym:"∀",def:"Se lee “para todo”. Afirma que algo se cumple para absolutamente todos los elementos.",ej:"∀ x ∈ ℕ : x ≥ 0  →  “todo natural es ≥ 0”",rel:["existencial"]},
+  existencial:{t:"Cuantificador existencial",sym:"∃",def:"Se lee “existe”. Afirma que hay al menos un elemento que cumple la condición.",ej:"∃ x ∈ ℕ / x > 100",rel:["universal"]},
+  implica:{t:"Implicación",sym:"⇒",def:"Se lee “entonces” o “implica”. Si se cumple lo primero, se cumple lo segundo.",ej:"x es par ⇒ x es divisible por 2",rel:["dobleimplica"]},
+  dobleimplica:{t:"Doble implicación",sym:"⇔",def:"Se lee “si y sólo si”. Las dos afirmaciones son equivalentes: una vale exactamente cuando vale la otra.",ej:"x es par ⇔ x es divisible por 2",rel:["implica"]},
+  incluido:{t:"Inclusión / Subconjunto",sym:"⊂  /  ⊆",def:"A está incluido en B si TODOS los elementos de A también están en B. Ojo: la inclusión es entre conjuntos; la pertenencia es entre elemento y conjunto.",ej:"{2,4} ⊂ {2,4,6}   ·   ℕ ⊂ ℤ",rel:["pertenece","partes","iguales"]},
+  multiplo:{t:"Múltiplo",sym:"3̇ = múltiplo de 3",def:"Un número es múltiplo de n si resulta de multiplicar n por un natural. El puntito sobre el número (η̇) se lee “múltiplo de”.",calc:"Multiplicá n × 1, n × 2, n × 3, … Ó: x es múltiplo de n si al dividir x entre n el resto es 0.",ej:"Múltiplos de 3: 3, 6, 9, 12, 15…",rel:["naturales"]},
+  extension:{t:"Por extensión",def:"Forma de definir un conjunto listando uno por uno todos sus elementos, entre llaves y separados por comas.",ej:"V = { a, e, i, o, u }",rel:["comprension","conjunto"]},
+  comprension:{t:"Por comprensión",def:"Forma de definir un conjunto dando la propiedad que cumplen todos sus elementos, sin listarlos.",calc:"Escribí { x / (propiedad de x) }. Primero el elemento genérico x, luego la barra “tal que”, luego la condición.",ej:"V = { x / x es vocal }",rel:["extension","talque"]},
+  vacio:{t:"Conjunto vacío",sym:"∅  ó  { }",def:"Conjunto que no tiene ningún elemento. Su cardinal es 0. Es subconjunto de todos los conjuntos.",ej:"{ x / x ∈ ℕ ∧ x < 0 } = ∅",rel:["cardinal","unitario"]},
+  unitario:{t:"Conjunto unitario",def:"Conjunto con un único elemento. Su cardinal es 1.",ej:"{ José Hernández }   ·   { 0 }",rel:["vacio","cardinal"]},
+  finito:{t:"Conjunto finito",def:"Conjunto cuyos elementos se pueden contar: la lista termina.",ej:"{ a, e, i, o, u }  (5 elementos)",rel:["infinito","cardinal"]},
+  infinito:{t:"Conjunto infinito",def:"Conjunto cuya lista de elementos no termina nunca.",ej:"ℕ = {0, 1, 2, 3, …}",rel:["finito","naturales"]},
+  iguales:{t:"Conjuntos iguales",sym:"A = B",def:"Dos conjuntos son iguales si tienen exactamente los mismos elementos. No importa el orden ni las repeticiones.",ej:"{1, 2, 3} = {3, 1, 2}",rel:["incluido","conjunto"]},
+  disjuntos:{t:"Conjuntos disjuntos",def:"Dos conjuntos son disjuntos si no comparten ningún elemento: su intersección es vacía.",ej:"{1,2} ∩ {7,8} = ∅",rel:["interseccion","vacio"]},
+  partes:{t:"Conjunto de partes",sym:"P(A)",def:"Conjunto formado por TODOS los subconjuntos de A, incluidos ∅ y el propio A.",calc:"Si A tiene n elementos, P(A) tiene 2ⁿ subconjuntos. Ej.: n = 3 → 2³ = 8 subconjuntos.",ej:"A = {1,2} → P(A) = { ∅, {1}, {2}, {1,2} }  (2² = 4)",rel:["incluido","cardinal"]},
+  union:{t:"Unión",sym:"A ∪ B",def:"Conjunto con los elementos que están en A, en B o en ambos. Junta todo.",calc:"Escribí todos los elementos de A y agregá los de B que falten (sin repetir).",ej:"{1,2,3} ∪ {3,4} = {1,2,3,4}",rel:["interseccion","diferencia"]},
+  interseccion:{t:"Intersección",sym:"A ∩ B",def:"Conjunto con los elementos que están en A Y en B al mismo tiempo (los comunes).",calc:"Buscá los elementos que aparecen en las dos listas. Si no hay ninguno, el resultado es ∅ (disjuntos).",ej:"{1,2,3} ∩ {3,4} = {3}",rel:["union","disjuntos"]},
+  diferencia:{t:"Diferencia",sym:"A − B",def:"Conjunto con los elementos que están en A pero NO en B.",calc:"Tomá A y sacale todo lo que también esté en B.",ej:"{1,2,3} − {3,4} = {1,2}",rel:["complemento","union"]},
+  complemento:{t:"Complemento",sym:"A′  ó  Aᶜ",def:"Conjunto con los elementos del universal U que NO están en A.",calc:"A′ = U − A. Necesitás saber cuál es el universal.",ej:"Si U = {1,2,3,4} y A = {1,2} → A′ = {3,4}",rel:["diferencia","universal"]},
+  naturales:{t:"Números naturales",sym:"ℕ",def:"Los números para contar. En esta materia se toma el 0 como natural (ℕ = {0, 1, 2, 3, …}). Es un conjunto infinito.",ej:"0, 1, 2, 3, 4, …",rel:["enteros","infinito"]},
+  enteros:{t:"Números enteros",sym:"ℤ",def:"Los naturales junto con sus opuestos negativos. Incluye a ℕ.",ej:"…, −2, −1, 0, 1, 2, …",rel:["naturales","racionales"]},
+  racionales:{t:"Números racionales",sym:"ℚ",def:"Todos los que se pueden escribir como fracción de enteros (con denominador ≠ 0). En decimal son exactos o periódicos.",calc:"Un decimal es racional si se corta (0,25) o si se repite un patrón para siempre (0,333…).",ej:"1/2 = 0,5   ·   −3/4   ·   0,333… = 1/3",rel:["enteros","irracionales","reales"]},
+  irracionales:{t:"Números irracionales",sym:"𝕀",def:"Números con infinitos decimales que NO siguen ningún patrón periódico. No se pueden escribir como fracción.",ej:"√2 = 1,4142…   ·   π = 3,14159…   ·   e",rel:["racionales","reales"]},
+  reales:{t:"Números reales",sym:"ℝ",def:"La unión de racionales e irracionales: ℝ = ℚ ∪ 𝕀. Es toda la recta numérica, sin huecos.",ej:"−2,  1/3,  √2,  π,  0",rel:["racionales","irracionales","imaginarios"]},
+  imaginarios:{t:"Imaginarios y Complejos",sym:"ℂ",def:"Aparecen para poder calcular raíces de números negativos. Se define la unidad imaginaria i = √−1. Un número complejo tiene forma a + bi (a real, bi imaginario). ℝ está incluido en ℂ.",ej:"√−1 = i   ·   2 + 5i   ·   −3i",rel:["reales"]},
+  intervalo:{t:"Intervalo",def:"Trozo continuo de la recta real. Va con corchete [ ] si el extremo entra, y con paréntesis ( ) si no entra.",calc:"≤ o ≥ → corchete (extremo incluido).  < o > → paréntesis (extremo excluido).",ej:"[2, 5) = { x ∈ ℝ / 2 ≤ x < 5 }",rel:["reales"]},
+  referencial:{t:"Conjunto referencial",sym:"𝒰",def:"Otro nombre del conjunto universal: contiene todos los elementos del tema del que se trata. Es el marco donde vivís, y se necesita para calcular el complemento.",ej:"Si A = pares menores que 18, un referencial es 𝒰 = {números naturales pares}.",rel:["universal","complemento"]},
+  parordenado:{t:"Par ordenado",sym:"(a ; b)",def:"Dos elementos escritos en un orden fijo: a es la primera componente y b la segunda. El orden importa, así que no se pueden intercambiar.",ej:"(2 ; 5) ≠ (5 ; 2)",rel:["productocartesiano"]},
+  productocartesiano:{t:"Producto cartesiano",sym:"A × B",def:"Conjunto de todos los pares ordenados cuya primera componente pertenece a A y la segunda a B. Se puede representar por extensión, diagrama de Venn, tabla de doble entrada o gráfico cartesiano.",calc:"Cardinal: #(A×B) = #A · #B. No es conmutativo: A×B ≠ B×A.",ej:"{0,2}×{1,3} = {(0;1),(0;3),(2;1),(2;3)}",rel:["parordenado","graficocartesiano"]},
+  graficocartesiano:{t:"Gráfico cartesiano",def:"Forma de representar pares ordenados como puntos sobre dos ejes perpendiculares: la 1ª componente en el eje horizontal y la 2ª en el vertical.",ej:"El par (4 ; 3) es el punto ubicado en x = 4, y = 3.",rel:["productocartesiano","parordenado"]},
+  matriz:{t:"Matriz",sym:"m × n",def:"Arreglo rectangular de números ordenados en filas y columnas. Cada número es un elemento aᵢⱼ (i = fila, j = columna).",calc:"La dimensión es m × n: m filas por n columnas, y se lee “m por n”.",ej:"[2 -1 0 ; 4 3 5] es una matriz 2 × 3.",rel:["dimension","matrizcuadrada","traspuesta"]},
+  dimension:{t:"Dimensión de una matriz",sym:"m × n",def:"El tamaño de la matriz: cantidad de filas (m) por cantidad de columnas (n). Se lee “m por n”. Una matriz de una sola fila o columna es un vector.",ej:"Una matriz con 2 filas y 3 columnas tiene dimensión 2 × 3.",rel:["matriz"]},
+  igualdadmatrices:{t:"Igualdad de matrices",def:"Dos matrices son iguales si tienen la misma dimensión y coinciden en todos sus elementos, uno a uno.",calc:"A = B ⇔ tienen igual dimensión y A(i,j) = B(i,j) para todo (i,j).",rel:["matriz"]},
+  diagonalprincipal:{t:"Diagonal principal",def:"Los elementos aᵢᵢ de una matriz cuadrada: los que van desde arriba a la izquierda hacia abajo a la derecha (a₁₁, a₂₂, a₃₃, …).",rel:["matrizdiagonal","matrizidentidad"]},
+  matrizcuadrada:{t:"Matriz cuadrada",def:"Tiene la misma cantidad de filas que de columnas (m = n). Se dice que es “de orden n”. Sólo las cuadradas tienen determinante e inversa.",ej:"Una 3 × 3 es cuadrada de orden 3.",rel:["matrizrectangular","determinante"]},
+  matrizrectangular:{t:"Matriz rectangular",def:"Tiene distinta cantidad de filas y columnas (m ≠ n).",ej:"Una 2 × 3.",rel:["matrizcuadrada"]},
+  matrizfila:{t:"Matriz fila / columna (vector)",def:"Matriz de una sola fila (1 × n) o una sola columna (m × 1). Desde el punto de vista de programación es un vector (array).",ej:"[1 2 3] es fila; su traspuesta es columna.",rel:["matriz"]},
+  matriznula:{t:"Matriz nula",def:"Todos sus elementos son 0. Es el elemento neutro de la suma de matrices.",ej:"[0 0 ; 0 0]",rel:["sumamatrices"]},
+  matrizdiagonal:{t:"Matriz diagonal",def:"Matriz cuadrada donde todos los elementos que no están en la diagonal principal son cero.",calc:"∀(i,j) con i ≠ j: A(i,j) = 0.",ej:"[3 0 ; 0 7]",rel:["diagonalprincipal","matrizidentidad"]},
+  matrizidentidad:{t:"Matriz identidad",sym:"I",def:"Matriz diagonal con unos en la diagonal principal y ceros en el resto. Sólo puede ser cuadrada. Cumple A · I = A: es el “1” de las matrices.",ej:"I₃ = [1 0 0 ; 0 1 0 ; 0 0 1]",rel:["matrizdiagonal","matrizinversa"]},
+  matriztriangular:{t:"Matriz triangular",def:"Cuadrada con ceros por debajo (triangular superior) o por encima (triangular inferior) de la diagonal principal.",calc:"Su determinante es directamente el producto de los elementos de la diagonal.",rel:["determinante","diagonalprincipal"]},
+  matrizsimetrica:{t:"Matriz simétrica",def:"Matriz cuadrada que es igual a su traspuesta: A = Aᵀ. Los elementos se “reflejan” respecto de la diagonal (aᵢⱼ = aⱼᵢ).",ej:"[1 2 ; 2 5] es simétrica.",rel:["traspuesta","matrizcuadrada"]},
+  sumamatrices:{t:"Suma y resta de matrices",def:"Se suman (o restan) matrices de la misma dimensión, elemento a elemento.",calc:"(A ± B)(i,j) = A(i,j) ± B(i,j). Sólo si tienen igual dimensión.",ej:"[1 2 ; 3 4] + [5 6 ; 7 8] = [6 8 ; 10 12]",rel:["productoescalar","matriz"]},
+  productoescalar:{t:"Producto por un escalar",def:"Multiplicar una matriz por un número: se multiplica cada elemento por ese número.",calc:"(c · A)(i,j) = c · A(i,j).",ej:"3 · [1 2 ; 3 4] = [3 6 ; 9 12]",rel:["sumamatrices"]},
+  productomatrices:{t:"Producto de matrices",sym:"A · B",def:"Se multiplica fila por columna. Sólo se puede si las columnas de A coinciden con las filas de B.",calc:"El elemento (i,j) del resultado es la suma de los productos de la fila i de A por la columna j de B. Dimensión del resultado: (filas de A) × (columnas de B). No es conmutativo: A·B ≠ B·A.",ej:"[1 2 3 ; 4 5 6]·[7 8 ; 9 10 ; 11 12] = [58 64 ; 139 154]",rel:["matrizidentidad","matrizinversa"]},
+  traspuesta:{t:"Matriz traspuesta",sym:"Aᵀ",def:"La matriz que resulta de cambiar filas por columnas. Una m×n queda n×m.",calc:"(Aᵀ)(i,j) = A(j,i). Propiedades: (Aᵀ)ᵀ = A, (A+B)ᵀ = Aᵀ+Bᵀ, (A·B)ᵀ = Bᵀ·Aᵀ.",ej:"[1 2 3 ; 4 5 6]ᵀ = [1 4 ; 2 5 ; 3 6]",rel:["matrizsimetrica","matriz"]},
+  determinante:{t:"Determinante",sym:"|A| ó det(A)",def:"Número asociado a una matriz cuadrada. Puede ser positivo, negativo o cero. Sirve, entre otras cosas, para saber si la matriz tiene inversa.",calc:"Orden 1: |a| = a. Orden 2: ad − bc. Orden 3: regla de Sarrus. Orden n: desarrollo por cofactores. Triangular: producto de la diagonal.",ej:"|3 1 ; 2 4| = 3·4 − 1·2 = 10",rel:["menor","cofactor","sarrus","matrizinversa"]},
+  menor:{t:"Menor complementario",sym:"Mᵢⱼ",def:"Determinante de la matriz que queda al eliminar la fila i y la columna j del elemento aᵢⱼ.",calc:"Tachá la fila i y la columna j, y calculá el determinante de lo que queda.",rel:["cofactor","determinante"]},
+  cofactor:{t:"Cofactor",sym:"Cᵢⱼ",def:"El menor Mᵢⱼ con un signo que depende de la posición.",calc:"Cᵢⱼ = (−1)^(i+j) · Mᵢⱼ. El signo sigue un tablero: + − + / − + − / + − +. Si i+j es par, signo +; si es impar, signo −.",ej:"C₂₁ = (−1)^(2+1)·M₂₁ = −M₂₁",rel:["menor","determinante","adjunta"]},
+  sarrus:{t:"Determinante 3×3 (Sarrus)",def:"Método para el determinante de una matriz 3×3: suma de las tres diagonales descendentes menos la suma de las tres ascendentes.",calc:"|A| = (a₁₁a₂₂a₃₃ + a₁₂a₂₃a₃₁ + a₁₃a₂₁a₃₂) − (a₁₃a₂₂a₃₁ + a₁₁a₂₃a₃₂ + a₁₂a₂₁a₃₃). Alternativa: desarrollar por cofactores eligiendo la fila/columna con más ceros.",rel:["determinante","cofactor"]},
+  adjunta:{t:"Matriz adjunta",sym:"adj(A)",def:"Traspuesta de la matriz de cofactores de A. Se usa para calcular la inversa.",calc:"1) Calculás el cofactor de cada elemento. 2) Armás la matriz de cofactores. 3) La trasponés.",rel:["cofactor","matrizinversa"]},
+  matrizinversa:{t:"Matriz inversa",sym:"A⁻¹",def:"La matriz que cumple A · A⁻¹ = A⁻¹ · A = I. Existe sólo si det(A) ≠ 0 (matriz no singular). Reemplaza a la “división”.",calc:"General: A⁻¹ = (1/det A) · adj(A). Atajo 2×2 para [a b ; c d]: (1/(ad−bc)) · [d −b ; −c a].",ej:"[3 1 ; 2 4]⁻¹ = (1/10)·[4 −1 ; −2 3]",rel:["adjunta","determinante","cramer"]},
+  cramer:{t:"Regla de Cramer",def:"Método para resolver un sistema de n ecuaciones con n incógnitas usando determinantes. Se aplica sólo si el determinante de los coeficientes es distinto de 0 (solución única).",calc:"xᵢ = det(Aᵢ) / det(A), donde Aᵢ es la matriz de coeficientes con la columna i reemplazada por los términos independientes.",ej:"Si det(A)=10 y det(Ax)=8, entonces x = 8/10 = 4/5.",rel:["determinante","matrizinversa","ecuacionmatricial"]},
+  matrizopuesta:{t:"Matriz opuesta",sym:"−A",def:"Matriz que tiene cada elemento con el signo cambiado respecto de A. Se usa para restar: A − B = A + (−B).",ej:"−[−1 2 3 ; −2 0 1] = [1 −2 −3 ; 2 0 −1]",rel:["sumamatrices","productoescalar"]},
+  operacioneselementales:{t:"Operaciones elementales de fila",def:"Las tres transformaciones válidas sobre las filas (renglones) de una matriz. Dos matrices son equivalentes por filas si una se obtiene de la otra con estas operaciones.",calc:"1) Intercambiar dos filas (R₁↔R₂). 2) Multiplicar una fila por un número ≠ 0 (½R₂). 3) Sumar a una fila un múltiplo de otra (R₂−2R₁).",rel:["formaescalonada","gaussjordan"]},
+  formaescalonada:{t:"Forma escalonada reducida",def:"Forma a la que se lleva una matriz usando operaciones de fila. Es la base para resolver sistemas y calcular inversas.",calc:"Se cumple cuando: las filas de ceros van abajo; el primer no-cero de cada fila es un 1 (pivote); cada pivote está más a la derecha que el de arriba; y en la columna de un pivote el resto son ceros.",ej:"[2 1 4 ; 1 3 2 ; 3 −1 6] se reduce a [1 0 2 ; 0 1 0 ; 0 0 0].",rel:["operacioneselementales","gaussjordan"]},
+  gaussjordan:{t:"Inversa por Gauss-Jordan",def:"Método para hallar la inversa usando la matriz aumentada [A | I] y operaciones de fila.",calc:"1) Armás [A | I]. 2) Reducís la parte izquierda hasta la identidad. 3) Lo que queda a la derecha es A⁻¹: [I | A⁻¹]. Si aparece una fila de ceros a la izquierda, A no tiene inversa.",rel:["matrizinversa","operacioneselementales","formaescalonada"]},
+  ecuacionmatricial:{t:"Ecuación con matrices",sym:"A · X = B",def:"Forma compacta de escribir un sistema de ecuaciones: A son los coeficientes, X las incógnitas y B los términos independientes.",calc:"Si A tiene inversa, se despeja multiplicando por la izquierda: X = A⁻¹ · B. (El orden importa porque el producto no es conmutativo.)",ej:"[7 −5 ; 2 −3]·[x;y] = [12;6] → x = 6/11, y = −18/11.",rel:["matrizinversa","cramer","gaussjordan"]},
+  homogeneo:{t:"Sistema homogéneo",sym:"A · X = 0",def:"Sistema en el que todos los términos independientes son 0. Siempre tiene la solución trivial (todas las incógnitas iguales a 0).",calc:"Tiene soluciones distintas de la trivial solo si el determinante de los coeficientes es 0. Si el determinante ≠ 0, la única solución es la trivial.",ej:"2x + y = 0 ; x − 3y = 0 → D = −7 ≠ 0 → solo x = 0, y = 0.",rel:["cramer","determinante","ecuacionmatricial"]},
+  matrizaumentada:{t:"Matriz aumentada",sym:"[ A | b ]",def:"Matriz que junta los coeficientes de un sistema (A) con la columna de constantes (b), separados por una raya. Sirve para resolver el sistema por reducción de filas.",calc:"Reducís la parte izquierda a la identidad con operaciones de fila; lo que queda a la derecha es la solución. Si queda una variable libre → infinitas soluciones; si aparece 0 = número → sin solución.",ej:"x + y = 5 ; x − y = 1 → [1 1 | 5 ; 1 −1 | 1] → x = 3, y = 2.",rel:["operacioneselementales","formaescalonada","gaussjordan","homogeneo"]},
+  potenciamatriz:{t:"Potencia de una matriz",sym:"Aⁿ",def:"Multiplicar una matriz por sí misma n veces: A² = A·A. Solo existe si la matriz es cuadrada.",calc:"A² = A · A (con la regla fila por columna). Si A no es cuadrada, no se puede.",ej:"[1 2 ; 0 1]² = [1 4 ; 0 1].",rel:["productomatrices","matrizcuadrada"]}
+};
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+/* ===================== NESTED NUMBER SETS ===================== */
+const info=document.getElementById('setinfo');
+const setMap={N:'naturales',Z:'enteros',Q:'racionales',I:'irracionales',R:'reales',C:'imaginarios'};
+document.querySelectorAll('.ring[data-set]').forEach(function(r){
+  r.addEventListener('click',function(e){
+    e.stopPropagation();
+    document.querySelectorAll('.ring').forEach(x=>x.classList.remove('active'));
+    r.classList.add('active');
+    const d=D[setMap[r.dataset.set]];
+    info.innerHTML='<h4>'+d.t+' <span class="sym">'+(d.sym||'')+'</span></h4><p>'+d.def+'</p>'+(d.ej?'<p style="font-family:var(--mono);color:var(--navy)">Ej: '+d.ej+'</p>':'')+'<p style="margin-top:8px"><button data-jump="'+setMap[r.dataset.set]+'" style="background:var(--red-soft);border:1px solid var(--red);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer">Ver ficha completa ›</button></p>';
+  });
+});
+</script>
+</body>
+</html>

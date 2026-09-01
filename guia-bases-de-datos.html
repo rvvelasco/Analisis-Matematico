@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bases de Datos · Modelo Entidad-Relación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;--card:#FFFFFF;--ink:#1E2A32;--ink-soft:#51616B;
+    --navy:#153A5B;--navy-deep:#0D2942;--red:#C42430;--red-soft:#FBEBEC;
+    --gold:#B8791F;--gold-soft:#FAF1DF;--teal:#177567;--teal-soft:#E4F1EE;
+    --line:#E2E3DB;--line-strong:#CBCDC2;--shadow:0 1px 2px rgba(13,41,66,.05),0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;font-weight:500;transition:background .15s,color .15s;white-space:nowrap;}
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:900px){.topnav{display:none;}}
+
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+  .hero{padding:66px 24px 40px;max-width:900px;margin:0 auto;}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:500;margin-bottom:16px;}
+  .hero h1{font-family:var(--display);font-weight:600;font-size:clamp(36px,7vw,64px);line-height:1.03;letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 20px;}
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+  .howto{margin:34px auto 0;max-width:900px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:14px;padding:18px 22px;box-shadow:var(--shadow);}
+  .howto h4{margin:0 0 6px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15px;color:var(--ink-soft);}
+
+  .section{padding-top:62px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:13px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,4.4vw,36px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section>p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:32px 0 10px;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+
+  .term{color:var(--red);font-weight:600;cursor:pointer;border-bottom:1.5px dotted var(--red);padding-bottom:.5px;transition:background .15s;border-radius:3px;}
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  .callout{border-radius:14px;padding:18px 20px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}.callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}.c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}.c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}.c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}.c-criollo .tag{color:#4C6E21;}.c-criollo p{color:#33421C;}
+
+  .mono{font-family:var(--mono);}
+  .kbd{font-family:var(--mono);background:#fff;border:1px solid var(--line-strong);border-radius:6px;padding:1px 7px;font-size:.9em;color:var(--navy-deep);}
+
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data .pk{color:var(--red);font-weight:700;}
+  table.data .fk{color:var(--teal);font-weight:700;}
+
+  .toolgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:24px 0;}
+  .toolcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);text-align:center;}
+  .toolcard svg{width:100%;height:56px;margin-bottom:6px;}
+  .toolcard b{display:block;font-size:14.5px;color:var(--navy-deep);}
+  .toolcard span{font-size:12.5px;color:var(--ink-soft);}
+
+  .figure{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin:22px 0;text-align:center;}
+  .figure svg{width:100%;height:auto;max-width:600px;}
+  .figure figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:8px;}
+
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-size:15.5px;color:var(--ink);}
+  .reveal-btn{margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;}
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;}
+  .sol .ans{font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:12px 14px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+
+  /* Verdadero / Falso */
+  .vf-score{position:sticky;top:66px;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:20px 0;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);font-size:15px;flex-wrap:wrap;}
+  .vf-score b{color:var(--navy-deep);font-family:var(--display);}
+  .vf-score .rst{margin-left:auto;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 13px;font-size:13px;color:var(--navy);cursor:pointer;font-family:var(--body);font-weight:600;}
+  .vf-score .rst:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .vfcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;box-shadow:var(--shadow);}
+  .vf-q{font-size:16px;color:var(--navy-deep);font-weight:500;margin-bottom:12px;line-height:1.5;}
+  .vf-q .n{font-family:var(--mono);color:var(--red);font-weight:700;font-size:13px;margin-right:8px;}
+  .vf-btns{display:flex;gap:10px;}
+  .vf-btn{min-width:120px;border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 18px;font-family:var(--body);font-weight:600;font-size:14.5px;cursor:pointer;color:var(--ink);transition:all .12s;}
+  .vf-btn:hover:not(:disabled){border-color:var(--navy);}
+  .vf-btn.ok{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);}
+  .vf-btn.no{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .vf-fb{display:none;margin-top:12px;font-size:14.5px;padding:11px 14px;border-radius:10px;line-height:1.55;}
+  .vf-fb.show{display:block;}
+  .vf-fb.good{background:var(--teal-soft);color:#243b30;}
+  .vf-fb.bad{background:var(--gold-soft);color:#3d3115;}
+  .vf-fb b{color:var(--navy-deep);}
+
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;}
+  .glossary button:hover{text-decoration:underline;}
+
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:#fff;z-index:70;box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+  .lbl.def{color:var(--navy);}.lbl.calc{color:var(--gold);}.lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  ::selection{background:#F6D5A9;}
+  /* SVG ER helpers */
+  .er-ent{fill:#E7EEF5;stroke:#153A5B;stroke-width:2;}
+  .er-att{fill:#fff;stroke:#153A5B;stroke-width:1.5;}
+  .er-rel{fill:#FAF1DF;stroke:#B8791F;stroke-width:2;}
+  .er-line{stroke:#51616B;stroke-width:1.5;fill:none;}
+  .er-t{font-family:var(--body);font-size:13px;fill:#0D2942;}
+  .er-ts{font-family:var(--body);font-size:12px;fill:#51616B;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Bases de <b>Datos</b></span>
+    <nav class="topnav">
+      <a href="#intro">Modelo E-R</a>
+      <a href="#entidades">Entidades y atributos</a>
+      <a href="#simbolos">Símbolos</a>
+      <a href="#relaciones">Relaciones</a>
+      <a href="#cardinalidad">Cardinalidad</a>
+      <a href="#debiles">Entidades débiles</a>
+      <a href="#tablas">Paso a tablas</a>
+      <a href="#integridad">Integridad</a>
+      <a href="#ejercicio">Ejercicio resuelto</a>
+      <a href="#practica">Práctica</a>
+      <a href="#grado">Ternarias</a>
+      <a href="#disenos">Diseños resueltos</a>
+      <a href="#vf">V o F</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Bases de Datos</div>
+  <h1>Modelo <span class="u">Entidad-Relación</span></h1>
+  <p class="lead">Cómo pensar los datos de un problema antes de programar nada: entidades, atributos, relaciones, y cómo eso se convierte en tablas reales. Con los conceptos clave clickeables y el ejercicio de diseño resuelto.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Tocá cualquier palabra <span class="term" data-def="entidad" tabindex="0">como esta</span> y se abre un panel con su definición, cómo se dibuja/hace y un ejemplo. Las cajas verdes <strong>“En criollo”</strong> explican lo mismo en lenguaje cotidiano.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- 01 INTRO -->
+<section class="section" id="intro">
+  <div class="section-head"><span class="section-num">01</span><h2>¿Qué es el modelo Entidad-Relación?</h2></div>
+  <p>El <span class="term" data-def="modeloER" tabindex="0">modelo Entidad-Relación</span> (E-R) es una forma de <strong>dibujar los datos de un problema</strong> antes de crear la base de datos. Sirve para ponerse de acuerdo en <em>qué</em> información se guarda y <em>cómo</em> se relaciona, sin depender todavía de ninguna tecnología ni programa.</p>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Es como hacer el <strong>plano de una casa antes de construirla</strong>. Todavía no pusiste un ladrillo (no elegiste MySQL, Oracle ni nada), pero ya sabés cuántas habitaciones hay y cómo se conectan. El diagrama E-R es ese plano de los datos.</p>
+  </div>
+  <p>El resultado es un <span class="term" data-def="diagramaER" tabindex="0">diagrama E-R</span>: un dibujo hecho con tres piezas principales — <strong>entidades</strong>, <strong>atributos</strong> y <strong>relaciones</strong>.</p>
+</section>
+
+<!-- 02 ENTIDADES Y ATRIBUTOS -->
+<section class="section" id="entidades">
+  <div class="section-head"><span class="section-num">02</span><h2>Entidades y atributos</h2></div>
+  <p>Una <span class="term" data-def="entidad" tabindex="0">entidad</span> es un objeto del mundo real con existencia propia sobre el que querés guardar datos (por ejemplo, <em>Alumno</em>). Cada <span class="term" data-def="atributo" tabindex="0">atributo</span> es una característica de esa entidad (por ejemplo, su <em>DNI</em>).</p>
+
+  <h3>Los tipos de atributos</h3>
+  <p>Ojo, porque no todos los atributos son iguales. Identificar bien la naturaleza de cada uno es clave para diseñar bien. Con la entidad <em>Alumno</em>:</p>
+  <table class="data">
+    <tr><th style="width:26%">Tipo</th><th>Qué es</th><th>Se dibuja…</th></tr>
+    <tr><td><span class="term" data-def="atributoclave" tabindex="0">Clave</span></td><td>Identificador único e invariable, nunca se repite (ej: DNI).</td><td>subrayado</td></tr>
+    <tr><td><span class="term" data-def="atributosimple" tabindex="0">Simple</span></td><td>Dato indivisible, un solo valor (ej: COU).</td><td>óvalo común</td></tr>
+    <tr><td><span class="term" data-def="atributocompuesto" tabindex="0">Compuesto</span></td><td>Se descompone en partes (ej: Domicilio → Calle, Número, Ciudad).</td><td>óvalo con óvalos hijos</td></tr>
+    <tr><td><span class="term" data-def="atributomultivalorado" tabindex="0">Multivalorado</span></td><td>Puede tener varios valores a la vez (ej: Teléfonos).</td><td>óvalo doble</td></tr>
+    <tr><td><span class="term" data-def="atributoderivado" tabindex="0">Derivado</span></td><td>Se calcula a partir de otro, no se guarda (ej: Edad, desde la fecha de nacimiento).</td><td>óvalo punteado</td></tr>
+  </table>
+
+  <figure class="figure">
+    <svg viewBox="0 0 620 330" xmlns="http://www.w3.org/2000/svg">
+      <!-- entity -->
+      <rect class="er-ent" x="30" y="140" width="120" height="52" rx="4"/>
+      <text class="er-t" x="90" y="170" text-anchor="middle" font-weight="600">Alumno</text>
+      <!-- lines -->
+      <line class="er-line" x1="150" y1="150" x2="250" y2="45"/>
+      <line class="er-line" x1="150" y1="160" x2="250" y2="120"/>
+      <line class="er-line" x1="150" y1="175" x2="250" y2="200"/>
+      <line class="er-line" x1="150" y1="185" x2="235" y2="278"/>
+      <!-- DNI (key) -->
+      <ellipse class="er-att" cx="300" cy="45" rx="50" ry="21"/>
+      <text class="er-t" x="300" y="49" text-anchor="middle" text-decoration="underline">DNI</text>
+      <!-- COU simple -->
+      <ellipse class="er-att" cx="300" cy="120" rx="50" ry="21"/>
+      <text class="er-t" x="300" y="124" text-anchor="middle">COU</text>
+      <!-- Telefonos multivalued (double) -->
+      <ellipse class="er-att" cx="305" cy="200" rx="58" ry="25"/>
+      <ellipse class="er-att" cx="305" cy="200" rx="50" ry="19" fill="none"/>
+      <text class="er-t" x="305" y="204" text-anchor="middle">Teléfonos</text>
+      <!-- Domicilio composite -->
+      <ellipse class="er-att" cx="235" cy="285" rx="56" ry="22"/>
+      <text class="er-t" x="235" y="289" text-anchor="middle">Domicilio</text>
+      <line class="er-line" x1="291" y1="278" x2="430" y2="250"/>
+      <line class="er-line" x1="291" y1="285" x2="430" y2="290"/>
+      <line class="er-line" x1="291" y1="292" x2="430" y2="325"/>
+      <ellipse class="er-att" cx="480" cy="250" rx="46" ry="18"/><text class="er-ts" x="480" y="254" text-anchor="middle">Calle</text>
+      <ellipse class="er-att" cx="480" cy="290" rx="46" ry="18"/><text class="er-ts" x="480" y="294" text-anchor="middle">Número</text>
+      <ellipse class="er-att" cx="480" cy="323" rx="46" ry="18"/><text class="er-ts" x="480" y="327" text-anchor="middle">Ciudad</text>
+    </svg>
+    <figcaption>La entidad <strong>Alumno</strong> con sus cuatro tipos de atributos: DNI (clave, subrayado), COU (simple), Teléfonos (multivalorado, óvalo doble) y Domicilio (compuesto, se abre en Calle, Número y Ciudad).</figcaption>
+  </figure>
+
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La <strong>clave</strong> es como el DNI de una persona: no se repite y no cambia. El <strong>compuesto</strong> es un dato que se puede “abrir” en pedacitos (el domicilio se abre en calle, número y ciudad). El <strong>multivalorado</strong> es cuando una sola cosa puede tener varios (una persona puede tener varios teléfonos). El <strong>derivado</strong> es el que no guardás porque lo podés calcular (la edad la sacás de la fecha de nacimiento).</p>
+  </div>
+</section>
+
+<!-- 03 SIMBOLOS -->
+<section class="section" id="simbolos">
+  <div class="section-head"><span class="section-num">03</span><h2>La caja de herramientas E-R</h2></div>
+  <p>Estos son los símbolos que se usan para dibujar cualquier diagrama. Tocá los que están en rojo para ver su definición.</p>
+
+  <div class="toolgrid">
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><rect x="18" y="14" width="84" height="28" rx="3" fill="#E7EEF5" stroke="#153A5B" stroke-width="2"/></svg>
+      <b><span class="term" data-def="entidad" tabindex="0">Entidad</span></b><span>Rectángulo</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><ellipse cx="60" cy="28" rx="46" ry="18" fill="#fff" stroke="#153A5B" stroke-width="1.5"/></svg>
+      <b><span class="term" data-def="atributo" tabindex="0">Atributo</span></b><span>Óvalo</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><ellipse cx="60" cy="28" rx="46" ry="18" fill="#fff" stroke="#153A5B" stroke-width="1.5"/><text x="60" y="32" text-anchor="middle" font-family="Inter" font-size="13" fill="#0D2942" text-decoration="underline">clave</text></svg>
+      <b><span class="term" data-def="atributoclave" tabindex="0">Clave</span></b><span>Óvalo subrayado</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><ellipse cx="60" cy="28" rx="48" ry="21" fill="#fff" stroke="#153A5B" stroke-width="1.5"/><ellipse cx="60" cy="28" rx="40" ry="14" fill="none" stroke="#153A5B" stroke-width="1.5"/></svg>
+      <b><span class="term" data-def="atributomultivalorado" tabindex="0">Multivalorado</span></b><span>Óvalo doble</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><ellipse cx="60" cy="28" rx="46" ry="18" fill="#fff" stroke="#153A5B" stroke-width="1.5" stroke-dasharray="5 4"/></svg>
+      <b><span class="term" data-def="atributoderivado" tabindex="0">Derivado</span></b><span>Óvalo punteado</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><polygon points="60,8 108,28 60,48 12,28" fill="#FAF1DF" stroke="#B8791F" stroke-width="2"/></svg>
+      <b><span class="term" data-def="relacion" tabindex="0">Relación</span></b><span>Rombo</span>
+    </div>
+    <div class="toolcard">
+      <svg viewBox="0 0 120 56"><rect x="14" y="12" width="92" height="32" rx="3" fill="#E7EEF5" stroke="#153A5B" stroke-width="2"/><rect x="20" y="17" width="80" height="22" rx="2" fill="none" stroke="#153A5B" stroke-width="1.5"/></svg>
+      <b><span class="term" data-def="entidaddebil" tabindex="0">Entidad débil</span></b><span>Rectángulo doble</span>
+    </div>
+  </div>
+</section>
+
+<!-- 04 RELACIONES -->
+<section class="section" id="relaciones">
+  <div class="section-head"><span class="section-num">04</span><h2>Relaciones</h2></div>
+  <p>Una <span class="term" data-def="relacion" tabindex="0">relación</span> es el <strong>vínculo entre dos entidades</strong>, y casi siempre es un <em>verbo</em>. Por ejemplo, un Alumno se <em>matricula</em> en una Asignatura.</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+      <rect class="er-ent" x="20" y="42" width="120" height="46" rx="4"/><text class="er-t" x="80" y="70" text-anchor="middle" font-weight="600">Alumno</text>
+      <line class="er-line" x1="140" y1="65" x2="235" y2="65"/>
+      <text class="er-ts" x="180" y="55" text-anchor="middle">N</text>
+      <polygon class="er-rel" points="300,30 375,65 300,100 225,65"/><text class="er-t" x="300" y="69" text-anchor="middle">Matrícula</text>
+      <line class="er-line" x1="375" y1="65" x2="460" y2="65"/>
+      <text class="er-ts" x="420" y="55" text-anchor="middle">M</text>
+      <rect class="er-ent" x="460" y="42" width="120" height="46" rx="4"/><text class="er-t" x="520" y="70" text-anchor="middle" font-weight="600">Asignatura</text>
+    </svg>
+    <figcaption>Alumno y Asignatura son entidades separadas, unidas por la relación <strong>Matrícula</strong> (muchos a muchos: M:N).</figcaption>
+  </figure>
+
+  <h3>Las relaciones también pueden tener atributos</h3>
+  <p>Un dato puede no pertenecer a ninguna de las dos entidades, sino <strong>al vínculo entre ellas</strong>. Eso es un <span class="term" data-def="atributorelacion" tabindex="0">atributo de la relación</span>.</p>
+  <div class="callout c-tip"><span class="tag">Clave para el ejercicio</span>
+    <p>Si un empleado <em>ocupó</em> un puesto, la <strong>fecha</strong> y el <strong>salario</strong> no son del empleado ni del puesto: son de la relación “ocupó”. Ese detalle es exactamente lo que pide la historia salarial del ejercicio.</p>
+  </div>
+
+  <h3>Error de novato vs. regla de oro</h3>
+  <div class="callout c-warn"><span class="tag">El error más común</span>
+    <p>Meter una entidad <em>dentro</em> de otra como si fuera un atributo. <strong>Mal:</strong> poner “Asignaturas” como un dato adentro de “Alumnos”. Un alumno no es una asignatura.</p>
+  </div>
+  <div class="callout c-tip"><span class="tag">Regla de oro</span>
+    <p>Todo objeto con <strong>significado propio</strong> es su propia entidad. Alumnos y Asignaturas van separados y se unen con una relación (Matrícula).</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Si algo “tiene vida propia” y podrías hacerle su propia lista, es una <strong>entidad</strong>, no un atributo. Pregunta trampa: ¿tiene sentido guardar sus propios datos? Una asignatura tiene nombre, código, horario… entonces es entidad, no un campo del alumno.</p>
+  </div>
+</section>
+
+<!-- 05 CARDINALIDAD -->
+<section class="section" id="cardinalidad">
+  <div class="section-head"><span class="section-num">05</span><h2>Restricciones: cardinalidad y participación</h2></div>
+  <p>Las restricciones son las <strong>reglas de negocio</strong> del sistema. La <span class="term" data-def="cardinalidad" tabindex="0">cardinalidad</span> dice <em>cuántas</em> instancias de una entidad se relacionan con otra.</p>
+  <table class="data">
+    <tr><th style="width:18%">Tipo</th><th>Significa</th><th>Ejemplo</th></tr>
+    <tr><td><span class="term" data-def="unoauno" tabindex="0">1 : 1</span></td><td>Una de A con una de B.</td><td>Una persona, un país (exclusivo).</td></tr>
+    <tr><td><span class="term" data-def="unoamuchos" tabindex="0">1 : N</span></td><td>Una de A con muchas de B. Lo más común.</td><td>Un país tiene muchas personas.</td></tr>
+    <tr><td><span class="term" data-def="muchosamuchos" tabindex="0">M : N</span></td><td>Muchas de A con muchas de B.</td><td>Muchos alumnos cursan muchas asignaturas.</td></tr>
+  </table>
+
+  <h3>Participación total</h3>
+  <p>La <span class="term" data-def="participaciontotal" tabindex="0">participación total</span> se dibuja con <strong>línea doble</strong> y significa <strong>obligatoriedad</strong>: si un alumno existe en la base, <em>tiene</em> que estar matriculado en al menos una asignatura. No puede existir sin matrícula.</p>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La cardinalidad es el “¿cuántos?”: uno con uno, uno con muchos, o muchos con muchos. La participación total (línea doble) es el “¿es obligatorio?”: si va con línea doble, esa entidad <strong>no puede quedar suelta</strong>, sí o sí tiene que estar en la relación.</p>
+  </div>
+</section>
+
+<!-- 06 ENTIDADES DEBILES -->
+<section class="section" id="debiles">
+  <div class="section-head"><span class="section-num">06</span><h2>Entidades débiles</h2></div>
+  <p>Una <span class="term" data-def="entidaddebil" tabindex="0">entidad débil</span> es una que <strong>no tiene una clave propia suficiente</strong> para identificarse sola: necesita “apoyarse” en otra entidad (la fuerte). Se dibuja con <strong>rectángulo doble</strong> y su relación con <strong>rombo doble</strong>.</p>
+  <div class="callout c-tip"><span class="tag">Por qué te importa en el ejercicio</span>
+    <p>La <strong>historia laboral</strong> (los puestos que ocupó un empleado) y la <strong>historia salarial</strong> (los salarios de cada puesto) son entidades débiles: un “puesto ocupado” no tiene sentido sin el empleado dueño, y un salario no tiene sentido sin el puesto. Se identifican con una <span class="term" data-def="claveparcial" tabindex="0">clave parcial</span> (por ejemplo, la fecha) sumada a la clave del empleado.</p>
+  </div>
+
+  <figure class="figure">
+    <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg">
+      <rect class="er-ent" x="20" y="42" width="120" height="46" rx="4"/><text class="er-t" x="80" y="70" text-anchor="middle" font-weight="600">Empleado</text>
+      <line class="er-line" x1="140" y1="63" x2="232" y2="63"/><line class="er-line" x1="140" y1="67" x2="232" y2="67"/>
+      <polygon class="er-rel" points="300,32 372,65 300,98 228,65" fill="#FAF1DF" stroke="#B8791F"/>
+      <polygon points="300,42 356,65 300,88 244,65" fill="none" stroke="#B8791F" stroke-width="1.5"/>
+      <text class="er-t" x="300" y="69" text-anchor="middle">Ocupó</text>
+      <line class="er-line" x1="372" y1="63" x2="452" y2="63"/><line class="er-line" x1="372" y1="67" x2="452" y2="67"/>
+      <rect class="er-ent" x="452" y="42" width="128" height="46" rx="4"/>
+      <rect x="458" y="47" width="116" height="36" rx="2" fill="none" stroke="#153A5B" stroke-width="1.5"/>
+      <text class="er-t" x="516" y="70" text-anchor="middle" font-weight="600">Puesto</text>
+    </svg>
+    <figcaption>La entidad débil <strong>Puesto</strong> (rectángulo doble) depende de <strong>Empleado</strong> a través de la relación <strong>Ocupó</strong> (rombo doble), con líneas dobles de participación total.</figcaption>
+  </figure>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Una entidad débil es la que <strong>“no camina sola”</strong>. Un “ítem de factura” no existe sin su factura; una “cuota” no existe sin su préstamo. Para reconocerla: si borrás la entidad fuerte y la débil queda sin sentido, es débil.</p>
+  </div>
+</section>
+
+<!-- 07 PASO A TABLAS -->
+<section class="section" id="tablas">
+  <div class="section-head"><span class="section-num">07</span><h2>Del diagrama a las tablas (diseño lógico)</h2></div>
+  <p>Cuando el diagrama E-R está listo, se convierte en <strong>tablas</strong>. Los rombos y óvalos desaparecen: todo se vuelve una tabla de filas y columnas con tres conceptos.</p>
+  <table class="data">
+    <tr><th style="width:30%">Concepto</th><th>Es…</th><th>Ejemplo</th></tr>
+    <tr><td><span class="term" data-def="tabla" tabindex="0">Tabla (relación)</span></td><td>el conjunto de todos los registros de una entidad</td><td>la tabla Alumnos</td></tr>
+    <tr><td><span class="term" data-def="tupla" tabindex="0">Tupla (fila)</span></td><td>un registro individual</td><td>la fila de Manuel Vázquez</td></tr>
+    <tr><td><span class="term" data-def="atributocolumna" tabindex="0">Atributo (columna)</span></td><td>cada campo de datos</td><td>DNI, Nombre</td></tr>
+  </table>
+
+  <h3>Las reglas de pasaje (esto es lo que se olvida)</h3>
+  <p>Para convertir el diagrama en tablas hay recetas fijas según cada pieza:</p>
+  <table class="data">
+    <tr><th style="width:38%">En el diagrama…</th><th>En tablas se convierte en…</th></tr>
+    <tr><td>Entidad fuerte</td><td>Una tabla con su clave como <span class="pk">clave primaria (PK)</span>.</td></tr>
+    <tr><td>Atributo compuesto</td><td>Una columna por cada parte (Calle, Número, Ciudad).</td></tr>
+    <tr><td>Atributo multivalorado</td><td>Una <strong>tabla aparte</strong> con la PK de la entidad + el valor.</td></tr>
+    <tr><td>Relación <span class="mono">1:N</span></td><td>La PK del lado “uno” se copia como <span class="fk">clave foránea (FK)</span> en el lado “muchos”.</td></tr>
+    <tr><td>Relación <span class="mono">M:N</span></td><td>Una <strong>tabla intermedia</strong> con las dos PK como FK (ahí van los atributos de la relación).</td></tr>
+    <tr><td>Relación <span class="mono">1:1</span></td><td>La FK se pone en cualquiera de las dos tablas.</td></tr>
+    <tr><td><span class="term" data-def="entidaddebil" tabindex="0">Entidad débil</span></td><td>Una tabla con PK compuesta: su clave parcial + la PK de la entidad fuerte (que además es FK).</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La regla que más se usa: en un <strong>1:N</strong>, el lado “muchos” se guarda el DNI del lado “uno” para saber a quién pertenece. Y en un <strong>M:N</strong> no alcanza con eso: necesitás una <strong>tabla puente</strong> en el medio que anote cada combinación (qué alumno cursa qué materia).</p>
+  </div>
+</section>
+
+<!-- 08 INTEGRIDAD -->
+<section class="section" id="integridad">
+  <div class="section-head"><span class="section-num">08</span><h2>Integridad referencial</h2></div>
+  <p>La <span class="term" data-def="integridadreferencial" tabindex="0">integridad referencial</span> es el <strong>pegamento</strong> del sistema: garantiza que no existan datos huérfanos (registros que apuntan a algo que no existe).</p>
+  <ul class="clean">
+    <li>La <span class="term" data-def="claveprimaria" tabindex="0">clave primaria (PK)</span> es el identificador único de cada fila de una tabla.</li>
+    <li>La <span class="term" data-def="claveforanea" tabindex="0">clave foránea (FK)</span> es un campo de otra tabla que apunta a esa clave primaria.</li>
+  </ul>
+  <div class="callout c-tip"><span class="tag">Ejemplo</span>
+    <p>La tabla <em>Casados</em> tiene una clave foránea que apunta a la tabla <em>Personas</em>. Si intentás registrar un matrimonio con alguien que <strong>no existe</strong> en el sistema, la base bloquea la operación automáticamente. Eso es integridad referencial en acción.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La PK es el “número de socio” de una fila (único). La FK es cuando otra tabla anota ese número de socio para decir “esto es de él”. La integridad referencial es el <strong>guardia de seguridad</strong>: no te deja anotar algo que apunte a alguien que no está en la lista.</p>
+  </div>
+</section>
+
+<!-- 09 EJERCICIO RESUELTO -->
+<section class="section" id="ejercicio">
+  <div class="section-head"><span class="section-num">09</span><h2>Ejercicio resuelto: base de datos de una empresa</h2></div>
+  <p>Este es el ejercicio típico de diseñar un diagrama E-R. El enunciado pide modelar una empresa con <strong>departamentos, empleados, proyectos, oficinas</strong>, la <strong>historia laboral</strong> de cada empleado y su <strong>historia salarial</strong> por puesto. Como el enunciado dice “declará las suposiciones”, arranquemos por ahí.</p>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Paso 1</span><span class="consigna">Suposiciones que declaramos</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver</button>
+    <div class="sol">
+      <ul class="clean">
+        <li>Un empleado pertenece a <strong>un</strong> departamento (Departamento 1 : N Empleado).</li>
+        <li>Cada departamento tiene <strong>un</strong> gerente, que es un empleado (relación “Dirige”, 1 : 1).</li>
+        <li>Un empleado tiene <strong>un</strong> proyecto actual; un proyecto puede tener muchos empleados (N : 1).</li>
+        <li>Un empleado está asignado a <strong>una</strong> oficina; una oficina puede tener muchos empleados (N : 1).</li>
+        <li>La historia laboral (puestos) y la historia salarial se modelan como <strong>entidades débiles</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Paso 2</span><span class="consigna">Entidades y atributos</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver</button>
+    <div class="sol">
+      <div class="ans">
+        <strong>DEPARTAMENTO</strong>(<span class="mono">nro_departamento</span> [clave], presupuesto)<br>
+        <strong>EMPLEADO</strong>(<span class="mono">nro_empleado</span> [clave], nro_telefono)<br>
+        <strong>PROYECTO</strong>(<span class="mono">nro_proyecto</span> [clave], presupuesto)<br>
+        <strong>OFICINA</strong>(<span class="mono">nro_oficina</span> [clave], area_piso, <em>Teléfonos</em> [multivalorado])<br>
+        <strong>PUESTO</strong> (débil, historia laboral): nombre_puesto [clave parcial]<br>
+        <strong>SALARIO</strong> (débil, historia salarial): fecha [clave parcial], monto
+      </div>
+      <p class="why">La oficina tiene varios teléfonos → atributo multivalorado. Puesto y Salario no tienen clave propia suficiente → entidades débiles.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Paso 3</span><span class="consigna">Relaciones y cardinalidades</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver</button>
+    <div class="sol">
+      <div class="ans">
+        Departamento (1) —Tiene— (N) Empleado<br>
+        Departamento (1) —Tiene— (N) Proyecto<br>
+        Departamento (1) —Tiene— (N) Oficina<br>
+        Departamento (1) —Dirige— (1) Empleado &nbsp;<em>(el gerente)</em><br>
+        Empleado (N) —Trabaja en— (1) Proyecto &nbsp;<em>(proyecto actual)</em><br>
+        Empleado (N) —Ubicado en— (1) Oficina<br>
+        Empleado (1) =Ocupó= (N) Puesto &nbsp;<em>(débil)</em><br>
+        Puesto (1) =Tuvo= (N) Salario &nbsp;<em>(débil)</em>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">Paso 4</span><span class="consigna">Paso a tablas (diseño lógico)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver</button>
+    <div class="sol">
+      <div class="ans">
+        <strong>Departamento</strong>(<span class="pk">nro_departamento</span>, presupuesto, <span class="fk">nro_emp_gerente</span>)<br>
+        <strong>Empleado</strong>(<span class="pk">nro_empleado</span>, nro_telefono, <span class="fk">nro_departamento</span>, <span class="fk">nro_proyecto</span>, <span class="fk">nro_oficina</span>)<br>
+        <strong>Proyecto</strong>(<span class="pk">nro_proyecto</span>, presupuesto)<br>
+        <strong>Oficina</strong>(<span class="pk">nro_oficina</span>, area_piso)<br>
+        <strong>Oficina_Telefonos</strong>(<span class="pk fk">nro_oficina</span>, <span class="pk">telefono</span>) &nbsp;<em>(multivalorado → tabla aparte)</em><br>
+        <strong>Puesto</strong>(<span class="pk fk">nro_empleado</span>, <span class="pk">nombre_puesto</span>) &nbsp;<em>(débil)</em><br>
+        <strong>Salario</strong>(<span class="pk fk">nro_empleado</span>, <span class="pk fk">nombre_puesto</span>, <span class="pk">fecha</span>, monto) &nbsp;<em>(débil)</em>
+      </div>
+      <p class="why"><span class="pk">Rojo</span> = clave primaria, <span class="fk">verde</span> = clave foránea. El gerente entra como FK en Departamento (relación 1:1). El multivalorado Teléfonos y las entidades débiles se vuelven tablas con clave compuesta.</p>
+    </div>
+  </div>
+
+  <figure class="figure">
+    <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+      <rect class="er-ent" x="240" y="20" width="140" height="42" rx="4"/><text class="er-t" x="310" y="45" text-anchor="middle" font-weight="600">Departamento</text>
+      <rect class="er-ent" x="240" y="130" width="140" height="42" rx="4"/><text class="er-t" x="310" y="155" text-anchor="middle" font-weight="600">Empleado</text>
+      <rect class="er-ent" x="20" y="130" width="120" height="42" rx="4"/><text class="er-t" x="80" y="155" text-anchor="middle" font-weight="600">Proyecto</text>
+      <rect class="er-ent" x="480" y="130" width="120" height="42" rx="4"/><text class="er-t" x="540" y="155" text-anchor="middle" font-weight="600">Oficina</text>
+      <rect class="er-ent" x="240" y="240" width="140" height="42" rx="4"/><rect x="246" y="245" width="128" height="32" rx="2" fill="none" stroke="#153A5B" stroke-width="1.5"/><text class="er-t" x="310" y="265" text-anchor="middle" font-weight="600">Puesto / Salario</text>
+      <!-- lines -->
+      <line class="er-line" x1="310" y1="62" x2="310" y2="130"/><text class="er-ts" x="318" y="98">1 : N</text>
+      <line class="er-line" x1="240" y1="151" x2="140" y2="151"/><text class="er-ts" x="175" y="143">N:1</text>
+      <line class="er-line" x1="380" y1="151" x2="480" y2="151"/><text class="er-ts" x="420" y="143">N:1</text>
+      <line class="er-line" x1="310" y1="172" x2="310" y2="240"/><line class="er-line" x1="314" y1="172" x2="314" y2="240"/><text class="er-ts" x="322" y="210">1 : N</text>
+      <path class="er-line" d="M380 30 Q470 40 420 130" /><text class="er-ts" x="430" y="60">Dirige 1:1</text>
+    </svg>
+    <figcaption>Vista general del diagrama (sin todos los atributos, para que se lea): las cuatro entidades fuertes, la débil, y las cardinalidades. Departamento manda 1:N sobre Empleado, Proyecto y Oficina; Empleado se apoya en la débil Puesto/Salario.</figcaption>
+  </figure>
+</section>
+
+<!-- 10 PRACTICA -->
+<section class="section" id="practica">
+  <div class="section-head"><span class="section-num">10</span><h2>Ejercicios de práctica</h2></div>
+  <p>Probá vos primero y después abrí la solución.</p>
+
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Clasificá cada atributo (clave, simple, compuesto, multivalorado o derivado): &nbsp; legajo (único) · nombre completo (nombre + apellido) · emails (varios) · edad (sale de la fecha de nacimiento) · nacionalidad.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">legajo → clave · nombre completo → compuesto · emails → multivalorado · edad → derivado · nacionalidad → simple</div></div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Indicá la cardinalidad: &nbsp; a) un país tiene una capital y una capital pertenece a un país · b) un autor escribe muchos libros y cada libro tiene un autor · c) alumnos y asignaturas.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">a) 1 : 1 · b) 1 : N · c) M : N</div><p class="why">La c) es M:N, así que al pasar a tablas necesita una tabla intermedia.</p></div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">Diseñá el E-R de una <strong>biblioteca</strong>: hay socios y libros. Un socio puede pedir prestados muchos libros a lo largo del tiempo, y un libro puede ser prestado a muchos socios. De cada préstamo se guarda la fecha. Identificá entidades, relación, cardinalidad, atributos de la relación, y el paso a tablas.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">
+        Entidades: <strong>Socio</strong>(<span class="pk">nro_socio</span>, nombre) · <strong>Libro</strong>(<span class="pk">cod_libro</span>, título)<br>
+        Relación: <strong>Préstamo</strong>, cardinalidad <strong>M : N</strong>. Atributo de la relación: <strong>fecha</strong>.<br>
+        Tablas: Socio(<span class="pk">nro_socio</span>…), Libro(<span class="pk">cod_libro</span>…),<br>
+        <strong>Prestamo</strong>(<span class="pk fk">nro_socio</span>, <span class="pk fk">cod_libro</span>, <span class="pk">fecha</span>) &nbsp;<em>(tabla intermedia del M:N)</em>
+      </div>
+      <p class="why">Como es M:N, la relación se vuelve una tabla puente con las dos claves foráneas; la fecha (atributo de la relación) vive ahí.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">Diseñá el E-R de un <strong>videoclub</strong>: clientes y películas. Un cliente alquila películas; de cada alquiler se guarda la fecha y el precio. Una película puede tener varias copias (cada copia se alquila por separado).</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <div class="ans">
+        Entidades: <strong>Cliente</strong>(<span class="pk">nro_cliente</span>) · <strong>Película</strong>(<span class="pk">cod_pelicula</span>, título) · <strong>Copia</strong> (débil de Película: <span class="mono">nro_copia</span> [clave parcial])<br>
+        Relación: Cliente (N) —Alquila— (M) Copia · atributos de la relación: fecha, precio<br>
+        Tablas: Cliente(<span class="pk">nro_cliente</span>), Pelicula(<span class="pk">cod_pelicula</span>…), Copia(<span class="pk fk">cod_pelicula</span>, <span class="pk">nro_copia</span>),<br>
+        Alquiler(<span class="pk fk">nro_cliente</span>, <span class="pk fk">cod_pelicula</span>, <span class="pk fk">nro_copia</span>, <span class="pk">fecha</span>, precio)
+      </div>
+      <p class="why">La copia es entidad débil de Película (una copia no existe sin su película). El alquiler es M:N con atributos propios (fecha, precio).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 GRADO / TERNARIAS -->
+<section class="section" id="grado">
+  <div class="section-head"><span class="section-num">11</span><h2>Grado de una relación: binarias y ternarias</h2></div>
+  <p>El <span class="term" data-def="gradorelacion" tabindex="0">grado</span> de una relación es <strong>cuántas entidades participan</strong> en ella. Casi todas son <strong>binarias</strong> (unen 2 entidades), pero a veces necesitás una <span class="term" data-def="relacionternaria" tabindex="0">relación ternaria</span> que une <strong>3 entidades a la vez</strong>.</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+      <rect class="er-ent" x="20" y="30" width="130" height="44" rx="4"/><text class="er-t" x="85" y="57" text-anchor="middle" font-weight="600">Representante</text>
+      <rect class="er-ent" x="350" y="30" width="120" height="44" rx="4"/><text class="er-t" x="410" y="57" text-anchor="middle" font-weight="600">Producto</text>
+      <rect class="er-ent" x="185" y="196" width="120" height="44" rx="4"/><text class="er-t" x="245" y="223" text-anchor="middle" font-weight="600">Área</text>
+      <polygon class="er-rel" points="245,80 320,120 245,160 170,120"/><text class="er-t" x="245" y="124" text-anchor="middle">Vende</text>
+      <line class="er-line" x1="150" y1="60" x2="185" y2="108"/>
+      <line class="er-line" x1="350" y1="60" x2="308" y2="108"/>
+      <line class="er-line" x1="245" y1="160" x2="245" y2="196"/>
+    </svg>
+    <figcaption>Una relación <strong>ternaria</strong>: “Vende” une Representante, Producto y Área al mismo tiempo (quién vende qué en dónde).</figcaption>
+  </figure>
+
+  <div class="callout c-tip"><span class="tag">¿Ternaria o dos binarias?</span>
+    <p>Usá <strong>ternaria</strong> solo si el dato pierde sentido al separarlo. Si las asociaciones son <strong>independientes</strong> (una entidad se vincula con otra sin importar la tercera), conviene descomponer en <strong>dos relaciones binarias</strong> M:N, que es más simple y evita redundancia.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Una relación binaria une <strong>dos cosas</strong> (alumno y materia). Una ternaria une <strong>tres al mismo tiempo</strong>, cuando el dato solo tiene sentido con las tres juntas: “tal repartidor lleva tal producto a tal zona”. Si sacás una, la frase ya no significa nada. Al pasar a tablas, una ternaria se vuelve una tabla con las <strong>tres</strong> claves foráneas.</p>
+  </div>
+</section>
+
+<!-- 12 DISEÑOS RESUELTOS -->
+<section class="section" id="disenos">
+  <div class="section-head"><span class="section-num">12</span><h2>Más ejercicios de diseño resueltos</h2></div>
+  <p>Dos ejercicios de diseño completos, del estilo de los de parcial. Probá vos y después abrí la solución.</p>
+
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Representantes de ventas, áreas y productos. Cada representante cubre varias áreas y vende varios productos; todos venden el mismo conjunto de productos en todas sus áreas; dos representantes no pueden vender el mismo producto en la misma área. <span class="dtag libro">Nivel libro</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <p class="why"><strong>Suposiciones:</strong> como todos los representantes venden el mismo conjunto de productos en todas sus áreas, las dos asociaciones (con áreas y con productos) son <strong>independientes</strong> → se modela con <strong>dos relaciones binarias M:N</strong>, no con una ternaria.</p>
+      <div class="ans">
+        <strong>Entidades:</strong> Representante(<span class="mono">nro_rep</span>) · Área(<span class="mono">nro_area</span>) · Producto(<span class="mono">nro_producto</span>)<br>
+        <strong>Relaciones:</strong> Representante (M) —Responsable_de— (N) Área &nbsp;·&nbsp; Representante (M) —Vende— (N) Producto<br><br>
+        <strong>Tablas:</strong><br>
+        Representante(<span class="pk">nro_rep</span>) · Area(<span class="pk">nro_area</span>) · Producto(<span class="pk">nro_producto</span>)<br>
+        Rep_Area(<span class="pk fk">nro_rep</span>, <span class="pk fk">nro_area</span>) &nbsp;<em>(M:N)</em><br>
+        Rep_Producto(<span class="pk fk">nro_rep</span>, <span class="pk fk">nro_producto</span>) &nbsp;<em>(M:N)</em>
+      </div>
+      <p class="why"><strong>Restricción aparte (regla de negocio):</strong> para un mismo (producto, área) debe haber un solo representante. Las dos tablas M:N no lo garantizan solas, así que se declara como restricción adicional del sistema.</p>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">Sistema de pedidos: clientes (con varias direcciones de envío), pedidos (encabezado + varias líneas de detalle) y artículos (fabricados en varias plantas, con existencia por planta). <span class="dtag libro">Nivel libro</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol">
+      <p class="why"><strong>Suposiciones:</strong> un cliente tiene varias direcciones (atributo multivalorado); un pedido pertenece a un cliente (N:1); las líneas de detalle son <strong>entidad débil</strong> del pedido; un artículo se fabrica en varias plantas y en cada una hay una existencia distinta (M:N con atributo).</p>
+      <div class="ans">
+        <strong>Entidades:</strong> Cliente · Pedido · Artículo · Planta &nbsp;·&nbsp; <em>débil:</em> LíneaDePedido<br><br>
+        <strong>Tablas:</strong><br>
+        Cliente(<span class="pk">nro_cliente</span>, estado_cuenta, limite_credito, descuento)<br>
+        Cliente_Direcciones(<span class="pk fk">nro_cliente</span>, <span class="pk">direccion</span>) &nbsp;<em>(direcciones multivaloradas)</em><br>
+        Pedido(<span class="pk">nro_pedido</span>, <span class="fk">nro_cliente</span>, direccion_envio, fecha)<br>
+        LineaPedido(<span class="pk fk">nro_pedido</span>, <span class="pk fk">nro_articulo</span>, cantidad) &nbsp;<em>(débil de Pedido)</em><br>
+        Articulo(<span class="pk">nro_articulo</span>, descripcion)<br>
+        Articulo_Planta(<span class="pk fk">nro_articulo</span>, <span class="pk fk">nro_planta</span>, existencia) &nbsp;<em>(M:N con atributo)</em><br>
+        Planta(<span class="pk">nro_planta</span>)
+      </div>
+      <p class="why">El encabezado del pedido va en la tabla Pedido; las líneas de detalle (varias por pedido) son la entidad débil LineaPedido, con clave compuesta nro_pedido + nro_articulo. La existencia por planta es un atributo de la relación Artículo–Planta, así que vive en la tabla intermedia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 VERDADERO O FALSO -->
+<section class="section" id="vf">
+  <div class="section-head"><span class="section-num">13</span><h2>Verdadero o Falso · repaso conceptual</h2></div>
+  <p>Este apartado es solo para <strong>fijar las definiciones correctas</strong> y no comerte errores conceptuales cuando rindas. Respondé cada afirmación: te marca la respuesta correcta y te explica el porqué (sobre todo en las falsas, que son las que más engañan).</p>
+  <div class="vf-score">
+    Respondidas: <b><span id="vf-answered">0</span>/<span id="vf-total">0</span></b> &nbsp;·&nbsp; Correctas: <b id="vf-correct" style="color:var(--teal)">0</b>
+    <button class="rst" id="vf-reset">Reiniciar</button>
+  </div>
+  <div id="vf-list"></div>
+</section>
+
+<!-- 14 GLOSARIO -->
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">14</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <b style="color:var(--navy-deep)">Bases de Datos · Modelo Entidad-Relación.</b> Guía interactiva. Parte del centro de estudio de Analista en Sistemas.
+</footer>
+
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div><div class="pkicker">Definición</div><h3 id="p-title">—</h3></div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script>
+const D = {
+  modeloER:{t:"Modelo Entidad-Relación",def:"Forma de representar los datos de un problema con entidades, atributos y relaciones, independiente de la tecnología (no depende de qué base de datos uses después).",ej:"El diagrama de una empresa con Departamentos, Empleados y Proyectos.",rel:["entidad","relacion","diagramaER"]},
+  diagramaER:{t:"Diagrama E-R",def:"El dibujo que resulta del modelo: rectángulos (entidades), óvalos (atributos) y rombos (relaciones).",rel:["modeloER","entidad"]},
+  entidad:{t:"Entidad",def:"Objeto del mundo real con existencia propia sobre el que se guardan datos. Se dibuja con un rectángulo.",calc:"Preguntate: ¿esto tiene sentido por sí solo y le guardaría sus propios datos? Si sí, es entidad.",ej:"Alumno, Departamento, Libro.",rel:["atributo","relacion","entidaddebil"]},
+  atributo:{t:"Atributo",def:"Característica o propiedad de una entidad. Se dibuja con un óvalo unido a la entidad.",ej:"DNI, nombre, presupuesto.",rel:["atributoclave","atributosimple","atributocompuesto","atributomultivalorado"]},
+  atributoclave:{t:"Atributo clave",def:"Atributo que identifica de forma única e invariable a cada instancia; nunca se repite. Se dibuja subrayado.",calc:"Elegí un dato que no se repita nunca y no cambie (como el DNI).",ej:"DNI en Alumno, nro_departamento en Departamento.",rel:["claveprimaria","atributo"]},
+  atributosimple:{t:"Atributo simple",def:"Dato indivisible, con un solo valor, que no se puede descomponer.",ej:"COU, nacionalidad.",rel:["atributocompuesto","atributo"]},
+  atributocompuesto:{t:"Atributo compuesto",def:"Atributo que se puede descomponer en partes más chicas. Se dibuja con óvalos hijos.",calc:"Al pasar a tablas, poné una columna por cada parte.",ej:"Domicilio → Calle, Número, Ciudad.",rel:["atributosimple","atributo"]},
+  atributomultivalorado:{t:"Atributo multivalorado",def:"Atributo que puede tener varios valores a la vez. Se dibuja con óvalo doble.",calc:"Al pasar a tablas se vuelve una tabla aparte con la clave de la entidad + el valor.",ej:"Teléfonos de una persona, teléfonos de una oficina.",rel:["atributo","tabla"]},
+  atributoderivado:{t:"Atributo derivado",def:"Atributo que se calcula a partir de otro dato y no se almacena. Se dibuja con óvalo punteado.",ej:"Edad (se calcula desde la fecha de nacimiento).",rel:["atributosimple","atributo"]},
+  relacion:{t:"Relación",def:"Asociación entre dos (o más) entidades. Suele ser un verbo. Se dibuja con un rombo.",ej:"Alumno —Matrícula— Asignatura.",rel:["cardinalidad","atributorelacion","entidad"]},
+  atributorelacion:{t:"Atributo de una relación",def:"Dato que no pertenece a ninguna de las dos entidades, sino al vínculo entre ellas.",calc:"En un M:N, esos atributos van en la tabla intermedia.",ej:"En 'Empleado ocupó Puesto', la fecha y el salario son de la relación.",rel:["relacion","muchosamuchos"]},
+  cardinalidad:{t:"Cardinalidad",def:"Restricción que indica cuántas instancias de una entidad se relacionan con otra.",calc:"Preguntá en los dos sentidos: '¿una A con cuántas B?' y '¿una B con cuántas A?'.",ej:"1:1, 1:N, M:N.",rel:["unoauno","unoamuchos","muchosamuchos","participaciontotal"]},
+  unoauno:{t:"Relación 1 : 1",def:"Cada instancia de A se relaciona con una sola de B, y viceversa.",ej:"Una persona ↔ un país (exclusivo). Un país ↔ su capital.",rel:["cardinalidad"]},
+  unoamuchos:{t:"Relación 1 : N",def:"Una instancia de A se relaciona con muchas de B, pero cada B con una sola A. Es la más común.",calc:"Al pasar a tablas: la clave del lado 'uno' se copia como clave foránea en el lado 'muchos'.",ej:"Un país tiene muchas personas.",rel:["cardinalidad","claveforanea"]},
+  muchosamuchos:{t:"Relación M : N",def:"Muchas instancias de A se relacionan con muchas de B.",calc:"Al pasar a tablas necesita una tabla intermedia con las dos claves foráneas.",ej:"Muchos alumnos cursan muchas asignaturas.",rel:["cardinalidad","tabla","atributorelacion"]},
+  participaciontotal:{t:"Participación total",def:"Obligatoriedad: toda instancia de la entidad debe participar en la relación. Se dibuja con línea doble.",ej:"Un alumno no puede existir sin estar matriculado en al menos una asignatura.",rel:["cardinalidad","relacion"]},
+  entidaddebil:{t:"Entidad débil",def:"Entidad que no tiene una clave propia suficiente y depende de otra (la fuerte) para identificarse. Se dibuja con rectángulo doble y su relación con rombo doble.",calc:"Se identifica con su clave parcial + la clave de la entidad fuerte.",ej:"La historia salarial de un empleado; una cuota de un préstamo.",rel:["claveparcial","entidad"]},
+  claveparcial:{t:"Clave parcial",def:"Atributo que distingue las instancias de una entidad débil dentro de su entidad fuerte (también llamado discriminante). Se subraya con línea punteada.",ej:"La fecha dentro de la historia salarial.",rel:["entidaddebil","claveprimaria"]},
+  tabla:{t:"Tabla (relación)",def:"En el modelo relacional, el conjunto de todos los registros de una entidad. Es una tabla bidimensional de filas y columnas.",ej:"La tabla Alumnos.",rel:["tupla","atributocolumna"]},
+  tupla:{t:"Tupla (fila)",def:"Un registro individual dentro de una tabla: una fila.",ej:"La fila de Manuel Vázquez en la tabla Alumnos.",rel:["tabla","atributocolumna"]},
+  atributocolumna:{t:"Atributo (columna)",def:"Cada campo de datos de una tabla: una columna.",ej:"DNI, Nombre.",rel:["tabla","tupla"]},
+  claveprimaria:{t:"Clave primaria (PK)",def:"Identificador único de cada fila de una tabla. No se repite ni queda vacío.",ej:"nro_socio en la tabla Socios.",rel:["claveforanea","integridadreferencial","atributoclave"]},
+  claveforanea:{t:"Clave foránea (FK)",def:"Campo de una tabla que apunta a la clave primaria de otra. Es el pegamento entre tablas.",calc:"En un 1:N, poné en el lado 'muchos' la clave primaria del lado 'uno'.",ej:"nro_departamento dentro de la tabla Empleado.",rel:["claveprimaria","integridadreferencial","unoamuchos"]},
+  integridadreferencial:{t:"Integridad referencial",def:"Regla que impide datos huérfanos: una clave foránea siempre debe apuntar a una fila que existe.",ej:"No podés registrar un matrimonio con alguien que no está en la tabla de personas.",rel:["claveprimaria","claveforanea"]},
+  gradorelacion:{t:"Grado de una relación",def:"Cantidad de entidades que participan en una relación. Binaria = 2 entidades; ternaria = 3.",ej:"Alumno–Matrícula–Asignatura es binaria; Representante–Vende–(Producto,Área) es ternaria.",rel:["relacionternaria","relacion"]},
+  relacionternaria:{t:"Relación ternaria",def:"Relación que une tres entidades al mismo tiempo, cuando el dato solo tiene sentido con las tres juntas. Si las asociaciones son independientes, conviene usar dos relaciones binarias en su lugar.",calc:"Al pasar a tablas, una ternaria se vuelve una tabla con las tres claves foráneas.",ej:"“Vende” une Representante, Producto y Área (quién vende qué en dónde).",rel:["gradorelacion","muchosamuchos","relacion"]}
+};
+
+const panel=document.getElementById('panel'),backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title'),pBody=document.getElementById('p-body');
+function openDef(k){const d=D[k];if(!d)return;pTitle.textContent=d.t;let h='';
+  h+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc)h+='<div class="block"><div class="lbl calc">∑ Cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';
+  if(d.ej)h+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';
+  if(d.rel&&d.rel.length){h+='<div class="block"><div class="lbl def">↔ Relacionados</div><div class="rel">';d.rel.forEach(function(r){if(D[r])h+='<button data-jump="'+r+'">'+D[r].t+'</button>';});h+='</div></div>';}
+  pBody.innerHTML=h;pBody.scrollTop=0;panel.classList.add('open');backdrop.classList.add('open');}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');if(t){openDef(t.dataset.def);return;}
+  const j=e.target.closest('[data-jump]');if(j){openDef(j.dataset.jump);return;}
+  const g=e.target.closest('[data-gloss]');if(g){openDef(g.dataset.gloss);return;}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){e.preventDefault();openDef(document.activeElement.dataset.def);}});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es')).forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+document.querySelectorAll('.reveal-btn').forEach(function(btn){btn.addEventListener('click',function(){
+  const sol=btn.nextElementSibling;const open=sol.classList.toggle('open');
+  btn.querySelector('.ic').textContent=open?'↑':'↓';
+  btn.childNodes[1].textContent=open?' Ocultar':(btn.textContent.includes('solución')?' Ver solución':' Ver');});});
+
+/* ===== VERDADERO / FALSO ===== */
+const VF=[
+ {s:"Una entidad se dibuja con un rectángulo.",v:true,e:"El rectángulo es la entidad. El óvalo, en cambio, es el atributo."},
+ {s:"El óvalo doble representa un atributo derivado.",v:false,e:"El óvalo doble es el atributo <b>multivalorado</b>. El derivado se dibuja con óvalo <b>punteado</b>."},
+ {s:"El atributo clave se dibuja subrayado y nunca se repite entre instancias.",v:true,e:"Es el identificador único e invariable, como el DNI."},
+ {s:"Un atributo derivado se almacena en la base de datos.",v:false,e:"No se guarda: se <b>calcula</b> a partir de otro dato (por ejemplo, la edad a partir de la fecha de nacimiento)."},
+ {s:"El atributo compuesto se puede descomponer en partes más chicas.",v:true,e:"Como Domicilio → Calle, Número, Ciudad."},
+ {s:"Está bien poner una entidad como si fuera un atributo de otra entidad.",v:false,e:"Ese es el error de novato. Todo objeto con significado propio es su <b>propia entidad</b> (regla de oro): Alumno y Asignatura van separados."},
+ {s:"Una relación se representa con un rombo y suele ser un verbo.",v:true,e:"Por ejemplo, Alumno —Matrícula— Asignatura."},
+ {s:"Los atributos de una relación pertenecen a una de las dos entidades que une.",v:false,e:"Pertenecen al <b>vínculo</b>, no a las entidades. Ej: la fecha y el salario de “Empleado ocupó Puesto” son de la relación."},
+ {s:"La cardinalidad 1:N significa que una instancia de A se relaciona con muchas de B.",v:true,e:"Y cada B con una sola A. Es la cardinalidad más común."},
+ {s:"En una relación M:N alcanza con poner una clave foránea en una de las dos entidades.",v:false,e:"El M:N necesita una <b>tabla intermedia</b> con las dos claves foráneas (ahí van los atributos de la relación)."},
+ {s:"La participación total se dibuja con línea doble y significa obligatoriedad.",v:true,e:"Si va con línea doble, esa entidad no puede quedar suelta: sí o sí participa en la relación."},
+ {s:"Una entidad débil tiene una clave propia suficiente para identificarse sola.",v:false,e:"Justo al revés: <b>no</b> la tiene. Depende de la entidad fuerte y se identifica con su clave parcial + la clave de la fuerte."},
+ {s:"La clave primaria identifica de forma única cada fila de una tabla y no se repite.",v:true,e:"Es el identificador único de cada tupla; no se repite ni queda vacío."},
+ {s:"La clave foránea es la que identifica de forma única cada fila de su propia tabla.",v:false,e:"Esa es la clave <b>primaria</b>. La foránea es un campo que <b>apunta</b> a la clave primaria de otra tabla."},
+ {s:"La tupla es una columna de la tabla.",v:false,e:"La tupla es una <b>fila</b> (un registro). La columna es el atributo."},
+ {s:"La integridad referencial impide que una clave foránea apunte a una fila que no existe.",v:true,e:"Es el guardia que evita datos huérfanos: no te deja apuntar a algo inexistente."},
+ {s:"El modelo Entidad-Relación depende de la tecnología de base de datos que se use.",v:false,e:"Es <b>independiente</b> de la tecnología: es el “plano” anterior a elegir cualquier motor."},
+ {s:"En un 1:N, la clave del lado “uno” se copia como clave foránea en el lado “muchos”.",v:true,e:"Así el lado “muchos” sabe a quién pertenece cada fila."}
+];
+const vfList=document.getElementById('vf-list');
+let vfAns=0,vfOk=0;
+document.getElementById('vf-total').textContent=VF.length;
+function vfUpdate(){document.getElementById('vf-answered').textContent=vfAns;document.getElementById('vf-correct').textContent=vfOk;}
+VF.forEach(function(item,i){
+  const c=document.createElement('div');c.className='vfcard';
+  c.innerHTML='<div class="vf-q"><span class="n">'+(i+1)+'</span>'+item.s+'</div>'+
+    '<div class="vf-btns"><button class="vf-btn" data-i="'+i+'" data-v="true">Verdadero</button>'+
+    '<button class="vf-btn" data-i="'+i+'" data-v="false">Falso</button></div>'+
+    '<div class="vf-fb" id="vffb'+i+'"></div>';
+  vfList.appendChild(c);
+});
+vfList.addEventListener('click',function(e){
+  const b=e.target.closest('.vf-btn');if(!b)return;
+  const card=b.closest('.vfcard');if(card.dataset.done)return;
+  card.dataset.done='1';
+  const i=+b.dataset.i,chose=b.dataset.v==='true',correct=VF[i].v,ok=chose===correct;
+  card.querySelectorAll('.vf-btn').forEach(function(x){x.disabled=true;if((x.dataset.v==='true')===correct)x.classList.add('ok');});
+  if(!ok)b.classList.add('no');
+  const fb=document.getElementById('vffb'+i);
+  fb.className='vf-fb show '+(ok?'good':'bad');
+  fb.innerHTML='<b>'+(ok?'Correcto.':'Ojo. ')+'</b> La afirmación es <b>'+(correct?'VERDADERA':'FALSA')+'</b>. '+VF[i].e;
+  vfAns++;if(ok)vfOk++;vfUpdate();
+});
+document.getElementById('vf-reset').addEventListener('click',function(){
+  vfAns=0;vfOk=0;vfUpdate();
+  vfList.querySelectorAll('.vfcard').forEach(function(card){delete card.dataset.done;
+    card.querySelectorAll('.vf-btn').forEach(function(x){x.disabled=false;x.classList.remove('ok','no');});
+    card.querySelector('.vf-fb').className='vf-fb';});
+});
+vfUpdate();
+</script>
+</body>
+</html>

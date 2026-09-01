@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analista en Sistemas · Centro de estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;--card:#FFFFFF;--ink:#1E2A32;--ink-soft:#51616B;
+    --navy:#153A5B;--navy-deep:#0D2942;--red:#C42430;--red-soft:#FBEBEC;
+    --gold:#B8791F;--teal:#177567;--line:#E2E3DB;--line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05),0 10px 34px rgba(13,41,66,.08);
+    --display:'Fraunces',Georgia,serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:76px;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(244,245,241,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:1080px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy-deep);letter-spacing:-.01em;display:flex;align-items:center;gap:9px;}
+  .brand .mk{width:26px;height:26px;border-radius:7px;background:var(--navy-deep);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--mono);}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;}
+  .topnav a{font-size:14px;color:var(--ink-soft);text-decoration:none;padding:7px 13px;border-radius:9px;font-weight:500;transition:background .15s,color .15s;white-space:nowrap;}
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  .topnav a.on{background:var(--navy-deep);color:#fff;}
+
+  .hero{max-width:1080px;margin:0 auto;padding:70px 24px 30px;}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:500;margin-bottom:16px;}
+  .hero h1{font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,66px);line-height:1.02;letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 20px;}
+  .hero p{font-size:20px;color:var(--ink-soft);max-width:640px;margin:0;line-height:1.55;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  .stitle{font-family:var(--display);font-size:15px;color:var(--navy);font-weight:600;letter-spacing:.02em;margin:52px 0 4px;text-transform:uppercase;font-size:13px;letter-spacing:.14em;font-family:var(--mono);}
+  .ssub{color:var(--ink-soft);font-size:15px;margin:0 0 22px;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-bottom:20px;}
+
+  /* materia card */
+  .materia{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+  .materia .badge{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--teal);margin-bottom:12px;}
+  .materia h3{font-family:var(--display);font-size:24px;color:var(--navy-deep);margin:0 0 8px;font-weight:600;letter-spacing:-.01em;}
+  .materia p{font-size:14.5px;color:var(--ink-soft);margin:0 0 20px;flex:1;}
+  .res{display:flex;flex-direction:column;gap:9px;}
+  .res a{display:flex;align-items:center;gap:12px;text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:12px 15px;transition:all .15s;color:var(--ink);}
+  .res a:hover{border-color:var(--navy);background:#fff;transform:translateX(2px);}
+  .res .ic{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:15px;color:#fff;}
+  .res .ic.guide{background:var(--navy);}
+  .res .ic.exam{background:var(--red);}
+  .res .txt{flex:1;}
+  .res .txt b{display:block;font-weight:600;color:var(--navy-deep);font-size:15px;}
+  .res .txt span{font-size:12.5px;color:var(--ink-soft);}
+  .res .arrow{color:var(--ink-soft);font-weight:700;}
+
+  /* upcoming (placeholder) */
+  .materia.soon{background:transparent;border-style:dashed;box-shadow:none;align-items:center;justify-content:center;text-align:center;color:var(--ink-soft);min-height:200px;}
+  .materia.soon .plus{font-size:30px;color:var(--line-strong);font-family:var(--display);}
+  .materia.soon b{color:var(--navy);font-family:var(--display);font-size:18px;}
+  .materia.soon span{font-size:13.5px;}
+
+  .note{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:16px 20px;margin:30px 0 60px;font-size:14.5px;color:var(--ink-soft);box-shadow:var(--shadow);}
+  .note b{color:var(--navy-deep);}
+
+  footer{border-top:1px solid var(--line);padding:34px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14px;max-width:1080px;margin:0 auto;}
+  ::selection{background:#F6D5A9;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><span class="mk">AS</span> Analista en <b>Sistemas</b></span>
+    <nav class="topnav">
+      <a href="#inicio" class="on">Inicio</a>
+      <a href="#analisis">Análisis Matemático</a>
+      <a href="#basesdedatos">Bases de Datos</a>
+      <a href="#logica">Lógica Computacional</a>
+      <a href="#examenes">Exámenes</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="inicio">
+  <div class="eyebrow">Centro de estudio</div>
+  <h1>Todo tu material,<br>en un solo lugar</h1>
+  <p>Guías teóricas, ejercicios explicados y simuladores de examen para la carrera. Empezamos por Análisis Matemático; se irán sumando más materias.</p>
+</header>
+
+<main class="wrap">
+
+  <div class="stitle" id="analisis">Materias</div>
+  <p class="ssub">Elegí una materia para ver sus recursos.</p>
+
+  <div class="grid">
+    <div class="materia">
+      <div class="badge">En curso</div>
+      <h3>Análisis Matemático</h3>
+      <p>Teoría de conjuntos, producto cartesiano y álgebra lineal (matrices, determinantes, inversa y Cramer). Con conceptos clave clickeables y ejercicios resueltos.</p>
+      <div class="res">
+        <a href="guia-teoria-de-conjuntos.html">
+          <span class="ic guide">G</span>
+          <span class="txt"><b>Guía teórica interactiva</b><span>17 temas · conceptos clickeables · ejercicios resueltos</span></span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="simulador-examenes.html" id="examenes">
+          <span class="ic exam">E</span>
+          <span class="txt"><b>Simulador de exámenes</b><span>33 exámenes · 3 dificultades · corrección automática</span></span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="materia" id="basesdedatos">
+      <div class="badge">En curso</div>
+      <h3>Bases de Datos</h3>
+      <p>Modelo Entidad-Relación: entidades, atributos, relaciones, cardinalidad, entidades débiles, paso a tablas e integridad referencial. Con el ejercicio de diseño de diagramas E-R resuelto.</p>
+      <div class="res">
+        <a href="guia-bases-de-datos.html">
+          <span class="ic guide">G</span>
+          <span class="txt"><b>Guía teórica interactiva</b><span>Modelo E-R · diagramas · ejercicios de diseño resueltos</span></span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="materia" id="logica">
+      <div class="badge">En curso</div>
+      <h3>Lógica Computacional</h3>
+      <p>Sistemas de numeración: bases (binario, octal, decimal, hexadecimal), conversiones entre bases (con y sin pasar por decimal) y cómo comparar y ordenar. Con ejercicios resueltos nivel libro.</p>
+      <div class="res">
+        <a href="guia-logica-computacional.html">
+          <span class="ic guide">G</span>
+          <span class="txt"><b>Guía teórica interactiva</b><span>Conversiones entre bases · ejercicios resueltos · V/F</span></span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="materia soon">
+      <div class="plus">+</div>
+      <b>Próxima materia</b>
+      <span>Acá vas a poder sumar otra materia<br>cuando la trabajemos.</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Cómo abrir todo:</b> guardá los tres archivos (este índice, la guía y el simulador) en la <b>misma carpeta</b>. Así los botones de arriba y las tarjetas te llevan de uno a otro sin problema.
+  </div>
+
+</main>
+
+<footer>
+  <b style="color:var(--navy-deep)">Analista en Sistemas</b> · Centro de estudio personal. Hecho para entender y aprobar.
+</footer>
+
+<script>
+  const secciones=[['inicio','inicio'],['analisis','analisis'],['examenes','examenes']];
+  const links=document.querySelectorAll('.topnav a');
+  window.addEventListener('scroll',function(){
+    let y=window.scrollY+90;let cur='inicio';
+    document.querySelectorAll('#inicio,#analisis,#basesdedatos,#logica,#examenes').forEach(function(s){if(s.offsetTop<=y)cur=s.id;});
+    links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur);});
+  });
+</script>
+</body>
+</html>
