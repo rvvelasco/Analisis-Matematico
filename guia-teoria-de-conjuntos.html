@@ -260,6 +260,12 @@
   ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
   ul.tick li::before{content:"✓";color:var(--teal);}
   ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
 </style>
 </head>
 <body>
@@ -284,6 +290,11 @@
       <a href="#escalonada">Escalón / Gauss-Jordan</a>
       <a href="#cramer">Inversa y Cramer</a>
       <a href="#aumentada">Matriz aumentada</a>
+      <a href="#propiedades">Propiedades y adjunta</a>
+      <a href="#laplace">Laplace</a>
+      <a href="#sistemas">Sistemas</a>
+      <a href="guia-vectores.html" style="color:var(--red);font-weight:600;">Vectores ›</a>
+      <a href="guia-relaciones-funciones.html" style="color:var(--red);font-weight:600;">Relaciones y funciones ›</a>
       <a href="#glosario">Glosario</a>
     </nav>
   </div>
@@ -292,7 +303,7 @@
 <header class="hero">
   <div class="eyebrow">Elementos de Análisis Matemático</div>
   <h1>Teoría de <span class="u">Conjuntos</span> y los conjuntos numéricos</h1>
-  <p class="lead">Toda la base en un solo lugar: teoría de conjuntos, tipos, pertenencia e inclusión, operaciones, los números (naturales → complejos) y el arranque de la Unidad 2 con el <strong>producto cartesiano</strong>. Todo con ejercicios resueltos paso a paso.</p>
+  <p class="lead">Toda la base en un solo lugar: teoría de conjuntos, tipos, pertenencia e inclusión, operaciones, los números (naturales → complejos) y el <strong>producto cartesiano</strong>. Después, la <strong>Unidad 1</strong> completa (matrices, propiedades, determinantes de orden n con Laplace, adjunta e inversa) y la <strong>Unidad 3</strong> (sistemas de ecuaciones: Gauss, Cramer, Rouché-Frobenius, conjunto solución y problemas). Todo con ejercicios resueltos paso a paso. Las Unidades 2 y 4 siguen en la <a href="guia-vectores.html">guía de Vectores</a> y en la de <a href="guia-relaciones-funciones.html">Relaciones y funciones</a>.</p>
 
   <div class="howto">
     <h4>Cómo usar esta guía</h4>
@@ -1368,9 +1379,198 @@
   </div>
 </section>
 
-<!-- ============ 18 GLOSARIO ============ -->
+<!-- ============ 18 PROPIEDADES, ADJUNTA Y APLICACIONES ============ -->
+<section class="section" id="propiedades">
+  <div class="section-head"><span class="section-num">18</span><h2>Propiedades de las operaciones, adjunta y aplicaciones</h2></div>
+  <p>Para el parcial no alcanza con saber hacer las cuentas: te van a pedir <strong>decidir si una igualdad vale siempre</strong> (verdadero/falso) o usar una propiedad para ahorrarte cuentas.</p>
+
+  <h3>Propiedades de la suma y el producto</h3>
+  <table class="data">
+    <tr><th style="width:28%">Propiedad</th><th>Suma</th><th>Producto</th></tr>
+    <tr><td>Conmutativa</td><td class="mono">A + B = B + A ✓</td><td class="mono" style="color:var(--red)">A·B ≠ B·A en general ✗</td></tr>
+    <tr><td>Asociativa</td><td class="mono">(A + B) + C = A + (B + C)</td><td class="mono">(A·B)·C = A·(B·C)</td></tr>
+    <tr><td>Elemento neutro</td><td class="mono">A + 0 = A (<span class="term" data-def="matriznula" tabindex="0">nula</span>)</td><td class="mono">A·I = I·A = A (<span class="term" data-def="matrizidentidad" tabindex="0">identidad</span>)</td></tr>
+    <tr><td>Opuesto / inverso</td><td class="mono">A + (−A) = 0</td><td class="mono">A·A⁻¹ = I (solo si det ≠ 0)</td></tr>
+    <tr><td>Distributiva</td><td colspan="2" class="mono">A·(B + C) = A·B + A·C &nbsp;·&nbsp; (A + B)·C = A·C + B·C</td></tr>
+    <tr><td>Escalares</td><td colspan="2" class="mono">k·(A + B) = kA + kB &nbsp;·&nbsp; (k·A)·B = k·(A·B) = A·(k·B)</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">Lo que NO vale con matrices (y sí con números)</span>
+    <p><strong>A·B = 0 no implica A = 0 o B = 0.</strong> Ej.: [1 0 ; 0 0]·[0 0 ; 0 1] = 0.</p>
+    <p><strong>A·B = A·C no implica B = C</strong> (salvo que A sea invertible).</p>
+    <p><strong>(A + B)² ≠ A² + 2AB + B²</strong>: en realidad es A² + AB + BA + B².</p>
+  </div>
+
+  <h3>Propiedades de la traspuesta y de la inversa</h3>
+  <table class="data">
+    <tr><th>Traspuesta</th><th>Inversa (A, B invertibles)</th></tr>
+    <tr><td class="mono">(Aᵀ)ᵀ = A</td><td class="mono">(A⁻¹)⁻¹ = A</td></tr>
+    <tr><td class="mono">(A + B)ᵀ = Aᵀ + Bᵀ</td><td class="mono">(A·B)⁻¹ = B⁻¹·A⁻¹ &nbsp;(se invierte el orden)</td></tr>
+    <tr><td class="mono">(k·A)ᵀ = k·Aᵀ</td><td class="mono">(k·A)⁻¹ = (1/k)·A⁻¹</td></tr>
+    <tr><td class="mono">(A·B)ᵀ = Bᵀ·Aᵀ &nbsp;(se invierte el orden)</td><td class="mono">(Aᵀ)⁻¹ = (A⁻¹)ᵀ</td></tr>
+    <tr><td class="mono">det(Aᵀ) = det(A)</td><td class="mono">det(A⁻¹) = 1 / det(A)</td></tr>
+  </table>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Con A = [1 2 ; 0 −1] y B = [3 0 ; 1 2], verificá que (A·B)ᵀ = Bᵀ·Aᵀ.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">A·B = [5 4 ; −1 −2] ⇒ (A·B)ᵀ = [5 −1 ; 4 −2]<br>Bᵀ·Aᵀ = [3 1 ; 0 2]·[1 0 ; 2 −1] = [5 −1 ; 4 −2] ✓</div><p class="why">En cambio Aᵀ·Bᵀ = [1 0 ; 2 −1]·[3 1 ; 0 2] = [3 1 ; 6 0], que no da lo mismo: el orden se invierte sí o sí.</p></div>
+  </div>
+
+  <h3>Matriz adjunta y su propiedad</h3>
+  <p>La <span class="term" data-def="adjunta" tabindex="0">adjunta</span> de A es la <strong>traspuesta de la matriz de cofactores</strong>. Cumple, para toda matriz cuadrada A:</p>
+  <div class="fbox">A · adj(A) = adj(A) · A = det(A) · I</div>
+  <p>De ahí sale la <strong>condición necesaria y suficiente</strong> para que exista la inversa: si det(A) ≠ 0, dividís por det(A) y obtenés <span class="mono">A⁻¹ = adj(A) / det(A)</span>; si det(A) = 0, A no puede tener inversa porque det(A)·det(A⁻¹) tendría que dar det(I) = 1.</p>
+  <div class="callout c-calc"><span class="tag">Paso a paso · adjunta de una 3×3</span>
+    <p class="mono">A = [1 2 0 ; 0 1 3 ; 1 0 1] &nbsp;·&nbsp; det(A) = 1·(1 − 0) − 2·(0 − 3) + 0 = 7</p>
+    <p style="font-family:var(--body)"><strong>1) Cofactores</strong> (tapás fila y columna, calculás el 2×2 y aplicás el signo del tablero + − + / − + − / + − +):</p>
+    <p class="mono">C₁₁ = +|1 3 ; 0 1| = 1 · C₁₂ = −|0 3 ; 1 1| = 3 · C₁₃ = +|0 1 ; 1 0| = −1</p>
+    <p class="mono">C₂₁ = −|2 0 ; 0 1| = −2 · C₂₂ = +|1 0 ; 1 1| = 1 · C₂₃ = −|1 2 ; 1 0| = 2</p>
+    <p class="mono">C₃₁ = +|2 0 ; 1 3| = 6 · C₃₂ = −|1 0 ; 0 3| = −3 · C₃₃ = +|1 2 ; 0 1| = 1</p>
+    <p style="font-family:var(--body)"><strong>2) Trasponés</strong> la matriz de cofactores: <span class="mono">adj(A) = [1 −2 6 ; 3 1 −3 ; −1 2 1]</span></p>
+    <p style="font-family:var(--body)"><strong>3) Dividís</strong> por el determinante: <span class="mono">A⁻¹ = (1/7)·[1 −2 6 ; 3 1 −3 ; −1 2 1]</span></p>
+    <p style="font-family:var(--body)"><strong>4) Verificás</strong> un casillero: fila 1 de A por columna 1 de adj(A) = 1·1 + 2·3 + 0·(−1) = 7 = det(A) ✓</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>La adjunta es "la inversa sin dividir". Hacés todo el trabajo (cofactores y trasponer) y al final dividís por el determinante. Si el determinante es 0, no podés hacer ese último paso: por eso no hay inversa.</p></div>
+
+  <h3>Aplicaciones a situaciones problemáticas concretas</h3>
+  <p>Las matrices sirven para ordenar datos de una tabla y hacer muchas cuentas de una sola vez. La clave es que <strong>las dimensiones "encajen" con el significado</strong>: en P·C, las columnas de P y las filas de C tienen que hablar de lo mismo.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Una fábrica tiene dos sucursales. P da la producción semanal (filas: S1, S2; columnas: mesas, sillas, bancos) y C el costo unitario en miles de $ (filas: mesa, silla, banco; columnas: madera, mano de obra). P = [10 40 5 ; 8 30 12], C = [5 3 ; 2 1 ; 3 2]. Calculá e interpretá P·C. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">P·C = [10·5 + 40·2 + 5·3 , 10·3 + 40·1 + 5·2 ; 8·5 + 30·2 + 12·3 , 8·3 + 30·1 + 12·2] = <strong>[145 80 ; 136 78]</strong></div><p class="why">Fila = sucursal, columna = rubro. Por ejemplo, 136 es el costo total de <em>madera</em> de la <em>sucursal 2</em> (en miles de $). C·P (3×3) no tiene sentido económico, y P + C ni siquiera se puede calcular.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Tres kioscos venden alfajores, gaseosas y chicles: V = [20 15 30 ; 10 25 5 ; 30 10 20] (filas: kioscos) y los precios son p = [900 ; 1100 ; 300]. ¿Cuánto recaudó cada kiosco? ¿Y si los precios suben 10%?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">V·p = [43 500 ; 38 000 ; 44 000] · Con la suba: 1,1·(V·p) = [47 850 ; 41 800 ; 48 400]</div><p class="why">Se usa la propiedad V·(k·p) = k·(V·p): no hace falta rehacer el producto.</p></div>
+  </div>
+</section>
+
+<!-- ============ 19 LAPLACE ============ -->
+<section class="section" id="laplace">
+  <div class="section-head"><span class="section-num">19</span><h2>Determinantes de orden n: regla de Laplace y cálculo con propiedades</h2></div>
+  <p>La <span class="term" data-def="laplace" tabindex="0">regla de Laplace</span> dice que el determinante de una matriz n × n se puede calcular <strong>desarrollando por cualquier fila o columna</strong>:</p>
+  <div class="fbox">det(A) = aᵢ₁·Cᵢ₁ + aᵢ₂·Cᵢ₂ + … + aᵢₙ·Cᵢₙ &nbsp;&nbsp;(por la fila i)</div>
+  <p>Cada <span class="term" data-def="cofactor" tabindex="0">cofactor</span> es un determinante de orden n − 1, así que un 4×4 se reduce a determinantes 3×3 (que se hacen con Sarrus). Sarrus <strong>solo sirve para 3×3</strong>; para 4×4 o más hay que usar Laplace.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo 4×4 · elegir bien la fila</span>
+    <p class="mono">A = [2 0 1 3 ; 0 0 2 0 ; 1 3 0 1 ; 0 1 1 2]</p>
+    <p style="font-family:var(--body)">La fila 2 tiene un solo elemento no nulo (a₂₃ = 2), así que hay <strong>un solo término</strong>. Signo de (2,3): (−1)⁵ = −1.</p>
+    <p class="mono">M₂₃ = det[2 0 3 ; 1 3 1 ; 0 1 2] = 2·(6 − 1) − 0 + 3·(1 − 0) = 13</p>
+    <p class="mono">det(A) = 2 · (−1) · 13 = −26</p>
+  </div>
+
+  <h3>Hacer ceros antes de desarrollar</h3>
+  <p>Si ninguna fila tiene ceros, <strong>los fabricás</strong> con la propiedad "sumar a una fila un múltiplo de otra no cambia el determinante". Esto es el <strong>cálculo numérico de determinantes empleando propiedades</strong> del programa.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo</span>
+    <p class="mono">D = [1 2 0 1 ; 2 4 1 3 ; 0 1 1 1 ; 3 6 0 4]</p>
+    <p class="mono">R₂ − 2R₁ → (0 0 1 1) &nbsp;·&nbsp; R₄ − 3R₁ → (0 0 0 1) &nbsp;(det no cambia)</p>
+    <p class="mono">Por la columna 1 (solo queda el 1): det = 1·det[0 1 1 ; 1 1 1 ; 0 0 1]</p>
+    <p class="mono">Por la última fila: = 1·det[0 1 ; 1 1] = 0 − 1 = −1</p>
+  </div>
+  <table class="data">
+    <tr><th>Operación de fila</th><th>Efecto sobre el determinante</th></tr>
+    <tr><td>Rᵢ ↔ Rⱼ (intercambiar)</td><td>Cambia de signo</td></tr>
+    <tr><td>Rᵢ → k·Rᵢ</td><td>Queda multiplicado por k</td></tr>
+    <tr><td>Rᵢ → Rᵢ + k·Rⱼ</td><td><strong>No cambia</strong> (la que se usa para hacer ceros)</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">det(k·A) — el error más común</span><p>Si A es n × n, <strong>det(k·A) = kⁿ·det(A)</strong>, porque k multiplica a las n filas. Con A 3×3 y det(A) = 3: det(2A) = 8·3 = 24, no 6.</p></div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Resolvé det[x 1 1 ; 1 x 1 ; 1 1 x] = 0. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Por Sarrus: x³ + 1 + 1 − x − x − x = x³ − 3x + 2 = (x − 1)²·(x + 2) ⇒ <strong>x = 1 (doble) o x = −2</strong></div><p class="why">Con x = 1 las tres filas son iguales (det = 0 sin cuentas). Eso te da una raíz para factorizar con Ruffini.</p></div>
+  </div>
+</section>
+
+<!-- ============ 20 SISTEMAS ============ -->
+<section class="section" id="sistemas">
+  <div class="section-head"><span class="section-num">20</span><h2>Sistemas de ecuaciones lineales de n incógnitas · teoría completa</h2></div>
+  <p>Ya resolviste sistemas con la inversa, con Cramer y con la matriz aumentada. Acá se junta todo con lo que suele tomarse en el parcial: <strong>clasificar, escribir el conjunto solución, interpretar gráficamente, discutir con parámetros y plantear problemas</strong>.</p>
+
+  <h3>Expresión matricial</h3>
+  <div class="mrow">
+    <span style="font-family:var(--mono);font-size:15px">2x + y − z = 1<br>x − y + 2z = 3<br>3x + z = 4</span>
+    <span style="margin:0 14px;font-family:var(--body)">⇔</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>2</span><span>1</span><span>-1</span><span>1</span><span>-1</span><span>2</span><span>3</span><span>0</span><span>1</span></span>
+    <span class="eq">·</span>
+    <span class="mtx" style="grid-template-columns:auto"><span>x</span><span>y</span><span>z</span></span>
+    <span class="eq">=</span>
+    <span class="mtx" style="grid-template-columns:auto"><span>1</span><span>3</span><span>4</span></span>
+  </div>
+  <p>A es la matriz de coeficientes, X el vector de incógnitas y B el de términos independientes. Si B = 0, el sistema es <span class="term" data-def="homogeneo" tabindex="0">homogéneo</span>; si no, <strong>no homogéneo</strong>.</p>
+
+  <h3>Sistemas equivalentes</h3>
+  <p>Dos sistemas son <span class="term" data-def="sistemasequivalentes" tabindex="0">equivalentes</span> si tienen <strong>el mismo conjunto solución</strong>. Las operaciones elementales de fila (intercambiar, multiplicar por k ≠ 0, sumar un múltiplo de otra) transforman un sistema en otro equivalente. Por eso Gauss funciona: cada paso cambia el sistema, pero no sus soluciones.</p>
+
+  <h3>Clasificación e interpretación gráfica</h3>
+  <p>Con 2 incógnitas, cada ecuación es una recta y resolver es buscar los puntos comunes:</p>
+  <div class="figrow">
+    <div class="fig"><h4>Compatible determinado</h4><div data-figin="scd"></div><div class="cap">Las rectas se cortan en un punto: <b>una solución</b>.</div></div>
+    <div class="fig"><h4>Incompatible</h4><div data-figin="si"></div><div class="cap">Rectas paralelas distintas: <b>ninguna solución</b>.</div></div>
+    <div class="fig"><h4>Compatible indeterminado</h4><div data-figin="sci"></div><div class="cap">Rectas coincidentes: <b>infinitas soluciones</b>.</div></div>
+  </div>
+  <p>Con 3 incógnitas cada ecuación es un plano: pueden cortarse en un punto, en una recta (infinitas soluciones) o no tener puntos comunes. Con <strong>3 ecuaciones y 2 incógnitas</strong> son 3 rectas, que pueden no tener ningún punto común aunque se corten de a dos:</p>
+  <div class="fig" data-fig="tri" data-cap="r₁: y = x · r₂: x + y = 4 · r₃: y = 3. Se cortan de a dos en (2,2), (3,3) y (1,3), pero no hay un punto común a las tres: el sistema es incompatible."></div>
+
+  <h3>Teorema de Rouché-Frobenius</h3>
+  <p>Sea n el número de incógnitas, rg(A) el <span class="term" data-def="rango" tabindex="0">rango</span> de la matriz de coeficientes y rg(A|B) el de la ampliada:</p>
+  <table class="data">
+    <tr><th>Condición</th><th>Tipo</th><th>Soluciones</th></tr>
+    <tr><td class="mono">rg(A) ≠ rg(A|B)</td><td><strong>Incompatible</strong></td><td>Ninguna (aparece una fila 0 = k ≠ 0)</td></tr>
+    <tr><td class="mono">rg(A) = rg(A|B) = n</td><td><strong>Compatible determinado</strong></td><td>Una</td></tr>
+    <tr><td class="mono">rg(A) = rg(A|B) &lt; n</td><td><strong>Compatible indeterminado</strong></td><td>Infinitas, con n − rg variables libres</td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">Consecuencias rápidas</span>
+    <p>Un sistema homogéneo <strong>nunca es incompatible</strong> (siempre tiene la trivial). Si un sistema compatible tiene <strong>más incógnitas que ecuaciones</strong>, es indeterminado. Si A es cuadrada y det(A) ≠ 0, es compatible determinado (y se puede usar Cramer o la inversa).</p>
+  </div>
+
+  <h3>Conjunto solución</h3>
+  <p>El <span class="term" data-def="conjuntosolucion" tabindex="0">conjunto solución</span> S reúne todas las soluciones. Se escribe así:</p>
+  <ul class="clean">
+    <li>Determinado: <span class="mono">S = {(1, 2, 3)}</span>.</li>
+    <li>Indeterminado: en función de un parámetro, <span class="mono">S = {(−1 + t, 3 − 2t, t) / t ∈ ℝ}</span>.</li>
+    <li>Incompatible: <span class="mono">S = ∅</span>.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Clasificá y resolvé: 2x + y − z = 1 · x − y + 2z = 3 · 3x + z = 4.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">La 3ª ecuación es la suma de las dos primeras ⇒ rg(A) = rg(A|B) = 2 &lt; 3 ⇒ <strong>compatible indeterminado</strong><br>z = t · x = (4 − t)/3 · y = 1 − 2x + z = (5t − 5)/3<br><strong>S = {((4 − t)/3, (5t − 5)/3, t) / t ∈ ℝ}</strong></div><p class="why">Verificación en la 2ª con t genérico: (4 − t)/3 − (5t − 5)/3 + 2t = (9 − 6t + 6t)/3 = 3 ✓. Con t = 1: (1, 0, 1) es una solución particular.</p></div>
+  </div>
+
+  <h3>Discusión con parámetros</h3>
+  <div class="callout c-calc"><span class="tag">Método</span>
+    <p><strong>1.</strong> Si A es cuadrada, calculás det(A) en función del parámetro y buscás dónde se anula.</p>
+    <p><strong>2.</strong> Para los valores que NO lo anulan: compatible determinado.</p>
+    <p><strong>3.</strong> Para cada valor que lo anula: reemplazás y escalonás para decidir si es indeterminado o incompatible.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Discutí según k: x + y + kz = 1 · x + ky + z = 1 · kx + y + z = 1. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">det(A) = −(k − 1)²·(k + 2)<br>• k ≠ 1 y k ≠ −2: <strong>SCD</strong>, x = y = z = 1/(k + 2)<br>• k = 1: las tres ecuaciones son x + y + z = 1 ⇒ <strong>SCI</strong> (2 parámetros)<br>• k = −2: sumando las tres ecuaciones queda 0 = 3 ⇒ <strong>incompatible</strong></div><p class="why">El sistema es simétrico en x, y, z, por eso cuando hay solución única las tres valen lo mismo: (2 + k)·x = 1.</p></div>
+  </div>
+
+  <h3>Problemas con enunciado</h3>
+  <div class="callout c-calc"><span class="tag">Cómo plantear</span>
+    <p><strong>1.</strong> Definí las incógnitas con palabras ("a = precio de un alfajor").</p>
+    <p><strong>2.</strong> Traducí cada dato a una ecuación.</p>
+    <p><strong>3.</strong> Resolvé (Gauss, Cramer o inversa).</p>
+    <p><strong>4.</strong> Verificá en el enunciado y respondé con unidades. Una solución negativa o fraccionaria de "cantidad de entradas" es señal de error.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">Un cine vendió 200 entradas: generales a $5000, de jubilado a $3000 y de estudiante a $4000. Recaudó $840 000 y vendió el doble de generales que de jubilado. ¿Cuántas de cada tipo?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">g + j + e = 200 · 5000g + 3000j + 4000e = 840 000 · g = 2j<br>⇒ e = 200 − 3j y 13 000j + 4000(200 − 3j) = 840 000 ⇒ j = 40<br><strong>Generales: 80 · Jubilados: 40 · Estudiantes: 80</strong></div><p class="why">Verificación: 80 + 40 + 80 = 200 ✓ y 400 000 + 120 000 + 320 000 = 840 000 ✓.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">Una dietista combina los alimentos A, B y C. Por porción: A aporta 10 g de proteínas, 2 g de grasas y 30 g de carbohidratos; B aporta 20, 1 y 10; C aporta 5, 4 y 20. Necesita 85 g de proteínas, 11 g de grasas y 110 g de carbohidratos. ¿Cuántas porciones de cada uno?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">10x + 20y + 5z = 85 · 2x + y + 4z = 11 · 30x + 10y + 20z = 110 · det = 1350 ≠ 0<br><strong>x = 2, y = 3, z = 1</strong></div><p class="why">Verificación: 20 + 60 + 5 = 85 ✓ · 4 + 3 + 4 = 11 ✓ · 60 + 30 + 20 = 110 ✓.</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Un sistema son <strong>varias pistas que se tienen que cumplir a la vez</strong>. Si las pistas se contradicen, no hay solución. Si alguna repite lo que ya decían las otras, te sobra libertad (infinitas soluciones). Y si cada pista aporta algo nuevo y alcanzan, hay una sola respuesta.</p></div>
+  <p>Para practicar todo esto: <a href="simulador-examenes.html">simulador</a>, temas 08 y 09 y el parcial modelo de la Unidad 3. Las <strong>transformaciones lineales</strong> están en la <a href="guia-vectores.html#tl">guía de Vectores</a>.</p>
+</section>
+
+<!-- ============ 21 GLOSARIO ============ -->
 <section class="section" id="glosario">
-  <div class="section-head"><span class="section-num">18</span><h2>Glosario · todos los términos</h2></div>
+  <div class="section-head"><span class="section-num">21</span><h2>Glosario · todos los términos</h2></div>
   <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
   <div class="glossary" id="glossary-list"></div>
 </section>
@@ -1379,7 +1579,7 @@
 
 <footer>
   <p><b>Elementos de Análisis Matemático — Unidad 1.</b> Guía de estudio interactiva.</p>
-  <p style="font-size:13px;margin-top:6px;">Esta unidad es la base. Cuando avances a <em>funciones</em>, <em>límite</em>, <em>continuidad</em> y <em>derivadas</em> (donde aparecen cosas como la <b>pendiente</b> y cómo calcularla), sumamos esas unidades con el mismo formato.</p>
+  <p style="font-size:13px;margin-top:6px;">Sigue en la <a href="guia-vectores.html">guía de Vectores y transformaciones lineales</a> (Unidad 2) y en la de <a href="guia-relaciones-funciones.html">Relaciones, funciones y conjuntos</a> (Unidad 4). Para practicar: <a href="simulador-examenes.html">simulador de exámenes</a>.</p>
 </footer>
 
 <!-- ============ PANEL DE DEFINICIONES ============ -->
@@ -1396,6 +1596,18 @@
   <div class="panel-body" id="p-body"></div>
 </aside>
 
+<script src="graficos.js"></script>
+<script>
+/* ===================== FIGURAS ===================== */
+const FIGS={
+  scd: G.plot({w:260,h:230,x:[-1,5],y:[-1,5],fns:[{f:function(x){return 2*x-1;},c:G.C.red},{f:function(x){return -x+5;},c:G.C.navy}],pts:[{x:2,y:3,label:'(2, 3)'}]}),
+  si: G.plot({w:260,h:230,x:[-1,5],y:[-1,5],fns:[{f:function(x){return -0.5*x+2;},c:G.C.red},{f:function(x){return -0.5*x+4;},c:G.C.navy}]}),
+  sci: G.plot({w:260,h:230,x:[-1,5],y:[-1,5],fns:[{f:function(x){return -x+4;},c:G.C.navy,wd:5},{f:function(x){return -x+4;},c:G.C.red,dash:true}]}),
+  tri: G.plot({x:[-1,5],y:[-1,5],fns:[{f:function(x){return x;},label:'r₁',lx:4.2,c:G.C.red},{f:function(x){return -x+4;},label:'r₂',lx:-.6,c:G.C.navy},{f:function(){return 3;},label:'r₃',lx:4.2,ldy:16,c:G.C.teal}],pts:[{x:2,y:2},{x:3,y:3},{x:1,y:3}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){const k=el.dataset.fig;if(!FIGS[k])return;const cap=el.dataset.cap;el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');});
+document.querySelectorAll('[data-figin]').forEach(function(el){if(FIGS[el.dataset.figin])el.innerHTML=FIGS[el.dataset.figin];});
+</script>
 <script>
 /* ===================== DICCIONARIO DE DEFINICIONES ===================== */
 const D = {
@@ -1465,6 +1677,11 @@ const D = {
   ecuacionmatricial:{t:"Ecuación con matrices",sym:"A · X = B",def:"Forma compacta de escribir un sistema de ecuaciones: A son los coeficientes, X las incógnitas y B los términos independientes.",calc:"Si A tiene inversa, se despeja multiplicando por la izquierda: X = A⁻¹ · B. (El orden importa porque el producto no es conmutativo.)",ej:"[7 −5 ; 2 −3]·[x;y] = [12;6] → x = 6/11, y = −18/11.",rel:["matrizinversa","cramer","gaussjordan"]},
   homogeneo:{t:"Sistema homogéneo",sym:"A · X = 0",def:"Sistema en el que todos los términos independientes son 0. Siempre tiene la solución trivial (todas las incógnitas iguales a 0).",calc:"Tiene soluciones distintas de la trivial solo si el determinante de los coeficientes es 0. Si el determinante ≠ 0, la única solución es la trivial.",ej:"2x + y = 0 ; x − 3y = 0 → D = −7 ≠ 0 → solo x = 0, y = 0.",rel:["cramer","determinante","ecuacionmatricial"]},
   matrizaumentada:{t:"Matriz aumentada",sym:"[ A | b ]",def:"Matriz que junta los coeficientes de un sistema (A) con la columna de constantes (b), separados por una raya. Sirve para resolver el sistema por reducción de filas.",calc:"Reducís la parte izquierda a la identidad con operaciones de fila; lo que queda a la derecha es la solución. Si queda una variable libre → infinitas soluciones; si aparece 0 = número → sin solución.",ej:"x + y = 5 ; x − y = 1 → [1 1 | 5 ; 1 −1 | 1] → x = 3, y = 2.",rel:["operacioneselementales","formaescalonada","gaussjordan","homogeneo"]},
+  laplace:{t:"Regla de Laplace",def:"Permite calcular el determinante de una matriz de cualquier orden n desarrollando por cualquier fila o columna: suma de cada elemento por su cofactor.",calc:"det(A) = aᵢ₁Cᵢ₁ + aᵢ₂Cᵢ₂ + … + aᵢₙCᵢₙ. Conviene elegir la fila o columna con más ceros (o fabricarlos con operaciones de fila).",ej:"Un 4×4 se reduce a determinantes 3×3.",rel:["cofactor","menor","determinante"]},
+  rango:{t:"Rango de una matriz",sym:"rg(A)",def:"Cantidad máxima de filas (o columnas) linealmente independientes. Es la cantidad de filas no nulas que quedan al escalonar.",ej:"rg[1 2 3 ; 2 4 6 ; 1 0 1] = 2.",rel:["formaescalonada","rouche"]},
+  rouche:{t:"Teorema de Rouché-Frobenius",def:"Clasifica un sistema comparando rangos: rg(A) ≠ rg(A|B) ⇒ incompatible; rg(A) = rg(A|B) = n ⇒ compatible determinado; rg(A) = rg(A|B) < n ⇒ compatible indeterminado.",ej:"Fila [0 0 | 5] al escalonar ⇒ rg(A) < rg(A|B) ⇒ incompatible.",rel:["rango","conjuntosolucion"]},
+  sistemasequivalentes:{t:"Sistemas equivalentes",def:"Sistemas que tienen el mismo conjunto solución. Las operaciones elementales de fila producen sistemas equivalentes.",ej:"x + y = 2 y 2x + 2y = 4 son equivalentes.",rel:["operacioneselementales","conjuntosolucion"]},
+  conjuntosolucion:{t:"Conjunto solución",sym:"S",def:"Conjunto de todas las soluciones de un sistema. Puede ser unitario, infinito (escrito con parámetros) o vacío.",ej:"S = {(−1 + t, 3 − 2t, t) / t ∈ ℝ}.",rel:["rouche","homogeneo"]},
   potenciamatriz:{t:"Potencia de una matriz",sym:"Aⁿ",def:"Multiplicar una matriz por sí misma n veces: A² = A·A. Solo existe si la matriz es cuadrada.",calc:"A² = A · A (con la regla fila por columna). Si A no es cuadrada, no se puede.",ej:"[1 2 ; 0 1]² = [1 4 ; 0 1].",rel:["productomatrices","matrizcuadrada"]}
 };
 

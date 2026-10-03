@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementos de Análisis · Unidad 4 — Relaciones, funciones y conjuntos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Análisis · <b>Relaciones y funciones</b></span>
+    <nav class="topnav">
+      <a href="#relaciones">Relaciones</a>
+      <a href="#propiedades">Propiedades</a>
+      <a href="#equivalencia">Equivalencia</a>
+      <a href="#orden">Orden</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#tipos">Iny./Sobre./Biy.</a>
+      <a href="#composicion">Composición</a>
+      <a href="#graficas">Gráficas</a>
+      <a href="#venn3">Venn y conteo</a>
+      <a href="#potencia">P(A)</a>
+      <a href="#cardinalidad">Numerabilidad</a>
+      <a href="#modular">Modular</a>
+      <a href="#congruencias">Congruencias</a>
+      <a href="#numeracion">Numeración</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Elementos de Análisis Matemático · Unidad 4</div>
+  <h1>Relaciones, <span class="u">funciones</span> y conjuntos</h1>
+  <p class="lead">Los distintos tipos de relaciones y funciones, cómo se representan (sagital, grafo, matriz, gráfico cartesiano), los diagramas de Venn con tres conjuntos y problemas de conteo, el conjunto potencia, la numerabilidad, la aritmética modular y las congruencias. Es la continuación de la <a href="guia-teoria-de-conjuntos.html">guía de Teoría de Conjuntos</a>.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Tocá las palabras <span class="term term-demo" data-def="relacion" tabindex="0">como esta</span> para ver la definición. Los gráficos son exactos: en el parcial te van a pedir <strong>decidir verdadero o falso solo mirando un gráfico</strong>, así que acostumbrate a leerlos. Para practicar: <a href="simulador-examenes.html">simulador</a>, temas 10 a 20 y el parcial modelo de la Unidad 4.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 01 RELACIONES ============ -->
+<section class="section" id="relaciones">
+  <div class="section-head"><span class="section-num">01</span><h2>Relaciones y sus representaciones</h2></div>
+  <p>Una <span class="term" data-def="relacion" tabindex="0">relación</span> R de A en B es <strong>cualquier subconjunto del producto cartesiano A × B</strong>. Si (a, b) ∈ R se escribe <span class="mono">a R b</span> y se lee "a está relacionado con b". Si A = B, se dice que R es una relación <em>en</em> A.</p>
+  <ul class="clean">
+    <li><span class="term" data-def="dominio" tabindex="0">Dominio</span>: los elementos de A que tienen al menos una flecha (las primeras componentes).</li>
+    <li><span class="term" data-def="imagenrel" tabindex="0">Imagen</span> (o rango): los elementos de B que reciben al menos una flecha (las segundas componentes).</li>
+    <li><span class="term" data-def="inversa" tabindex="0">Relación inversa</span>: <span class="mono">R⁻¹ = {(b, a) / (a, b) ∈ R}</span>. Se dan vuelta los pares (o las flechas).</li>
+  </ul>
+  <p>La misma relación se puede mostrar de cuatro maneras. Ejemplo: A = {1, 2, 3}, B = {a, b, c} y R = {(1, a), (1, c), (2, c)}.</p>
+  <div class="figrow">
+    <div class="fig"><h4>1 · Diagrama sagital</h4><div data-figin="sag1"></div></div>
+    <div class="fig"><h4>2 · Gráfico cartesiano</h4><div data-figin="cart1"></div></div>
+  </div>
+  <div class="mrow"><span style="font-family:var(--body);font-size:15px;margin-right:8px"><b>3 · Por extensión:</b> R = {(1, a), (1, c), (2, c)}</span></div>
+  <div class="mrow"><span style="font-family:var(--body);font-size:15px;margin-right:8px"><b>4 · Matriz de la relación</b> (filas: 1, 2, 3 · columnas: a, b, c):</span>
+    <span class="mtx" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>0</span><span>1</span><span>0</span><span>0</span><span>1</span><span>0</span><span>0</span><span>0</span></span></div>
+  <p>Dom R = {1, 2} (el 3 no tiene flechas) · Im R = {a, c} (b no recibe ninguna) · R⁻¹ = {(a, 1), (c, 1), (c, 2)}.</p>
+  <div class="callout c-tip"><span class="tag">Dato útil</span><p>Si #A = m y #B = n, entonces A × B tiene m·n pares y hay <strong>2<sup>m·n</sup> relaciones posibles</strong> de A en B (una por cada subconjunto de A × B).</p></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Una relación es una <strong>lista de quién está conectado con quién</strong>. "Juan sigue a Ana en Instagram" es una relación: no todos se siguen con todos, y que Juan siga a Ana no obliga a que Ana siga a Juan.</p></div>
+</section>
+
+<!-- ============ 02 PROPIEDADES ============ -->
+<section class="section" id="propiedades">
+  <div class="section-head"><span class="section-num">02</span><h2>Propiedades de una relación en un conjunto A</h2></div>
+  <p>Cuando la relación es de A en A, conviene dibujarla como un <span class="term" data-def="grafo" tabindex="0">grafo</span> (dígrafo): un punto por elemento y una flecha por par. Un par (a, a) se dibuja como un <strong>bucle</strong> (un circulito pegado al nodo).</p>
+  <table class="data">
+    <tr><th style="width:20%">Propiedad</th><th>Definición</th><th>Cómo se ve en el grafo</th><th>En la matriz</th></tr>
+    <tr><td><span class="term" data-def="reflexiva" tabindex="0">Reflexiva</span></td><td class="mono">∀a: a R a</td><td>Todos los nodos tienen bucle</td><td>Diagonal de unos</td></tr>
+    <tr><td><span class="term" data-def="simetrica" tabindex="0">Simétrica</span></td><td class="mono">a R b ⇒ b R a</td><td>Toda flecha tiene su vuelta</td><td>M = Mᵀ</td></tr>
+    <tr><td><span class="term" data-def="antisimetrica" tabindex="0">Antisimétrica</span></td><td class="mono">a R b ∧ b R a ⇒ a = b</td><td>Ninguna flecha tiene vuelta (los bucles no molestan)</td><td>Si mᵢⱼ = 1 con i ≠ j, entonces mⱼᵢ = 0</td></tr>
+    <tr><td><span class="term" data-def="transitiva" tabindex="0">Transitiva</span></td><td class="mono">a R b ∧ b R c ⇒ a R c</td><td>Todo "camino de dos pasos" tiene su atajo directo</td><td>Los unos de M² ya están en M</td></tr>
+  </table>
+  <div class="figrow">
+    <div class="fig" data-fig="g1" data-cap="Reflexiva, simétrica y transitiva (de equivalencia)."></div>
+    <div class="fig" data-fig="g2" data-cap="Antisimétrica y transitiva, pero no reflexiva (falta el bucle en b y en c)."></div>
+    <div class="fig" data-fig="g3" data-cap="Reflexiva y simétrica, pero NO transitiva: 1→2→3 sin 1→3."></div>
+  </div>
+  <div class="callout c-warn"><span class="tag">Errores típicos</span>
+    <p><strong>Antisimétrica no es lo contrario de simétrica.</strong> Una relación puede ser las dos cosas (por ejemplo, la igualdad) o ninguna.</p>
+    <p><strong>Para refutar alcanza un contraejemplo</strong>; para probar hay que mostrar que vale para todos los casos.</p>
+    <p><strong>Transitividad con bucles:</strong> si 1→2 y 2→1, la transitividad exige 1→1 y 2→2.</p>
+  </div>
+</section>
+
+<!-- ============ 03 EQUIVALENCIA ============ -->
+<section class="section" id="equivalencia">
+  <div class="section-head"><span class="section-num">03</span><h2>Relaciones de equivalencia y clases</h2></div>
+  <p>Una relación es <span class="term" data-def="equivalencia" tabindex="0">de equivalencia</span> si es <strong>reflexiva, simétrica y transitiva</strong>. Agrupa a los elementos que "son iguales en algún aspecto".</p>
+  <p>La <span class="term" data-def="clase" tabindex="0">clase de equivalencia</span> de a es <span class="mono">[a] = {x ∈ A / x R a}</span>. Las clases forman una <span class="term" data-def="particion" tabindex="0">partición</span> de A: no se pisan entre sí y entre todas cubren A. El conjunto de las clases se llama <strong>conjunto cociente</strong>, A/R.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">En A = {1, 2, 3, 4} se define x R y ⇔ x + y es par. Escribí R, estudiá sus propiedades y dá las clases.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">R = {(1,1), (1,3), (3,1), (3,3), (2,2), (2,4), (4,2), (4,4)}<br>Es de equivalencia · Clases: <strong>[1] = {1, 3}</strong> y <strong>[2] = {2, 4}</strong></div><p class="why">x + y es par ⇔ x e y tienen la misma paridad. Reflexiva: x + x = 2x es par. Simétrica: x + y = y + x. Transitiva: si x e y tienen la misma paridad, e y y z también, entonces x y z también.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">En ℤ, a R b ⇔ a² = b². Probá que es de equivalencia y dá [3] y [0]. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Reflexiva: a² = a² ✓ · Simétrica: a² = b² ⇒ b² = a² ✓ · Transitiva: a² = b² y b² = c² ⇒ a² = c² ✓<br><strong>[3] = {3, −3}</strong> · <strong>[0] = {0}</strong></div><p class="why">Cuando la relación se define con una igualdad "f(a) = f(b)", siempre es de equivalencia: hereda las propiedades de la igualdad.</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Una relación de equivalencia <strong>reparte a todos en grupos</strong>, como los alumnos por comisión. Cada uno está en un grupo y solo en uno; dentro del grupo todos "son equivalentes".</p></div>
+</section>
+
+<!-- ============ 04 ORDEN ============ -->
+<section class="section" id="orden">
+  <div class="section-head"><span class="section-num">04</span><h2>Relaciones de orden</h2></div>
+  <p>Una relación es <span class="term" data-def="orden" tabindex="0">de orden</span> si es <strong>reflexiva, antisimétrica y transitiva</strong>. Es de <strong>orden total</strong> si además cualquier par de elementos es comparable (a R b o b R a); si no, es de <strong>orden parcial</strong>.</p>
+  <ul class="clean">
+    <li><span class="mono">≤</span> en ℝ es orden total.</li>
+    <li><span class="mono">⊂</span> entre conjuntos es orden parcial: {1} y {2} no son comparables.</li>
+    <li>"x divide a y" en ℕ − {0} es orden parcial: ni 2 | 3 ni 3 | 2. En ℤ − {0} <strong>ni siquiera es antisimétrica</strong>: 2 | −2 y −2 | 2, pero 2 ≠ −2.</li>
+  </ul>
+  <div class="fig" data-fig="divide" data-cap="&quot;x divide a y&quot; en {1, 2, 3, 6}: reflexiva, antisimétrica y transitiva. Es un orden parcial porque 2 y 3 no están conectados."></div>
+</section>
+
+<!-- ============ 05 FUNCIONES ============ -->
+<section class="section" id="funciones">
+  <div class="section-head"><span class="section-num">05</span><h2>Funciones</h2></div>
+  <p>Una <span class="term" data-def="funcion" tabindex="0">función</span> f: A → B es una relación en la que <strong>cada elemento de A tiene exactamente una imagen en B</strong>. Son dos condiciones:</p>
+  <ul class="clean tick"><li><strong>Existencia:</strong> todo elemento de A tiene flecha (Dom f = A).</li><li><strong>Unicidad:</strong> ningún elemento tiene dos flechas.</li></ul>
+  <div class="figrow">
+    <div class="fig" data-fig="sagF" data-cap="Es función: cada elemento de A tiene una sola flecha."></div>
+    <div class="fig" data-fig="sagNoF1" data-cap="NO es función: el 1 tiene dos imágenes."></div>
+    <div class="fig" data-fig="sagNoF2" data-cap="NO es función de A en B: el 3 no tiene imagen."></div>
+  </div>
+  <p>En el gráfico cartesiano, la condición se ve con la <strong>prueba de la recta vertical</strong>: una curva es gráfica de una función y = f(x) si <strong>ninguna recta vertical la corta más de una vez</strong>.</p>
+  <div class="fig" data-fig="circ" data-cap="La circunferencia x² + y² = 4 NO es gráfica de una función: la recta x = 1 la corta dos veces."></div>
+  <p>El <strong>codominio</strong> es B (donde "pueden" caer las imágenes). La <span class="term" data-def="imagenfun" tabindex="0">imagen</span> Im f es lo que <strong>realmente</strong> se alcanza; puede ser más chica que B.</p>
+</section>
+
+<!-- ============ 06 TIPOS ============ -->
+<section class="section" id="tipos">
+  <div class="section-head"><span class="section-num">06</span><h2>Inyectiva, sobreyectiva y biyectiva</h2></div>
+  <table class="data">
+    <tr><th>Tipo</th><th>Definición</th><th>En el gráfico</th></tr>
+    <tr><td><span class="term" data-def="inyectiva" tabindex="0">Inyectiva</span></td><td class="mono">x₁ ≠ x₂ ⇒ f(x₁) ≠ f(x₂)</td><td>Ninguna recta horizontal corta la gráfica más de una vez</td></tr>
+    <tr><td><span class="term" data-def="sobreyectiva" tabindex="0">Sobreyectiva</span></td><td class="mono">Im f = B</td><td>Toda recta horizontal (de altura en B) corta al menos una vez</td></tr>
+    <tr><td><span class="term" data-def="biyectiva" tabindex="0">Biyectiva</span></td><td>Inyectiva y sobreyectiva</td><td>Toda recta horizontal corta exactamente una vez</td></tr>
+  </table>
+  <div class="figrow">
+    <div class="fig" data-fig="parab" data-cap="f(x) = x² − 4: no es inyectiva (f(−2) = f(2)). Im f = [−4, +∞), así que de ℝ en ℝ no es sobreyectiva."></div>
+    <div class="fig" data-fig="cubica" data-cap="f(x) = x³ − 3x: sobreyectiva de ℝ en ℝ, pero no inyectiva: la recta y = 1 la corta 3 veces."></div>
+  </div>
+  <div class="callout c-calc"><span class="tag">Cómo se prueba analíticamente</span>
+    <p><strong>Inyectiva:</strong> suponés f(x₁) = f(x₂) y llegás a x₁ = x₂. Para refutar: dos valores distintos con la misma imagen.</p>
+    <p><strong>Sobreyectiva:</strong> tomás un y cualquiera de B y despejás un x tal que f(x) = y (y verificás que x está en el dominio).</p>
+  </div>
+  <div class="callout c-tip"><span class="tag">Con conjuntos finitos</span><p>Si f: A → B es inyectiva, #A ≤ #B. Si es sobreyectiva, #A ≥ #B. Si es biyectiva, #A = #B.</p></div>
+</section>
+
+<!-- ============ 07 COMPOSICIÓN E INVERSA ============ -->
+<section class="section" id="composicion">
+  <div class="section-head"><span class="section-num">07</span><h2>Composición e inversa</h2></div>
+  <p>La <span class="term" data-def="composicion" tabindex="0">composición</span> <span class="mono">(g∘f)(x) = g(f(x))</span>: <strong>primero se aplica f y después g</strong>. En general g∘f ≠ f∘g.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo</span>
+    <p class="mono">f(x) = 2x − 3, g(x) = x² + 1</p>
+    <p class="mono">f∘g = f(x² + 1) = 2x² − 1 &nbsp;·&nbsp; g∘f = (2x − 3)² + 1 = 4x² − 12x + 10</p>
+  </div>
+  <p>Solo las funciones <strong>biyectivas</strong> tienen <span class="term" data-def="funcioninversa" tabindex="0">inversa</span> f⁻¹, que cumple f⁻¹(f(x)) = x y f(f⁻¹(y)) = y. Para hallarla: escribís y = f(x), <strong>despejás x</strong> y renombrás.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">f: ℝ − {2} → ℝ − {1}, f(x) = (x + 1)/(x − 2). Hallá f⁻¹. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">y(x − 2) = x + 1 ⇒ yx − x = 2y + 1 ⇒ x(y − 1) = 2y + 1 ⇒ x = (2y + 1)/(y − 1)<br><strong>f⁻¹(x) = (2x + 1)/(x − 1)</strong></div><p class="why">El despeje funciona para todo y ≠ 1 y da una única x: eso prueba que f es biyectiva entre esos conjuntos.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">f(x) = √(x − 1), g(x) = x² + 1. Hallá f∘g y g∘f con sus dominios. <span class="dtag libro">Trampa de parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f∘g(x) = √(x²) = |x|, Dom = ℝ · g∘f(x) = (√(x − 1))² + 1 = x, pero <strong>Dom = [1, +∞)</strong></div><p class="why">El dominio de g∘f son los x para los que existe f(x). Aunque la fórmula final quede "x", no vale para x &lt; 1.</p></div>
+  </div>
+  <div class="callout c-tip"><span class="tag">Gráficamente</span><p>La gráfica de f⁻¹ es la de f <strong>reflejada respecto de la recta y = x</strong>.</p></div>
+</section>
+
+<!-- ============ 08 GRÁFICAS E INTERSECCIONES ============ -->
+<section class="section" id="graficas">
+  <div class="section-head"><span class="section-num">08</span><h2>Representaciones gráficas y puntos de intersección</h2></div>
+  <p>Los <span class="term" data-def="interseccionfun" tabindex="0">puntos de intersección</span> de las gráficas de f y g se encuentran resolviendo <span class="mono">f(x) = g(x)</span>; después se reemplaza cada x en cualquiera de las dos para obtener la ordenada.</p>
+  <div class="fig" data-fig="parRecta" data-cap="f(x) = x² − 2x y g(x) = x + 4 se cortan en A(−1, 3) y B(4, 8). Entre −1 y 4 la recta queda por encima: g(x) &gt; f(x)."></div>
+  <div class="callout c-calc"><span class="tag">Paso a paso</span>
+    <p class="mono">x² − 2x = x + 4 ⇒ x² − 3x − 4 = 0 ⇒ (x − 4)(x + 1) = 0 ⇒ x = 4 ó x = −1</p>
+    <p class="mono">g(4) = 8 · g(−1) = 3 ⇒ A(−1, 3) y B(4, 8)</p>
+  </div>
+  <h3>Cómo leer un gráfico en el parcial</h3>
+  <ul class="clean">
+    <li><strong>f(a)</strong>: subís desde x = a hasta la curva y leés la altura.</li>
+    <li><strong>Ceros</strong>: donde la curva corta el eje x.</li>
+    <li><strong>Imagen</strong>: proyectás toda la curva sobre el eje y.</li>
+    <li><strong>"f(x) = k tiene n soluciones"</strong>: trazás la horizontal y = k y contás los cortes.</li>
+    <li><strong>"f(x) &gt; g(x)"</strong>: buscás dónde la curva de f está arriba de la de g.</li>
+    <li><strong>Punto lleno / punto vacío</strong>: el lleno pertenece a la gráfica; el vacío, no.</li>
+  </ul>
+  <div class="fig" data-fig="aTrozos" data-cap="f(x) = x² si x ≤ 1 · f(x) = x + 2 si x &gt; 1. f(1) = 1 (punto lleno), no 3 (punto vacío)."></div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna"><b>Problema.</b> Costo C(x) = 500 + 20x, ingreso I(x) = 45x. Hallá el punto de equilibrio e interpretalo.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">45x = 500 + 20x ⇒ x = 20 · I(20) = 900 ⇒ <strong>E = (20, 900)</strong></div><p class="why">Con menos de 20 unidades hay pérdida (el costo supera al ingreso); con más, ganancia. 500 es el costo fijo y 20, el costo por unidad.</p><div class="fig" data-fig="equilibrio" style="margin-top:10px"></div></div>
+  </div>
+</section>
+
+<!-- ============ 09 VENN 3 Y CONTEO ============ -->
+<section class="section" id="venn3">
+  <div class="section-head"><span class="section-num">09</span><h2>Diagramas de Venn con tres conjuntos y problemas de conteo</h2></div>
+  <p>Con tres conjuntos el diagrama tiene <strong>8 zonas</strong>. Para identificar una zona sombreada, preguntate en cada zona "¿está en A? ¿en B? ¿en C?".</p>
+  <div class="figrow">
+    <div class="fig" data-fig="v1" data-cap="(A ∪ B) − C"></div>
+    <div class="fig" data-fig="v2" data-cap="A ∩ B ∩ C"></div>
+    <div class="fig" data-fig="v3" data-cap="(A ∩ B) ∪ (C − A)"></div>
+  </div>
+  <h3>Leyes que conviene saber</h3>
+  <table class="data">
+    <tr><th>Ley</th><th>Enunciado</th></tr>
+    <tr><td>De Morgan</td><td class="mono">(A ∪ B)′ = A′ ∩ B′ &nbsp;·&nbsp; (A ∩ B)′ = A′ ∪ B′</td></tr>
+    <tr><td>Distributivas</td><td class="mono">A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C) &nbsp;·&nbsp; A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C)</td></tr>
+    <tr><td>Diferencia</td><td class="mono">A − B = A ∩ B′</td></tr>
+    <tr><td>Absorción</td><td class="mono">A ∪ (A ∩ B) = A &nbsp;·&nbsp; A ∩ (A ∪ B) = A</td></tr>
+  </table>
+  <h3>Principio de inclusión-exclusión</h3>
+  <div class="fbox">#(A ∪ B) = #A + #B − #(A ∩ B)</div><br>
+  <div class="fbox">#(A ∪ B ∪ C) = #A + #B + #C − #(A∩B) − #(A∩C) − #(B∩C) + #(A∩B∩C)</div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">De 100 personas: 50 usan N, 40 usan Y, 30 usan S; 15 usan N e Y, 10 N y S, 8 Y y S, y 5 las tres. ¿Cuántas no usan ninguna? ¿Cuántas solo N? ¿Cuántas exactamente dos?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">#(N∪Y∪S) = 50 + 40 + 30 − 15 − 10 − 8 + 5 = 92 ⇒ <strong>ninguna: 8</strong><br>Solo N = 50 − 15 − 10 + 5 = <strong>30</strong> · Exactamente dos = 10 + 5 + 3 = <strong>18</strong></div><p class="why">Truco: llená el Venn <strong>de adentro hacia afuera</strong>. Primero el centro (5), después las zonas de dos (15 − 5 = 10, 10 − 5 = 5, 8 − 5 = 3) y por último las de uno.</p><div class="fig" data-fig="vConteo" style="margin-top:10px"></div></div>
+  </div>
+</section>
+
+<!-- ============ 10 CONJUNTO POTENCIA ============ -->
+<section class="section" id="potencia">
+  <div class="section-head"><span class="section-num">10</span><h2>Conjunto potencia (conjunto de partes)</h2></div>
+  <p>El <span class="term" data-def="partes" tabindex="0">conjunto potencia</span> P(A) es el conjunto de <strong>todos los subconjuntos de A</strong>, incluidos ∅ y el propio A.</p>
+  <div class="fbox">A = {a, b, c} ⇒ P(A) = {∅, {a}, {b}, {c}, {a,b}, {a,c}, {b,c}, {a,b,c}}</div>
+  <div class="fbox">#A = n &nbsp;⇒&nbsp; #P(A) = 2ⁿ</div>
+  <p>¿Por qué 2ⁿ? Para armar un subconjunto, cada uno de los n elementos tiene 2 opciones: <strong>entra o no entra</strong>. Son 2·2·…·2 = 2ⁿ maneras.</p>
+  <div class="callout c-warn"><span class="tag">∈ vs ⊂ con P(A)</span>
+    <p>Con A = {1, 2}: <span class="mono">{1} ∈ P(A)</span> (es un subconjunto de A) ✓ · <span class="mono">1 ∈ P(A)</span> ✗ (1 es un número, no un subconjunto) · <span class="mono">∅ ∈ P(A)</span> ✓ y también <span class="mono">∅ ⊂ P(A)</span> ✓ · <span class="mono">{∅} ⊂ P(A)</span> ✓.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Hallá P(A) para A = {1, {2}, 3}.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">P(A) = {∅, {1}, {{2}}, {3}, {1, {2}}, {1, 3}, {{2}, 3}, {1, {2}, 3}} &nbsp; (8 = 2³ elementos)</div><p class="why">{2} es UN elemento de A. El subconjunto que tiene solo ese elemento se escribe {{2}}.</p></div>
+  </div>
+</section>
+
+<!-- ============ 11 CARDINALIDAD ============ -->
+<section class="section" id="cardinalidad">
+  <div class="section-head"><span class="section-num">11</span><h2>Cardinalidad y numerabilidad</h2></div>
+  <p>Dos conjuntos tienen el <strong>mismo cardinal</strong> si existe una <strong>biyección</strong> entre ellos. Con conjuntos finitos es "tener la misma cantidad de elementos"; con infinitos aparecen sorpresas.</p>
+  <ul class="clean">
+    <li>Un conjunto es <span class="term" data-def="numerable" tabindex="0">numerable</span> si es finito o si está en biyección con ℕ: sus elementos se pueden <strong>poner en una lista</strong> (primero, segundo, tercero…). El cardinal de ℕ se escribe ℵ₀.</li>
+    <li><strong>Los pares son numerables:</strong> f(n) = 2n es una biyección ℕ → pares. ¡Un subconjunto propio con el mismo cardinal!</li>
+    <li><strong>ℤ es numerable:</strong> se lista 0, −1, 1, −2, 2, … Con fórmula: f(n) = n/2 si n es par, f(n) = −(n + 1)/2 si n es impar.</li>
+    <li><strong>ℚ es numerable:</strong> las fracciones se recorren por diagonales en una tabla (método de Cantor). Lo mismo con ℕ × ℕ.</li>
+    <li><strong>ℝ NO es numerable</strong> (argumento diagonal de Cantor). Tampoco el intervalo (0, 1) ni los irracionales.</li>
+    <li><strong>Teorema de Cantor:</strong> para cualquier conjunto A, <span class="mono">#P(A) &gt; #A</span>. Por eso no hay un "infinito más grande".</li>
+  </ul>
+  <div class="callout c-calc"><span class="tag">La diagonal de Cantor, en 4 líneas</span>
+    <p>Supongamos que los números de (0, 1) se pudieran listar: x₁ = 0,<b>5</b>21…, x₂ = 0,3<b>8</b>4…, x₃ = 0,77<b>1</b>…</p>
+    <p>Armamos y cambiando el n-ésimo decimal de xₙ (por ejemplo, si es 5 ponemos 4; si no, ponemos 5): y = 0,455…</p>
+    <p>y difiere de cada xₙ en el n-ésimo decimal, así que <strong>no está en la lista</strong>. Contradicción: la lista nunca puede estar completa.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Numerable = <strong>"se puede hacer una fila"</strong> donde todos tienen su número de turno, aunque la fila sea infinita. Con los reales eso es imposible: siempre queda alguien afuera.</p></div>
+  <table class="data">
+    <tr><th>Conjunto</th><th>¿Numerable?</th><th>Cardinal</th></tr>
+    <tr><td>ℕ, ℤ, ℚ, pares, ℕ × ℕ</td><td>Sí</td><td class="mono">ℵ₀</td></tr>
+    <tr><td>ℝ, (0, 1), 𝕀, P(ℕ)</td><td>No</td><td class="mono">𝔠 (el continuo) &gt; ℵ₀</td></tr>
+  </table>
+</section>
+
+<!-- ============ 12 ARITMÉTICA MODULAR ============ -->
+<section class="section" id="modular">
+  <div class="section-head"><span class="section-num">12</span><h2>Aritmética modular</h2></div>
+  <p>Al dividir un entero a por n &gt; 0 hay un único cociente q y un único <strong>resto</strong> r con <span class="mono">a = n·q + r</span> y <span class="mono">0 ≤ r &lt; n</span>. Ese resto es <span class="term" data-def="mod" tabindex="0">a mod n</span>.</p>
+  <div class="mrow"><span class="mono">17 mod 5 = 2 (17 = 5·3 + 2) &nbsp;·&nbsp; −7 mod 3 = 2 (−7 = 3·(−3) + 2)</span></div>
+  <div class="callout c-warn"><span class="tag">Ojo con los negativos</span><p>El resto nunca es negativo: −7 mod 3 es 2, no −1. Tenés que "pasarte para abajo" con el cociente (−3) para que el resto quede entre 0 y n − 1.</p></div>
+  <div class="figrow">
+    <div class="fig" data-fig="reloj1" data-cap="Aritmética del reloj: 10 + 5 = 15 ≡ 3 (mod 12)."></div>
+    <div class="fig" data-fig="reloj2" data-cap="Mod 7 (días de la semana): avanzar 100 días es avanzar 100 mod 7 = 2."></div>
+  </div>
+  <h3>Las operaciones se pueden hacer "reduciendo antes"</h3>
+  <div class="fbox">(a + b) mod n = ((a mod n) + (b mod n)) mod n &nbsp;·&nbsp; lo mismo con − y ×</div>
+  <div class="callout c-calc"><span class="tag">Potencias grandes</span>
+    <p>Buscás una potencia que dé 1 y la usás para "achicar" el exponente:</p>
+    <p class="mono">2³ = 8 ≡ 1 (mod 7) ⇒ 2¹⁰ = (2³)³·2 ≡ 1·2 = 2 (mod 7)</p>
+    <p class="mono">Última cifra de 7²⁰²⁶: 7¹, 7², 7³, 7⁴ terminan en 7, 9, 3, 1 (ciclo de 4). 2026 ≡ 2 (mod 4) ⇒ termina en 9.</p>
+  </div>
+</section>
+
+<!-- ============ 13 CONGRUENCIAS ============ -->
+<section class="section" id="congruencias">
+  <div class="section-head"><span class="section-num">13</span><h2>Relación de congruencia</h2></div>
+  <div class="fbox">a ≡ b (mod n) &nbsp;⇔&nbsp; n divide a (a − b) &nbsp;⇔&nbsp; a y b dejan el mismo resto al dividir por n</div>
+  <ul class="clean">
+    <li>La <span class="term" data-def="congruencia" tabindex="0">congruencia</span> módulo n es una <strong>relación de equivalencia</strong> en ℤ.</li>
+    <li>Sus clases son las <strong>clases de restos</strong> [0], [1], …, [n − 1]: hay exactamente n clases. ℤₙ es el conjunto de esas clases.</li>
+    <li>Respeta las operaciones: si a ≡ b y c ≡ d (mod n), entonces a + c ≡ b + d y a·c ≡ b·d.</li>
+  </ul>
+  <h3>Inverso modular y ecuaciones a·x ≡ b (mod n)</h3>
+  <p>El <span class="term" data-def="inversomod" tabindex="0">inverso</span> de a módulo n es un número a′ con <span class="mono">a·a′ ≡ 1 (mod n)</span>. <strong>Existe si y solo si mcd(a, n) = 1.</strong> Si n es primo, todo a no nulo tiene inverso.</p>
+  <div class="callout c-calc"><span class="tag">Cómo resolver a·x ≡ b (mod n)</span>
+    <p><strong>1.</strong> Calculás d = mcd(a, n). Si d no divide a b, <strong>no hay solución</strong>.</p>
+    <p><strong>2.</strong> Si d = 1: multiplicás por el inverso de a. x ≡ a′·b (mod n).</p>
+    <p><strong>3.</strong> Si d &gt; 1 y d | b: dividís a, b y n por d y resolvés la ecuación nueva. Hay d soluciones módulo n.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Resolvé 3x ≡ 4 (mod 7).</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Inverso de 3 mod 7: 3·5 = 15 ≡ 1 ⇒ 3′ = 5. x ≡ 5·4 = 20 ≡ <strong>6 (mod 7)</strong></div><p class="why">Verificación: 3·6 = 18 = 7·2 + 4 ✓.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Resolvé 4x ≡ 6 (mod 10). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">mcd(4, 10) = 2 y 2 | 6 ⇒ hay solución. Dividiendo por 2: 2x ≡ 3 (mod 5). Inverso de 2 mod 5 = 3 ⇒ x ≡ 9 ≡ 4 (mod 5)<br><strong>x ≡ 4 o x ≡ 9 (mod 10)</strong></div><p class="why">Verificación: 4·4 = 16 ≡ 6 ✓ y 4·9 = 36 ≡ 6 ✓ (mod 10).</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">¿Tiene solución 5x ≡ 3 (mod 15)?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans"><strong>No.</strong> mcd(5, 15) = 5 no divide a 3.</div><p class="why">Intuición: 5x mod 15 solo puede dar 0, 5 o 10.</p></div>
+  </div>
+  <div class="callout c-tip"><span class="tag">Aplicaciones</span><p>Dígitos verificadores (CUIT, ISBN, tarjetas), criptografía (RSA), hashing, calendarios. Ejemplo: un número es congruente con la suma de sus cifras módulo 9, porque 10 ≡ 1 (mod 9). Así, 123 456 mod 9 = 21 mod 9 = 3.</p></div>
+</section>
+
+<!-- ============ 14 SISTEMAS DE NUMERACIÓN ============ -->
+<section class="section" id="numeracion">
+  <div class="section-head"><span class="section-num">14</span><h2>Sistemas de numeración (repaso)</h2></div>
+  <p>El tema completo está en la <a href="guia-logica-computacional.html">guía de Lógica Computacional</a>. Lo esencial para este parcial:</p>
+  <ul class="clean">
+    <li>En base b hay b dígitos (0 a b − 1) y cada posición vale una potencia de b: <span class="mono">345₆ = 3·6² + 4·6 + 5 = 137</span>.</li>
+    <li>De decimal a base b: <strong>divisiones sucesivas</strong> por b, leyendo los restos de abajo hacia arriba. Son restos módulo b: <strong>es aritmética modular</strong>.</li>
+    <li>Binario ↔ hexadecimal: grupos de 4 bits. Binario ↔ octal: grupos de 3 bits.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Hallá la base b en la que 23<sub>b</sub> = 17 y ordená 110110₂, 67₈ y 35₁₆.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">2b + 3 = 17 ⇒ <strong>b = 7</strong> · 35₁₆ = 53 &lt; 110110₂ = 54 &lt; 67₈ = 55</div></div>
+  </div>
+  <h3>Autoevaluación rápida</h3>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">1. R = {(1,1), (2,2), (1,2)} en {1, 2} es…</div>
+    <button class="opt" data-k="a">de equivalencia</button>
+    <button class="opt" data-k="b">simétrica</button>
+    <button class="opt" data-k="c">de orden</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">2. Si #A = 5, ¿cuántos elementos tiene P(A)?</div>
+    <button class="opt" data-k="a">32</button>
+    <button class="opt" data-k="b">25</button>
+    <button class="opt" data-k="c">10</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">3. ¿Cuál NO es numerable?</div>
+    <button class="opt" data-k="a">ℚ</button>
+    <button class="opt" data-k="b">el intervalo (0, 1)</button>
+    <button class="opt" data-k="c">ℤ × ℤ</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">4. El inverso de 7 módulo 12 es…</div>
+    <button class="opt" data-k="a">5</button>
+    <button class="opt" data-k="b">7</button>
+    <button class="opt" data-k="c">no tiene</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">15</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Elementos de Análisis Matemático — Unidad 4: Relaciones, funciones y conjuntos.</b> Guía de estudio interactiva.</p>
+  <p style="font-size:13px;margin-top:6px;">Complementa a la <a href="guia-teoria-de-conjuntos.html">guía de Teoría de Conjuntos</a> (conjuntos, Venn, producto cartesiano) y a la de <a href="guia-logica-computacional.html">Sistemas de numeración</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+relacion:{t:"Relación",sym:"R ⊂ A × B",def:"Cualquier subconjunto del producto cartesiano A × B. Si (a, b) ∈ R se escribe a R b.",ej:"De A = {1, 2} en B = {x, y}: R = {(1, x), (2, x)}.",rel:["dominio","imagenrel","inversa","funcion"]},
+  dominio:{t:"Dominio",sym:"Dom R",def:"Conjunto de las primeras componentes de los pares de R (los elementos de A que tienen flecha).",ej:"R = {(1, a), (1, c), (2, c)} ⇒ Dom R = {1, 2}.",rel:["relacion","imagenrel"]},
+  imagenrel:{t:"Imagen de una relación",sym:"Im R",def:"Conjunto de las segundas componentes de los pares de R (los elementos de B que reciben flecha).",ej:"R = {(1, a), (1, c), (2, c)} ⇒ Im R = {a, c}.",rel:["dominio"]},
+  inversa:{t:"Relación inversa",sym:"R⁻¹",def:"Relación de B en A que se obtiene dando vuelta cada par de R.",calc:"R⁻¹ = {(b, a) / (a, b) ∈ R}.",ej:"R = {(1, 2), (3, 4)} ⇒ R⁻¹ = {(2, 1), (4, 3)}.",rel:["relacion","funcioninversa"]},
+  grafo:{t:"Grafo (dígrafo) de una relación",def:"Dibujo de una relación en un conjunto: un nodo por elemento y una flecha por cada par. El par (a, a) se dibuja como un bucle.",rel:["reflexiva","simetrica","transitiva"]},
+  reflexiva:{t:"Relación reflexiva",sym:"∀a: a R a",def:"Todo elemento está relacionado consigo mismo.",calc:"Grafo: bucle en cada nodo. Matriz: diagonal de unos.",ej:"≤ en ℝ; la igualdad; \"tener la misma edad\".",rel:["simetrica","transitiva","equivalencia"]},
+  simetrica:{t:"Relación simétrica",sym:"a R b ⇒ b R a",def:"Si a está relacionado con b, entonces b está relacionado con a.",calc:"Grafo: cada flecha tiene su vuelta. Matriz: M = Mᵀ.",ej:"\"ser hermano de\"; \"x + y es par\".",rel:["antisimetrica","equivalencia"]},
+  antisimetrica:{t:"Relación antisimétrica",sym:"a R b ∧ b R a ⇒ a = b",def:"Dos elementos distintos nunca están relacionados en los dos sentidos.",calc:"Grafo: ninguna flecha entre nodos distintos tiene vuelta.",ej:"≤ en ℝ; ⊂ entre conjuntos; \"divide a\" en ℕ.",rel:["simetrica","orden"]},
+  transitiva:{t:"Relación transitiva",sym:"a R b ∧ b R c ⇒ a R c",def:"Si a se relaciona con b y b con c, entonces a se relaciona con c.",calc:"Grafo: todo camino de dos flechas tiene su flecha directa.",ej:"≤; ⊂; \"ser ancestro de\".",rel:["equivalencia","orden"]},
+  equivalencia:{t:"Relación de equivalencia",def:"Relación reflexiva, simétrica y transitiva. Parte el conjunto en clases.",ej:"La congruencia módulo n; \"tener la misma paridad\".",rel:["clase","particion","congruencia"]},
+  clase:{t:"Clase de equivalencia",sym:"[a]",def:"Conjunto de todos los elementos relacionados con a.",calc:"[a] = {x ∈ A / x R a}.",ej:"Módulo 3: [1] = {…, −2, 1, 4, 7, …}.",rel:["equivalencia","particion"]},
+  particion:{t:"Partición",def:"Familia de subconjuntos no vacíos, disjuntos de a dos, cuya unión es todo el conjunto. Las clases de una equivalencia forman una partición.",ej:"{{1, 3}, {2, 4}} es una partición de {1, 2, 3, 4}.",rel:["clase"]},
+  orden:{t:"Relación de orden",def:"Relación reflexiva, antisimétrica y transitiva. Es total si todo par es comparable; si no, es parcial.",ej:"≤ en ℝ (total); ⊂ y \"divide a\" (parciales).",rel:["antisimetrica"]},
+  funcion:{t:"Función",sym:"f: A → B",def:"Relación de A en B en la que cada elemento de A tiene exactamente una imagen.",calc:"Gráficamente: ninguna recta vertical corta la gráfica más de una vez.",ej:"f(x) = 2x + 1 de ℝ en ℝ.",rel:["inyectiva","sobreyectiva","biyectiva","imagenfun"]},
+  imagenfun:{t:"Imagen de una función",sym:"Im f",def:"Conjunto de valores que la función realmente alcanza. Está incluido en el codominio B.",ej:"f(x) = x² − 4: Im f = [−4, +∞).",rel:["funcion","sobreyectiva"]},
+  inyectiva:{t:"Función inyectiva",def:"Elementos distintos tienen imágenes distintas.",calc:"Probar: f(x₁) = f(x₂) ⇒ x₁ = x₂. Gráfico: ninguna horizontal corta dos veces.",ej:"f(x) = 3x − 6 es inyectiva; f(x) = x² no.",rel:["sobreyectiva","biyectiva"]},
+  sobreyectiva:{t:"Función sobreyectiva",def:"Todo elemento del codominio es imagen de alguno: Im f = B.",calc:"Tomar y ∈ B y despejar x con f(x) = y.",ej:"f(x) = x³ − 3x de ℝ en ℝ.",rel:["inyectiva","biyectiva"]},
+  biyectiva:{t:"Función biyectiva",def:"Inyectiva y sobreyectiva a la vez. Es exactamente la condición para tener inversa.",ej:"f(x) = x³ + 1, con inversa ∛(x − 1).",rel:["funcioninversa","numerable"]},
+  composicion:{t:"Composición de funciones",sym:"g∘f",def:"Aplicar primero f y después g: (g∘f)(x) = g(f(x)). En general g∘f ≠ f∘g.",ej:"f(x) = x + 1, g(x) = x² ⇒ g∘f = (x + 1)².",rel:["funcioninversa"]},
+  funcioninversa:{t:"Función inversa",sym:"f⁻¹",def:"La función que \"deshace\" a f: f⁻¹(f(x)) = x. Solo existe si f es biyectiva.",calc:"Escribir y = f(x), despejar x y renombrar las variables.",ej:"f(x) = 3x − 6 ⇒ f⁻¹(x) = (x + 6)/3.",rel:["biyectiva","composicion"]},
+  interseccionfun:{t:"Puntos de intersección",def:"Puntos comunes a las gráficas de f y g.",calc:"Resolver f(x) = g(x) y reemplazar cada x para obtener y.",ej:"x² − 2x y x + 4 se cortan en (−1, 3) y (4, 8).",rel:["funcion"]},
+  partes:{t:"Conjunto potencia (de partes)",sym:"P(A)",def:"Conjunto formado por todos los subconjuntos de A, incluidos ∅ y A.",calc:"#P(A) = 2ⁿ si #A = n.",ej:"P({1, 2}) = {∅, {1}, {2}, {1, 2}}.",rel:["numerable"]},
+  numerable:{t:"Conjunto numerable",sym:"ℵ₀",def:"Conjunto finito o en biyección con ℕ: sus elementos se pueden poner en una lista.",ej:"ℕ, ℤ, ℚ y los pares son numerables; ℝ no.",rel:["biyectiva","partes"]},
+  mod:{t:"Operación módulo",sym:"a mod n",def:"El resto r de dividir a por n, con 0 ≤ r < n.",calc:"a = n·q + r. Con negativos se elige q para que r quede ≥ 0.",ej:"17 mod 5 = 2; −7 mod 3 = 2.",rel:["congruencia"]},
+  congruencia:{t:"Congruencia módulo n",sym:"a ≡ b (mod n)",def:"a y b dejan el mismo resto al dividir por n; equivalentemente, n divide a a − b. Es una relación de equivalencia con n clases.",ej:"38 ≡ 14 (mod 12); −1 ≡ 3 (mod 4).",rel:["mod","inversomod","equivalencia"]},
+  inversomod:{t:"Inverso modular",def:"a′ es inverso de a módulo n si a·a′ ≡ 1 (mod n). Existe si y solo si mcd(a, n) = 1.",calc:"Probar a·1, a·2, … hasta que dé 1 mod n (o usar el algoritmo de Euclides).",ej:"3·7 = 21 ≡ 1 (mod 10) ⇒ el inverso de 3 mod 10 es 7.",rel:["congruencia"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+sag1: G.sagital({A:[1,2,3],B:['a','b','c'],pairs:[[1,'a'],[1,'c'],[2,'c']],name:'R',w:300}),
+  cart1: G.plot({w:300,h:260,x:[-1,4],y:[-1,4],ticks:false,pts:[{x:1,y:1},{x:1,y:3},{x:2,y:3}],texts:[{x:1,y:-.55,s:'1',a:'middle'},{x:2,y:-.55,s:'2',a:'middle'},{x:3,y:-.55,s:'3',a:'middle'},{x:-.3,y:.9,s:'a',a:'end'},{x:-.3,y:1.9,s:'b',a:'end'},{x:-.3,y:2.9,s:'c',a:'end'}],xl:'A',yl:'B'}),
+  g1: G.digraph({nodes:[1,2,3],edges:[[1,1],[2,2],[3,3],[1,2],[2,1]],w:240,h:220}),
+  g2: G.digraph({nodes:['a','b','c'],edges:[['a','a'],['a','b'],['b','c'],['a','c']],w:240,h:220}),
+  g3: G.digraph({nodes:[1,2,3],edges:[[1,1],[2,2],[3,3],[1,2],[2,1],[2,3],[3,2]],w:240,h:220}),
+  divide: G.digraph({nodes:[1,2,6,3],edges:[[1,1],[2,2],[3,3],[6,6],[1,2],[1,3],[1,6],[2,6],[3,6]],w:300,h:260}),
+  sagF: G.sagital({A:[1,2,3],B:['a','b','c','d'],pairs:[[1,'a'],[2,'b'],[3,'b']],name:'f',w:260}),
+  sagNoF1: G.sagital({A:[1,2,3],B:['a','b','c'],pairs:[[1,'a'],[1,'b'],[2,'c'],[3,'c']],w:260}),
+  sagNoF2: G.sagital({A:[1,2,3],B:['a','b','c'],pairs:[[1,'a'],[2,'b']],w:260}),
+  circ: G.plot({x:[-3,3],y:[-3,3],fns:[{f:function(x){return Math.sqrt(4-x*x);},dom:[-2,2],c:G.C.red,n:600},{f:function(x){return -Math.sqrt(4-x*x);},dom:[-2,2],c:G.C.red,n:600}],vlines:[{x:1,c:'#9AA5AD',dash:true,wd:1.4,label:'x = 1'}],pts:[{x:1,y:1.732},{x:1,y:-1.732}]}),
+  parab: G.plot({x:[-4,4],y:[-5,5],fns:[{f:function(x){return x*x-4;},label:'f',lx:2.6,c:G.C.red},{f:function(){return 0;},c:'#9AA5AD',dash:true,wd:1.2}],pts:[{x:-2,y:0},{x:2,y:0},{x:0,y:-4,label:'(0,−4)'}]}),
+  cubica: G.plot({x:[-3,3],y:[-4,4],fns:[{f:function(x){return x*x*x-3*x;},label:'f',lx:2.3,c:G.C.red},{f:function(){return 1;},c:'#9AA5AD',dash:true,wd:1.4}],pts:[{x:-1,y:2,label:'(−1, 2)',dx:-24,dy:-10},{x:1,y:-2,label:'(1, −2)',dy:16}]}),
+  parRecta: G.plot({x:[-3,6],y:[-3,10],tickStep:2,fns:[{f:function(x){return x*x-2*x;},label:'f',lx:-1.9,ldx:10,c:G.C.red},{f:function(x){return x+4;},label:'g',lx:5.2,ldy:18,c:G.C.navy}],pts:[{x:-1,y:3,label:'A'},{x:4,y:8,label:'B',dx:-18}]}),
+  aTrozos: G.plot({x:[-3,4],y:[-1,7],fns:[{f:function(x){return x*x;},dom:[-2.6,1],c:G.C.red},{f:function(x){return x+2;},dom:[1,4],c:G.C.red}],pts:[{x:1,y:1,c:G.C.red},{x:1,y:3,open:true,c:G.C.red}],texts:[{x:-2.4,y:6.2,s:'f',b:true,c:G.C.red,fs:15}]}),
+  equilibrio: G.plot({x:[0,40],y:[0,1800],step:10,ticks:false,grid:false,fns:[{f:function(x){return 500+20*x;},label:'C(x)',lx:33,ldy:-6,c:G.C.red},{f:function(x){return 45*x;},label:'I(x)',lx:33,ldx:-36,ldy:-4,c:G.C.navy}],segs:[[20,0,20,900,'#9AA5AD',true],[0,900,20,900,'#9AA5AD',true]],pts:[{x:20,y:900,label:'E'}],texts:[{x:20,y:60,s:'20',a:'middle',c:'#51616B'},{x:1,y:960,s:'900',c:'#51616B'},{x:1,y:560,s:'500',c:'#51616B'}],xl:'x',yl:'$'}),
+  v1: G.venn({n:3,shade:['100','010','110'],w:300}),
+  v2: G.venn({n:3,shade:['111'],w:300}),
+  v3: G.venn({n:3,shade:['110','111','001','011'],w:300}),
+  vConteo: G.venn({n:3,labels:['N','Y','S'],elems:{'100':'30','010':'22','001':'17','110':'10','101':'5','011':'3','111':'5','000':'8'},op:.12,shade:['111']}),
+  reloj1: G.reloj({m:12,from:10,steps:5,mark:[10,3]}),
+  reloj2: G.reloj({m:7,from:0,steps:2,mark:[0,2]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+</script>
+</body>
+</html>
