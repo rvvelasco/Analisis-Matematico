@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementos de Análisis · Unidad 2 — Vectores y transformaciones lineales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Análisis · <b>Vectores</b></span>
+    <nav class="topnav">
+      <a href="#que-es">Vector</a>
+      <a href="#operaciones">Operaciones</a>
+      <a href="#escalar">Producto escalar</a>
+      <a href="#norma">Norma</a>
+      <a href="#proyeccion">Proyecciones</a>
+      <a href="#vectorial">Producto vectorial</a>
+      <a href="#dependencia">Dependencia lineal</a>
+      <a href="#base">Base y dimensión</a>
+      <a href="#tl">Transf. lineales</a>
+      <a href="#nucleo">Núcleo e imagen</a>
+      <a href="#ejercicios">Ejercicios</a>
+      <a href="#autoeval">Autoevaluación</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Elementos de Análisis Matemático · Unidad 2 (+ transformaciones lineales de la Unidad 3)</div>
+  <h1>Vectores de <span class="u">n componentes</span></h1>
+  <p class="lead">Qué es un vector, las operaciones internas y externas, la norma, el producto escalar, las proyecciones, la dependencia lineal, las bases y la dimensión. Al final, las <strong>transformaciones lineales</strong>, que unen vectores y matrices. Todo con gráficos y ejercicios resueltos de nivel parcial.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Las palabras <span class="term term-demo" data-def="vector" tabindex="0">como esta</span> abren un panel con la definición, cómo se calcula y un ejemplo. Los gráficos están hechos con coordenadas exactas, así que podés leer los valores directamente de la cuadrícula. Cuando termines, practicá en el <a href="simulador-examenes.html">simulador</a> (temas 06, 07 y 09).</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 01 QUÉ ES UN VECTOR ============ -->
+<section class="section" id="que-es">
+  <div class="section-head"><span class="section-num">01</span><h2>¿Qué es un vector?</h2></div>
+  <p>Un <span class="term" data-def="vector" tabindex="0">vector</span> de n componentes es una <strong>lista ordenada de n números reales</strong>: <span class="set">v = (v₁, v₂, …, vₙ)</span>. El conjunto de todos los vectores de n componentes se llama <span class="term" data-def="rn" tabindex="0">ℝⁿ</span>.</p>
+  <ul class="clean">
+    <li>En ℝ² un vector como <span class="set">(3, 1)</span> se dibuja como una <strong>flecha</strong> que sale del origen y llega al punto (3, 1).</li>
+    <li>En ℝ³ hay tres componentes: <span class="set">(1, −2, 4)</span>. En ℝ⁴, ℝ⁵… ya no se pueden dibujar, pero <strong>las cuentas son exactamente las mismas</strong>.</li>
+    <li>Un vector es una matriz fila (1 × n) o columna (n × 1). Por eso todo lo que viste de matrices sirve acá.</li>
+    <li>Dos vectores son <strong>iguales</strong> si tienen las mismas componentes, en el mismo orden.</li>
+    <li>El <span class="term" data-def="vectornulo" tabindex="0">vector nulo</span> es <span class="set">0 = (0, 0, …, 0)</span>.</li>
+  </ul>
+  <div class="fig" data-fig="flecha" data-cap="El vector u = (3, 1) es la flecha del origen al punto (3, 1). Su opuesto −u apunta para el otro lado."></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Un vector es una <strong>flecha con instrucciones</strong>: "andá 3 pasos a la derecha y 1 para arriba". Las componentes te dicen cuánto moverte en cada eje. En ℝⁿ son n instrucciones: no lo podés dibujar, pero sí calcular.</p>
+  </div>
+  <div class="callout c-tip"><span class="tag">También se usa en la vida real</span>
+    <p>Un vector puede ser una lista de datos: las ventas de 4 productos <span class="set">(120, 80, 45, 200)</span>, los precios de esos productos, una fuerza, una velocidad… Por eso trabajamos en ℝⁿ y no solo en el plano.</p>
+  </div>
+</section>
+
+<!-- ============ 02 OPERACIONES ============ -->
+<section class="section" id="operaciones">
+  <div class="section-head"><span class="section-num">02</span><h2>Operaciones internas y externas</h2></div>
+  <p>Hay dos operaciones básicas. La <strong>suma</strong> es una operación <span class="term" data-def="opinterna" tabindex="0">interna</span> (opera dos vectores y da un vector). El <strong>producto por un escalar</strong> es <span class="term" data-def="opexterna" tabindex="0">externa</span> (opera un número con un vector).</p>
+
+  <h3>Suma y resta</h3>
+  <div class="fbox">u + v = (u₁ + v₁, u₂ + v₂, …, uₙ + vₙ)</div>
+  <p>Solo se suman vectores con la <strong>misma cantidad de componentes</strong>. Gráficamente es la <strong>regla del paralelogramo</strong>: ponés v a continuación de u y el resultado va del origen a la punta final.</p>
+  <div class="figrow">
+    <div class="fig" data-fig="suma" data-cap="u = (3, 1), v = (1, 2) y u + v = (4, 3): la diagonal del paralelogramo."></div>
+    <div class="fig" data-fig="resta" data-cap="u − v = (2, −1) es la flecha que va de la punta de v a la punta de u."></div>
+  </div>
+
+  <h3>Producto por un escalar</h3>
+  <div class="fbox">k · v = (k·v₁, k·v₂, …, k·vₙ)</div>
+  <p>Multiplicar por k <strong>estira</strong> el vector si |k| &gt; 1, lo <strong>achica</strong> si |k| &lt; 1, y lo <strong>da vuelta</strong> si k &lt; 0. El resultado siempre queda sobre la misma recta que v: son vectores <span class="term" data-def="paralelos" tabindex="0">paralelos</span>.</p>
+  <div class="fig" data-fig="escalar" data-cap="v = (2, 1), 2v = (4, 2) y −1·v = (−2, −1): todos están sobre la misma recta."></div>
+
+  <h4>Propiedades (las mismas que en matrices)</h4>
+  <table class="data">
+    <tr><th>Propiedad</th><th>Suma</th><th>Producto por escalar</th></tr>
+    <tr><td>Conmutativa</td><td class="mono">u + v = v + u</td><td>—</td></tr>
+    <tr><td>Asociativa</td><td class="mono">(u + v) + w = u + (v + w)</td><td class="mono">a·(b·v) = (a·b)·v</td></tr>
+    <tr><td>Neutro</td><td class="mono">v + 0 = v</td><td class="mono">1·v = v</td></tr>
+    <tr><td>Opuesto</td><td class="mono">v + (−v) = 0</td><td>—</td></tr>
+    <tr><td>Distributivas</td><td colspan="2" class="mono">k·(u + v) = k·u + k·v &nbsp;·&nbsp; (a + b)·v = a·v + b·v</td></tr>
+  </table>
+  <div class="callout c-calc"><span class="tag">Ejemplo en ℝ⁴</span>
+    <p class="mono">u = (1, 0, −2, 3), v = (2, 1, 1, −1)</p>
+    <p class="mono">2u − 3v = (2, 0, −4, 6) − (6, 3, 3, −3) = (−4, −3, −7, 9)</p>
+  </div>
+</section>
+
+<!-- ============ 03 PRODUCTO ESCALAR ============ -->
+<section class="section" id="escalar">
+  <div class="section-head"><span class="section-num">03</span><h2>Producto escalar y ángulo</h2></div>
+  <p>El <span class="term" data-def="prodescalar" tabindex="0">producto escalar</span> (o producto interno) multiplica componente a componente y <strong>suma todo</strong>. El resultado es un <strong>número</strong>, no un vector.</p>
+  <div class="fbox">u · v = u₁v₁ + u₂v₂ + … + uₙvₙ</div>
+  <div class="mrow"><span class="mono">(1, 2, 3) · (4, 0, −1) = 4 + 0 − 3 = 1</span></div>
+
+  <h3>El ángulo entre dos vectores</h3>
+  <div class="fbox">cos θ = (u · v) / (‖u‖ · ‖v‖) &nbsp;&nbsp;con 0° ≤ θ ≤ 180°</div>
+  <table class="data">
+    <tr><th>Si u · v es…</th><th>el ángulo es…</th><th>los vectores…</th></tr>
+    <tr><td>positivo</td><td>agudo (&lt; 90°)</td><td>"apuntan para el mismo lado"</td></tr>
+    <tr><td><strong>cero</strong></td><td><strong>recto (90°)</strong></td><td>son <span class="term" data-def="ortogonales" tabindex="0">ortogonales</span> (perpendiculares)</td></tr>
+    <tr><td>negativo</td><td>obtuso (&gt; 90°)</td><td>"apuntan para lados opuestos"</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">La condición que más se toma</span>
+    <p><strong>u ⊥ v ⇔ u · v = 0.</strong> Para buscar un parámetro k que haga perpendiculares dos vectores, igualás el producto escalar a cero y despejás.</p>
+  </div>
+  <h4>Propiedades</h4>
+  <ul class="clean">
+    <li><span class="mono">u · v = v · u</span> (conmutativo) y <span class="mono">u · (v + w) = u·v + u·w</span>.</li>
+    <li><span class="mono">(k·u) · v = k·(u · v)</span>.</li>
+    <li><span class="mono">v · v = ‖v‖² ≥ 0</span>, y vale 0 solo si v = 0.</li>
+    <li>Desigualdad de Cauchy-Schwarz: <span class="mono">|u · v| ≤ ‖u‖·‖v‖</span> (por eso el coseno da entre −1 y 1).</li>
+  </ul>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>El producto escalar mide <strong>cuánto "tiran para el mismo lado"</strong> dos flechas. Si son perpendiculares no se ayudan nada: da 0. Si van juntas da grande y positivo; si se oponen, negativo.</p>
+  </div>
+</section>
+
+<!-- ============ 04 NORMA ============ -->
+<section class="section" id="norma">
+  <div class="section-head"><span class="section-num">04</span><h2>Norma, versor y distancia</h2></div>
+  <p>La <span class="term" data-def="norma" tabindex="0">norma</span> (o módulo) es la <strong>longitud</strong> de la flecha. Sale de Pitágoras:</p>
+  <div class="fbox">‖v‖ = √(v₁² + v₂² + … + vₙ²) = √(v · v)</div>
+  <div class="mrow"><span class="mono">‖(3, 4)‖ = √(9 + 16) = 5 &nbsp;·&nbsp; ‖(1, −2, 2, 4)‖ = √25 = 5</span></div>
+  <ul class="clean">
+    <li><strong>Versor</strong> (<span class="term" data-def="versor" tabindex="0">vector unitario</span>): mismo sentido que v pero de norma 1. Se obtiene dividiendo por la norma: <span class="mono">v / ‖v‖</span>.</li>
+    <li><strong>Distancia</strong> entre dos puntos: <span class="mono">d(P, Q) = ‖Q − P‖</span>.</li>
+    <li><span class="mono">‖k·v‖ = |k|·‖v‖</span>. Ojo con el valor absoluto: la norma nunca es negativa.</li>
+    <li><strong>Desigualdad triangular</strong>: <span class="mono">‖u + v‖ ≤ ‖u‖ + ‖v‖</span>.</li>
+    <li><strong>Pitágoras</strong>: <span class="mono">‖u + v‖² = ‖u‖² + ‖v‖²</span> si y solo si u ⊥ v.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Hallá el vector de norma 10 paralelo a (3, −4) pero de sentido opuesto.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Versor: (3, −4)/5 = (3/5, −4/5). Lo multiplico por −10: <strong>(−6, 8)</strong>.</div><p class="why">Verificación: ‖(−6, 8)‖ = √(36 + 64) = 10 ✓, y (−6, 8) = −2·(3, −4), así que es paralelo y de sentido contrario.</p></div>
+  </div>
+</section>
+
+<!-- ============ 05 PROYECCIONES ============ -->
+<section class="section" id="proyeccion">
+  <div class="section-head"><span class="section-num">05</span><h2>Proyecciones</h2></div>
+  <p>La <span class="term" data-def="proyeccion" tabindex="0">proyección</span> de u sobre v es la "sombra" que u proyecta sobre la recta de v, si la luz cae perpendicular.</p>
+  <div class="fbox">proy<sub>v</sub> u = ( (u · v) / ‖v‖² ) · v &nbsp;&nbsp;&nbsp; comp<sub>v</sub> u = (u · v) / ‖v‖</div>
+  <p>La primera es un <strong>vector</strong> (paralelo a v). La segunda es un <strong>número</strong>: la componente escalar, es decir, la longitud con signo de esa sombra.</p>
+  <div class="fig" data-fig="proy" data-cap="u = (2, 3), v = (4, 0). La proyección es p = (8/16)·(4, 0) = (2, 0). El segmento punteado u − p = (0, 3) es perpendicular a v."></div>
+  <div class="callout c-calc"><span class="tag">Paso a paso</span>
+    <p class="mono">u = (2, 3), v = (4, −2)</p>
+    <p class="mono">u · v = 8 − 6 = 2 &nbsp;·&nbsp; ‖v‖² = 16 + 4 = 20</p>
+    <p class="mono">proy_v u = (2/20)·(4, −2) = (0,4 ; −0,2) &nbsp;·&nbsp; comp_v u = 2/√20 ≈ 0,447</p>
+  </div>
+  <div class="callout c-warn"><span class="tag">Error típico</span><p>proy<sub>v</sub> u ≠ proy<sub>u</sub> v. La primera es paralela a v; la segunda, a u. El orden importa.</p></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Si u es una fuerza y v es el camino, la proyección es <strong>la parte de la fuerza que realmente empuja a lo largo del camino</strong>. La otra parte (la perpendicular) se "pierde".</p></div>
+</section>
+
+<!-- ============ 06 PRODUCTO VECTORIAL ============ -->
+<section class="section" id="vectorial">
+  <div class="section-head"><span class="section-num">06</span><h2>Producto vectorial (solo en ℝ³)</h2></div>
+  <p>Aparece en el capítulo 1-2 del Schaum de Análisis Vectorial. El <span class="term" data-def="prodvectorial" tabindex="0">producto vectorial</span> de dos vectores de ℝ³ da otro <strong>vector perpendicular a ambos</strong>. Se calcula como un "determinante" con los versores i, j, k en la primera fila:</p>
+  <div class="fbox">u × v = | i j k ; u₁ u₂ u₃ ; v₁ v₂ v₃ | = (u₂v₃ − u₃v₂ , u₃v₁ − u₁v₃ , u₁v₂ − u₂v₁)</div>
+  <ul class="clean">
+    <li>‖u × v‖ es el <strong>área del paralelogramo</strong> que forman u y v.</li>
+    <li>No es conmutativo: <span class="mono">v × u = −(u × v)</span>.</li>
+    <li>u × v = 0 si y solo si u y v son paralelos.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">u = (1, 2, 0), v = (0, 1, 3). Calculá u × v y el área del paralelogramo.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u × v = (2·3 − 0·1, 0·0 − 1·3, 1·1 − 2·0) = <strong>(6, −3, 1)</strong> · Área = √(36 + 9 + 1) = √46 ≈ 6,78</div><p class="why">Verificación de perpendicularidad: (6, −3, 1)·(1, 2, 0) = 6 − 6 = 0 ✓ y (6, −3, 1)·(0, 1, 3) = −3 + 3 = 0 ✓.</p></div>
+  </div>
+</section>
+
+<!-- ============ 07 DEPENDENCIA LINEAL ============ -->
+<section class="section" id="dependencia">
+  <div class="section-head"><span class="section-num">07</span><h2>Combinación lineal y dependencia lineal</h2></div>
+  <p>Una <span class="term" data-def="combinacionlineal" tabindex="0">combinación lineal</span> de v₁, …, vₖ es cualquier vector de la forma <span class="mono">a₁v₁ + a₂v₂ + … + aₖvₖ</span>, con a₁, …, aₖ números reales.</p>
+  <p>Los vectores son <span class="term" data-def="li" tabindex="0">linealmente independientes (LI)</span> si la única forma de obtener el vector nulo es con todos los coeficientes en 0:</p>
+  <div class="fbox">a₁v₁ + … + aₖvₖ = 0 &nbsp;⇒&nbsp; a₁ = … = aₖ = 0</div>
+  <p>Si hay otra forma (algún coeficiente distinto de 0), son <span class="term" data-def="ld" tabindex="0">linealmente dependientes (LD)</span>: <strong>alguno de ellos es combinación lineal de los otros</strong>.</p>
+  <div class="figrow">
+    <div class="fig" data-fig="colineales" data-cap="LD: v = −2u. Están sobre la misma recta."></div>
+    <div class="fig" data-fig="noColineales" data-cap="LI: ninguno es múltiplo del otro. Forman una base de ℝ²."></div>
+  </div>
+  <div class="callout c-calc"><span class="tag">Cómo se decide en la práctica</span>
+    <p><strong>Dos vectores:</strong> son LD si y solo si uno es múltiplo del otro (paralelos).</p>
+    <p><strong>n vectores de ℝⁿ:</strong> armás la matriz con los vectores como filas (o columnas). Son LI ⇔ <strong>det ≠ 0</strong>.</p>
+    <p><strong>Cualquier caso:</strong> escalonás la matriz; son LI ⇔ el <span class="term" data-def="rango" tabindex="0">rango</span> es igual a la cantidad de vectores.</p>
+    <p><strong>Atajos:</strong> si el conjunto contiene al 0, es LD. Si en ℝⁿ hay más de n vectores, es LD.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">¿Para qué k son LD u = (1, 2, 3), v = (2, 1, 0), w = (k, 1, 2)? Para ese k, escribí w como combinación de u y v.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">det[1 2 3 ; 2 1 0 ; k 1 2] = 1·2 − 2·4 + 3·(2 − k) = −3k = 0 ⇒ <strong>k = 0</strong><br>Con w = (0, 1, 2): a + 2b = 0, 2a + b = 1, 3a = 2 ⇒ a = 2/3, b = −1/3 ⇒ <strong>w = ⅔u − ⅓v</strong></div><p class="why">Verificás la 2ª ecuación: 2·⅔ − ⅓ = 1 ✓. Como hay 3 ecuaciones y 2 incógnitas, siempre conviene verificar la que no usaste.</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Un conjunto es LD si <strong>alguno "sobra"</strong>: lo podés armar con los otros. Es LI si cada vector aporta una dirección nueva que los demás no pueden fabricar.</p></div>
+</section>
+
+<!-- ============ 08 BASE Y DIMENSIÓN ============ -->
+<section class="section" id="base">
+  <div class="section-head"><span class="section-num">08</span><h2>Subespacio generado, base y dimensión</h2></div>
+  <p>El <span class="term" data-def="generado" tabindex="0">subespacio generado</span> por v₁, …, vₖ, que se escribe <span class="mono">gen{v₁, …, vₖ}</span>, es el conjunto de <strong>todas</strong> sus combinaciones lineales. Un vector se genera en el plano, una recta por el origen; dos LI generan un plano por el origen, y así.</p>
+  <p>Una <span class="term" data-def="base" tabindex="0">base</span> de un espacio V es un conjunto que cumple dos cosas:</p>
+  <ul class="clean tick"><li>es <strong>LI</strong> (no sobra nadie), y</li><li><strong>genera</strong> todo V (no falta nadie).</li></ul>
+  <p>Todas las bases de V tienen la misma cantidad de vectores: esa cantidad es la <span class="term" data-def="dimensionv" tabindex="0">dimensión</span> de V. <span class="mono">dim ℝⁿ = n</span>. La <strong>base canónica</strong> de ℝ³ es {(1,0,0), (0,1,0), (0,0,1)}.</p>
+  <div class="callout c-tip"><span class="tag">Atajo de examen</span><p>En ℝⁿ, <strong>n vectores LI ya son base</strong> (no hace falta probar que generan). Y n vectores que generan ya son LI.</p></div>
+
+  <h3>Coordenadas en una base</h3>
+  <p>Si B = {b₁, …, bₙ} es base, todo v se escribe de <strong>una única forma</strong> como <span class="mono">v = c₁b₁ + … + cₙbₙ</span>. Los números (c₁, …, cₙ) son las <span class="term" data-def="coordenadas" tabindex="0">coordenadas</span> de v en la base B.</p>
+  <div class="fig" data-fig="base3" data-cap="w = (4, 3) = 1·u + 1·v. En la base {u, v}, las coordenadas de w son (1, 1); en la canónica son (4, 3)."></div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Coordenadas de v = (3, −1, 2) en B = {(1, 0, 0), (1, 1, 0), (1, 1, 1)}.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">a(1,0,0) + b(1,1,0) + c(1,1,1) = (a + b + c, b + c, c) = (3, −1, 2) ⇒ c = 2, b = −3, a = 4 ⇒ <strong>[v]_B = (4, −3, 2)</strong></div><p class="why">Es un sistema de ecuaciones; acá ya viene escalonado, así que se resuelve de abajo hacia arriba.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Base y dimensión de S = {(x, y, z) / x − 2y + z = 0}. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">x = 2y − z ⇒ (x, y, z) = (2y − z, y, z) = y·(2, 1, 0) + z·(−1, 0, 1)<br>Base: <strong>{(2, 1, 0), (−1, 0, 1)}</strong> · <strong>dim S = 2</strong> (es un plano por el origen)</div><p class="why">Método: despejás una variable con la ecuación, separás el vector general según las variables libres, y cada variable libre aporta un vector de la base.</p></div>
+  </div>
+</section>
+
+<!-- ============ 09 TRANSFORMACIONES LINEALES ============ -->
+<section class="section" id="tl">
+  <div class="section-head"><span class="section-num">09</span><h2>Transformaciones lineales <span class="unit-pill">Unidad 3</span></h2></div>
+  <p>Una <span class="term" data-def="tl" tabindex="0">transformación lineal</span> T: ℝⁿ → ℝᵐ es una función entre vectores que <strong>respeta las dos operaciones</strong>:</p>
+  <div class="fbox">T(u + v) = T(u) + T(v) &nbsp;&nbsp;y&nbsp;&nbsp; T(k·u) = k·T(u)</div>
+  <p>Consecuencia inmediata: <strong>T(0) = 0</strong>. Si una T no manda el 0 al 0, no es lineal (por ejemplo, T(x, y) = (x + 1, y)).</p>
+
+  <h3>Toda transformación lineal es una matriz</h3>
+  <p>Toda T lineal se escribe como <span class="mono">T(x) = A·x</span>, donde A es la <span class="term" data-def="matriztl" tabindex="0">matriz asociada</span> (m × n). <strong>Sus columnas son las imágenes de la base canónica</strong>: T(e₁), T(e₂), …</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo</span>
+    <p class="mono">T(x, y, z) = (x + 2y, y − z) &nbsp;⇒&nbsp; [T] = [1 2 0 ; 0 1 −1] (2 × 3)</p>
+    <p class="mono">Si T(1, 0) = (3, 1) y T(0, 1) = (−1, 2) ⇒ [T] = [3 −1 ; 1 2] ⇒ T(x, y) = (3x − y, x + 2y)</p>
+  </div>
+
+  <h3>Transformaciones del plano (con gráficos)</h3>
+  <div class="figrow">
+    <div class="fig"><h4>Estiramiento · [2 0 ; 0 1]</h4><div data-figin="estira"></div></div>
+    <div class="fig"><h4>Rotación 90° · [0 −1 ; 1 0]</h4><div data-figin="rota"></div></div>
+    <div class="fig"><h4>Simetría eje y · [−1 0 ; 0 1]</h4><div data-figin="refleja"></div></div>
+    <div class="fig"><h4>Corte (cizalla) · [1 1 ; 0 1]</h4><div data-figin="corte"></div></div>
+  </div>
+  <p style="font-size:15px;color:var(--ink-soft)">En verde, la figura original; en rojo, su imagen. El <strong>|det|</strong> de la matriz es el factor por el que se multiplican las áreas: el estiramiento duplica el área (det = 2); la rotación, la simetría y el corte la conservan (|det| = 1). Si det = 0, la figura se "aplasta" sobre una recta.</p>
+
+  <h3>Composición e inversa</h3>
+  <ul class="clean">
+    <li><strong>Composición:</strong> <span class="mono">[T∘S] = [T]·[S]</span>. Primero se aplica S y después T, por eso [T] va a la izquierda.</li>
+    <li><strong>Inversa:</strong> T es inversible ⇔ su matriz cuadrada tiene det ≠ 0, y <span class="mono">[T⁻¹] = [T]⁻¹</span>.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">T(x, y) = (2x + y, x + y). Probá que es inversible y hallá T⁻¹.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">[T] = [2 1 ; 1 1], det = 1 ≠ 0 ⇒ inversible. [T]⁻¹ = [1 −1 ; −1 2] ⇒ <strong>T⁻¹(x, y) = (x − y, −x + 2y)</strong></div><p class="why">Verificación: T(x − y, −x + 2y) = (2x − 2y − x + 2y, x − y − x + 2y) = (x, y) ✓.</p></div>
+  </div>
+</section>
+
+<!-- ============ 10 NÚCLEO E IMAGEN ============ -->
+<section class="section" id="nucleo">
+  <div class="section-head"><span class="section-num">10</span><h2>Núcleo, imagen y teorema de las dimensiones</h2></div>
+  <ul class="clean">
+    <li><span class="term" data-def="nucleo" tabindex="0">Núcleo</span>: <span class="mono">Nu(T) = {v / T(v) = 0}</span>. Se calcula resolviendo el sistema homogéneo A·x = 0.</li>
+    <li><span class="term" data-def="imagen" tabindex="0">Imagen</span>: <span class="mono">Im(T) = {T(v)}</span>. La generan las columnas de A; su dimensión es el rango de A.</li>
+  </ul>
+  <div class="fbox">dim Nu(T) + dim Im(T) = n &nbsp;(la dimensión del dominio)</div>
+  <ul class="clean">
+    <li>T es <strong>inyectiva</strong> ⇔ Nu(T) = {0}.</li>
+    <li>T es <strong>sobreyectiva</strong> ⇔ Im(T) = ℝᵐ.</li>
+    <li>Si n &gt; m (por ejemplo ℝ³ → ℝ²), T <strong>nunca</strong> es inyectiva.</li>
+  </ul>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Núcleo e imagen de T(x, y, z) = (x + y, y + z). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Nu: x + y = 0 e y + z = 0 ⇒ (t, −t, t) ⇒ <strong>Nu(T) = gen{(1, −1, 1)}, dim 1</strong><br>Im: dim = 3 − 1 = 2 = dim ℝ² ⇒ <strong>Im(T) = ℝ²</strong> (es sobreyectiva, no inyectiva)</div><p class="why">El teorema de las dimensiones te ahorra calcular la imagen a mano.</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>El núcleo es <strong>todo lo que T "borra"</strong> (lo manda al 0). La imagen es <strong>todo lo que T puede fabricar</strong>. Lo que se pierde en el núcleo es justo lo que le falta a la imagen para llenar el dominio.</p></div>
+</section>
+
+<!-- ============ 11 EJERCICIOS ============ -->
+<section class="section" id="ejercicios">
+  <div class="section-head"><span class="section-num">11</span><h2>Ejercicios resueltos · nivel parcial</h2></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">u = (2, −1, 3), v = (1, 4, −2). Calculá 2u − 3v, u·v, ‖u‖, ‖v‖ y el ángulo entre u y v.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">2u − 3v = (4, −2, 6) − (3, 12, −6) = (1, −14, 12)<br>u·v = 2 − 4 − 6 = −8 · ‖u‖ = √14 · ‖v‖ = √21<br>cos θ = −8/√294 ≈ −0,4666 ⇒ θ ≈ 117,8°</div><p class="why">El producto escalar negativo ya te avisa que el ángulo es obtuso.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Hallá k para que u = (k, 1, 2) y v = (3, k, −1) sean ortogonales.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u·v = 3k + k − 2 = 4k − 2 = 0 ⇒ <strong>k = 1/2</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna"><b>Problema.</b> Sobre un objeto actúan F₁ = (3, 4) N y F₂ = (−1, 2) N. ¿Qué fuerza F₃ lo deja en equilibrio? ¿Cuánto mide?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">F₁ + F₂ + F₃ = 0 ⇒ F₃ = −(2, 6) = <strong>(−2, −6) N</strong> · ‖F₃‖ = √40 ≈ 6,32 N</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">¿Para qué k el conjunto {(1, 1, 0), (0, k, 1), (1, 0, k)} es base de ℝ³? <span class="dtag libro">Trampa de parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">det = 1·(k² − 0) − 1·(0 − 1) + 0 = k² + 1 ≠ 0 siempre ⇒ <strong>es base para todo k ∈ ℝ</strong></div><p class="why">La trampa es suponer que "siempre hay un valor prohibido". Hay que hacer la cuenta y leer el resultado.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">5</span><span class="consigna">S(x, y) = (x + y, y), T(x, y) = (2x, x − y). Hallá la matriz de T∘S.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">[T∘S] = [2 0 ; 1 −1]·[1 1 ; 0 1] = <strong>[2 2 ; 1 0]</strong> ⇒ (T∘S)(x, y) = (2x + 2y, x)</div><p class="why">Verificación directa: T(S(x, y)) = T(x + y, y) = (2x + 2y, x + y − y) ✓.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">6</span><span class="consigna"><b>Aplicación.</b> Una planta fabrica x, y, z unidades de 3 productos y T(x, y, z) = (2x + y + 3z, x + 4y + z) da (horas de máquina, kg de material). ¿Qué recursos usa la producción (10, 5, 2)? ¿Puede T ser inyectiva?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">T(10, 5, 2) = (20 + 5 + 6, 10 + 20 + 2) = <strong>(31 h, 32 kg)</strong> · No es inyectiva: dim Nu = 3 − dim Im ≥ 1.</div><p class="why">En la práctica significa que hay combinaciones distintas de producción que gastan exactamente los mismos recursos.</p></div>
+  </div>
+</section>
+
+<!-- ============ 12 AUTOEVALUACIÓN ============ -->
+<section class="section" id="autoeval">
+  <div class="section-head"><span class="section-num">12</span><h2>Autoevaluación rápida</h2></div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">1. Si u · v = 0 y ninguno es nulo, entonces u y v son…</div>
+    <button class="opt" data-k="a">paralelos</button>
+    <button class="opt" data-k="b">perpendiculares</button>
+    <button class="opt" data-k="c">LD</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">2. Cuatro vectores de ℝ³ son siempre…</div>
+    <button class="opt" data-k="a">una base</button>
+    <button class="opt" data-k="b">LI</button>
+    <button class="opt" data-k="c">LD</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">3. ¿Cuál NO es una transformación lineal?</div>
+    <button class="opt" data-k="a">T(x, y) = (x, y + 3)</button>
+    <button class="opt" data-k="b">T(x, y) = (y, −x)</button>
+    <button class="opt" data-k="c">T(x, y) = (2x − y, 0)</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">4. Si T: ℝ⁴ → ℝ³ y dim Nu(T) = 2, entonces dim Im(T) es…</div>
+    <button class="opt" data-k="a">1</button>
+    <button class="opt" data-k="b">2</button>
+    <button class="opt" data-k="c">3</button>
+    <div class="fb"></div>
+  </div>
+  <p>¿Querés más? Andá al <a href="simulador-examenes.html">simulador</a>: temas 06, 07 y 09, y el parcial modelo de la Unidad 2.</p>
+</section>
+
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">13</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Elementos de Análisis Matemático — Unidad 2: Vectores</b> (+ transformaciones lineales de la Unidad 3). Guía de estudio interactiva.</p>
+  <p style="font-size:13px;margin-top:6px;">Bibliografía: Schaum <em>Análisis Vectorial</em> (Spiegel, Lipschutz, Spellman), cap. 1 · Apunte IFTS-18 CalcNum · Capítulo 3 — Transformación lineal.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+vector:{t:"Vector",sym:"v = (v₁, …, vₙ)",def:"Lista ordenada de n números reales (sus componentes). En ℝ² y ℝ³ se dibuja como una flecha desde el origen.",ej:"(3, 1) ∈ ℝ²; (1, 0, −2, 5) ∈ ℝ⁴.",rel:["rn","norma","vectornulo"]},
+  rn:{t:"Espacio ℝⁿ",sym:"ℝⁿ",def:"Conjunto de todos los vectores de n componentes reales, con la suma y el producto por escalar. Tiene dimensión n.",ej:"ℝ² es el plano; ℝ³, el espacio.",rel:["vector","dimensionv"]},
+  vectornulo:{t:"Vector nulo",sym:"0",def:"El vector con todas sus componentes iguales a 0. Es el neutro de la suma.",ej:"0 = (0, 0, 0) en ℝ³.",rel:["ld"]},
+  opinterna:{t:"Operación interna",def:"Operación que combina dos elementos de un conjunto y da otro elemento del mismo conjunto. La suma de vectores es interna.",ej:"(1, 2) + (3, 0) = (4, 2).",rel:["opexterna"]},
+  opexterna:{t:"Operación externa",def:"Operación que combina un elemento de otro conjunto (un escalar real) con un vector. El producto por escalar es externa.",ej:"3·(1, −1) = (3, −3).",rel:["opinterna","paralelos"]},
+  paralelos:{t:"Vectores paralelos",sym:"u ∥ v",def:"Dos vectores no nulos son paralelos si uno es múltiplo escalar del otro: u = k·v.",ej:"(2, 1) y (−4, −2) son paralelos (k = −2).",rel:["ld"]},
+  prodescalar:{t:"Producto escalar",sym:"u · v",def:"Número que se obtiene multiplicando componente a componente y sumando.",calc:"u · v = u₁v₁ + … + uₙvₙ = ‖u‖‖v‖cos θ.",ej:"(1, 2, 3)·(4, 0, −1) = 1.",rel:["ortogonales","norma","proyeccion"]},
+  ortogonales:{t:"Vectores ortogonales",sym:"u ⊥ v",def:"Vectores perpendiculares: forman un ángulo de 90°.",calc:"u ⊥ v ⇔ u · v = 0.",ej:"(2, 1) ⊥ (−1, 2) porque −2 + 2 = 0.",rel:["prodescalar"]},
+  norma:{t:"Norma (módulo)",sym:"‖v‖",def:"Longitud del vector. Siempre es ≥ 0 y solo vale 0 para el vector nulo.",calc:"‖v‖ = √(v₁² + … + vₙ²) = √(v·v).",ej:"‖(3, 4)‖ = 5.",rel:["versor","prodescalar"]},
+  versor:{t:"Versor (vector unitario)",def:"Vector de norma 1. El versor de v tiene su misma dirección y sentido.",calc:"v / ‖v‖.",ej:"Versor de (0, 3, 4): (0, 3/5, 4/5).",rel:["norma"]},
+  proyeccion:{t:"Proyección",sym:"proy_v u",def:"Vector paralelo a v que es la \"sombra\" de u sobre la recta de v.",calc:"proy_v u = (u·v / ‖v‖²)·v. Componente escalar: u·v / ‖v‖.",ej:"u = (2, 3), v = (4, 0) ⇒ proy = (2, 0).",rel:["prodescalar","ortogonales"]},
+  prodvectorial:{t:"Producto vectorial",sym:"u × v",def:"Solo en ℝ³. Da un vector perpendicular a u y a v, cuya norma es el área del paralelogramo que forman.",calc:"(u₂v₃ − u₃v₂, u₃v₁ − u₁v₃, u₁v₂ − u₂v₁).",ej:"(1, 2, 0) × (0, 1, 3) = (6, −3, 1).",rel:["ortogonales"]},
+  combinacionlineal:{t:"Combinación lineal",def:"Vector que se obtiene escalando varios vectores y sumándolos.",calc:"a₁v₁ + a₂v₂ + … + aₖvₖ.",ej:"(5, 7) = 3·(1, 1) + 2·(1, 2).",rel:["li","generado"]},
+  li:{t:"Linealmente independientes (LI)",def:"La única combinación lineal que da el vector nulo es la trivial (todos los coeficientes 0). Ninguno es combinación de los otros.",calc:"n vectores de ℝⁿ: LI ⇔ det ≠ 0. En general: LI ⇔ rango = cantidad de vectores.",ej:"{(1, 0), (0, 1)} es LI.",rel:["ld","base","rango"]},
+  ld:{t:"Linealmente dependientes (LD)",def:"Existe una combinación lineal no trivial que da el nulo: algún vector es combinación de los otros.",ej:"{(1, 2), (2, 4)}; cualquier conjunto que contenga al 0; más de n vectores en ℝⁿ.",rel:["li"]},
+  rango:{t:"Rango de una matriz",sym:"rg(A)",def:"Cantidad máxima de filas (o columnas) LI. Es la cantidad de filas no nulas al escalonar.",ej:"rg[1 2 ; 2 4] = 1.",rel:["li"]},
+  generado:{t:"Subespacio generado",sym:"gen{v₁, …, vₖ}",def:"Conjunto de todas las combinaciones lineales de los vectores dados.",ej:"gen{(1, 0, 0), (0, 1, 0)} es el plano z = 0.",rel:["combinacionlineal","base"]},
+  base:{t:"Base",def:"Conjunto de vectores LI que genera todo el espacio. Cada vector se escribe de manera única como combinación de la base.",ej:"Base canónica de ℝ³: {(1,0,0), (0,1,0), (0,0,1)}.",rel:["dimensionv","coordenadas","li"]},
+  dimensionv:{t:"Dimensión (de un espacio)",sym:"dim V",def:"Cantidad de vectores de cualquier base del espacio.",ej:"dim ℝⁿ = n; un plano por el origen tiene dimensión 2.",rel:["base"]},
+  coordenadas:{t:"Coordenadas en una base",sym:"[v]_B",def:"Los coeficientes únicos con los que v se escribe como combinación de la base B.",calc:"Se plantea v = c₁b₁ + … + cₙbₙ y se resuelve el sistema.",ej:"En B = {(1,1), (1,−1)}: [(5, 1)]_B = (3, 2).",rel:["base"]},
+  tl:{t:"Transformación lineal",sym:"T: ℝⁿ → ℝᵐ",def:"Función entre espacios vectoriales que respeta la suma y el producto por escalar.",calc:"Verificar T(u + v) = T(u) + T(v) y T(k·u) = k·T(u). Primer chequeo rápido: T(0) = 0.",ej:"T(x, y) = (2x, x − y) es lineal; T(x, y) = (x², y) no.",rel:["matriztl","nucleo","imagen"]},
+  matriztl:{t:"Matriz asociada a T",sym:"[T]",def:"La matriz A (m × n) con T(x) = A·x. Sus columnas son las imágenes de la base canónica.",ej:"T(x, y) = (x + y, x − y) ⇒ [T] = [1 1 ; 1 −1].",rel:["tl"]},
+  nucleo:{t:"Núcleo",sym:"Nu(T)",def:"Conjunto de vectores que T manda al vector nulo.",calc:"Se resuelve el sistema homogéneo A·x = 0.",ej:"T(x, y) = (x − y, 2x − 2y): Nu = {(t, t)}.",rel:["imagen","tl"]},
+  imagen:{t:"Imagen (de una transformación)",sym:"Im(T)",def:"Conjunto de todos los vectores que se obtienen como T(v).",calc:"La generan las columnas de [T]; dim Im = rango de [T] = n − dim Nu.",ej:"T(x, y, z) = (x + y, y + z): Im = ℝ².",rel:["nucleo"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+flecha: G.plot({x:[-4,4],y:[-2,3],vecs:[{to:[3,1],label:'u',c:G.C.red},{to:[-3,-1],label:'−u',c:G.C.navy,ldy:16}],pts:[{x:3,y:1,label:'(3, 1)',dy:-10}]}),
+  suma: G.plot({x:[-1,5],y:[-1,4],vecs:[{to:[3,1],label:'u',c:G.C.red,ldy:14},{to:[1,2],label:'v',c:G.C.navy,ldx:-16},{to:[4,3],label:'u + v',c:G.C.purple,ldx:-46}],segs:[[3,1,4,3,'#9AA5AD',true],[1,2,4,3,'#9AA5AD',true]]}),
+  resta: G.plot({x:[-1,5],y:[-2,4],vecs:[{to:[3,1],label:'u',c:G.C.red,ldy:14},{to:[1,2],label:'v',c:G.C.navy,ldx:-16},{from:[1,2],to:[3,1],label:'u − v',c:G.C.purple,ldy:-10},{to:[2,-1],label:'u − v',c:G.C.purple,dash:true,ldy:16}]}),
+  escalar: G.plot({x:[-3,5],y:[-2,3],vecs:[{to:[4,2],label:'2v',c:G.C.navy,wd:2},{to:[2,1],label:'v',c:G.C.red,wd:3.4,ldy:-10},{to:[-2,-1],label:'−v',c:G.C.purple,ldy:16}]}),
+  proy: G.plot({x:[-1,5],y:[-1,4],vecs:[{to:[2,3],label:'u',c:G.C.red,ldx:-16},{to:[4,0],label:'v',c:G.C.navy,ldy:16},{to:[2,0],label:'p',c:G.C.purple,wd:4,ldy:16,ldx:-14}],segs:[[2,3,2,0,'#7A8790',true,1.6]]}),
+  colineales: G.plot({x:[-5,3],y:[-3,2],vecs:[{to:[2,1],label:'u',c:G.C.red},{to:[-4,-2],label:'v',c:G.C.navy,ldy:16}],fns:[{f:function(x){return x/2;},c:'#C9CDC4',dash:true,wd:1.2}]}),
+  noColineales: G.plot({x:[-1,4],y:[-1,3],vecs:[{to:[3,1],label:'u',c:G.C.red,ldy:14},{to:[1,2],label:'v',c:G.C.navy,ldx:-16}]}),
+  base3: G.plot({x:[-1,5],y:[-1,4],vecs:[{to:[1,2],label:'u',c:G.C.red,ldx:-16},{to:[3,1],label:'v',c:G.C.navy,ldy:14},{to:[4,3],label:'w',c:G.C.purple}],segs:[[1,2,4,3,'#9AA5AD',true],[3,1,4,3,'#9AA5AD',true]]}),
+  estira: G.plot({w:260,h:220,x:[-1,3],y:[-1,2],polys:[{pts:[[0,0],[1,0],[1,1],[0,1]],c:G.C.teal,op:.35,stroke:G.C.teal},{pts:[[0,0],[2,0],[2,1],[0,1]],c:G.C.red,op:.15,stroke:G.C.red}]}),
+  rota: G.plot({w:260,h:220,x:[-2,2],y:[-1,2],polys:[{pts:[[0,0],[1,0],[1,1],[0,1]],c:G.C.teal,op:.35,stroke:G.C.teal},{pts:[[0,0],[0,1],[-1,1],[-1,0]],c:G.C.red,op:.15,stroke:G.C.red}]}),
+  refleja: G.plot({w:260,h:220,x:[-3,3],y:[-1,2],polys:[{pts:[[0.5,0],[2,0],[0.5,1.5]],c:G.C.teal,op:.35,stroke:G.C.teal},{pts:[[-0.5,0],[-2,0],[-0.5,1.5]],c:G.C.red,op:.15,stroke:G.C.red}]}),
+  corte: G.plot({w:260,h:220,x:[-1,3],y:[-1,2],polys:[{pts:[[0,0],[1,0],[1,1],[0,1]],c:G.C.teal,op:.35,stroke:G.C.teal},{pts:[[0,0],[1,0],[2,1],[1,1]],c:G.C.red,op:.15,stroke:G.C.red}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+</script>
+</body>
+</html>

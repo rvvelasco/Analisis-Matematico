@@ -12,6 +12,7 @@
     --paper:#F4F5F1;--card:#FFFFFF;--ink:#1E2A32;--ink-soft:#51616B;
     --navy:#153A5B;--navy-deep:#0D2942;--red:#C42430;--red-soft:#FBEBEC;
     --gold:#B8791F;--gold-soft:#FAF1DF;--teal:#177567;--teal-soft:#E4F1EE;
+    --purple:#6B3FA0;--purple-soft:#F0EAF7;
     --line:#E2E3DB;--line-strong:#CBCDC2;--shadow:0 1px 2px rgba(13,41,66,.05),0 8px 30px rgba(13,41,66,.07);
     --display:'Fraunces',Georgia,serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
   }
@@ -32,16 +33,21 @@
   .hero{padding:56px 22px 26px;max-width:860px;margin:0 auto;}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:500;margin-bottom:14px;}
   .hero h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 16px;}
-  .hero p{font-size:18px;color:var(--ink-soft);max-width:620px;margin:0;}
+  .hero p{font-size:18px;color:var(--ink-soft);max-width:640px;margin:0;}
 
   .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;}
   .chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:13.5px;color:var(--ink-soft);box-shadow:var(--shadow);}
   .dot{width:10px;height:10px;border-radius:50%;}
-  .dot.b{background:var(--teal);}.dot.n{background:var(--gold);}.dot.e{background:var(--red);}
+  .dot.b{background:var(--teal);}.dot.n{background:var(--gold);}.dot.e{background:var(--red);}.dot.p{background:var(--purple);}
 
   /* section title */
   .stitle{font-family:var(--display);font-size:24px;color:var(--navy-deep);font-weight:600;margin:44px 0 6px;letter-spacing:-.01em;}
   .ssub{color:var(--ink-soft);font-size:15px;margin:0 0 20px;}
+  .unit-head{display:flex;align-items:baseline;gap:12px;margin:34px 0 4px;border-bottom:2px solid var(--navy);padding-bottom:8px;}
+  .unit-head .uk{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--red);letter-spacing:.1em;text-transform:uppercase;}
+  .unit-head h3{font-family:var(--display);font-size:21px;color:var(--navy-deep);margin:0;font-weight:600;}
+  .unit-head a{margin-left:auto;font-size:13px;color:var(--red);font-weight:600;text-decoration:none;white-space:nowrap;}
+  .unit-head a:hover{text-decoration:underline;}
 
   /* topic path */
   .path{position:relative;}
@@ -49,6 +55,7 @@
   .tnum{font-family:var(--display);font-size:30px;font-weight:600;color:var(--red);line-height:1;min-width:44px;}
   .tbody{flex:1;}
   .tbody h3{font-family:var(--display);font-size:20px;color:var(--navy-deep);margin:0 0 4px;font-weight:600;letter-spacing:-.01em;}
+  .tnew{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;font-weight:700;color:#fff;background:var(--purple);border-radius:20px;padding:2px 8px;margin-left:8px;vertical-align:middle;}
   .tprereq{font-size:12.5px;color:var(--ink-soft);font-family:var(--mono);margin:0 0 8px;}
   .tprereq b{color:var(--navy);font-weight:600;}
   .tdesc{font-size:14.5px;color:var(--ink-soft);margin:0 0 14px;}
@@ -57,12 +64,17 @@
   .lv:hover{filter:brightness(1.08);}
   .lv:active{transform:translateY(1px);}
   .lv .lvdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85);}
-  .lv.b{background:var(--teal);}.lv.n{background:var(--gold);}.lv.e{background:var(--red);}
+  .lv.b{background:var(--teal);}.lv.n{background:var(--gold);}.lv.e{background:var(--red);}.lv.p{background:var(--purple);}
 
-  .final-card{background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:18px;padding:26px;margin:22px 0 40px;box-shadow:var(--shadow);}
+  .final-card{background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:18px;padding:26px;margin:22px 0 22px;box-shadow:var(--shadow);}
   .final-card h3{font-family:var(--display);font-size:24px;margin:0 0 6px;font-weight:600;}
   .final-card p{color:rgba(255,255,255,.8);font-size:15px;margin:0 0 18px;}
   .final-card .lv{box-shadow:0 2px 8px rgba(0,0,0,.2);}
+  .pm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:14px 0 40px;}
+  .pm{background:#fff;border:1px solid var(--line);border-top:4px solid var(--purple);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+  .pm .pk{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--purple);text-transform:uppercase;}
+  .pm h4{font-family:var(--display);font-size:18px;color:var(--navy-deep);margin:4px 0 6px;font-weight:600;}
+  .pm p{font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;flex:1;}
 
   /* exam view */
   #examView{display:none;padding-bottom:100px;}
@@ -72,17 +84,36 @@
   .exam-head .lvl-tag{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;}
   .exam-head h2{font-family:var(--display);font-size:clamp(26px,4.5vw,34px);color:var(--navy-deep);margin:8px 0 4px;font-weight:600;letter-spacing:-.02em;}
   .exam-head .meta{font-size:14px;color:var(--ink-soft);}
+  .exam-head .rules{font-size:13.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-left:4px solid var(--purple);border-radius:10px;padding:10px 14px;margin-top:12px;}
 
   .qcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:16px 0;box-shadow:var(--shadow);}
   .qcard .qnum{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--red);letter-spacing:.08em;}
+  .qcard .qkind{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--purple);background:var(--purple-soft);border-radius:20px;padding:2px 8px;margin-left:8px;}
   .qcard .qtext{font-size:17px;color:var(--navy-deep);font-weight:500;margin:6px 0 14px;line-height:1.5;}
   .qcard .qtext .mono,.qcard .mono{font-family:var(--mono);background:var(--paper);border-radius:5px;padding:1px 5px;font-size:.92em;}
+  .qfig{margin:4px 0 14px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;}
+  .qfig .cap{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:6px;font-style:italic;}
   .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:11px;padding:11px 15px;margin:8px 0;cursor:pointer;font-family:var(--body);font-size:15.5px;color:var(--ink);transition:all .12s;}
   .opt:hover{border-color:var(--navy);}
   .opt.sel{border-color:var(--navy);background:#fff;box-shadow:inset 0 0 0 1px var(--navy);}
   .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
   .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
   .opt .mk{font-family:var(--mono);font-weight:700;margin-right:8px;color:var(--ink-soft);}
+
+  /* V/F multiple */
+  .vfrow{display:flex;gap:12px;align-items:flex-start;border-top:1px solid var(--line);padding:11px 0;}
+  .vfrow:first-child{border-top:none;}
+  .vfrow .st{flex:1;font-size:15.5px;}
+  .vfrow .st .mk{font-family:var(--mono);font-weight:700;color:var(--ink-soft);margin-right:6px;}
+  .vfbtns{display:flex;gap:6px;flex-shrink:0;}
+  .vfb{width:40px;height:34px;border-radius:9px;border:1.5px solid var(--line-strong);background:var(--paper);font-family:var(--mono);font-weight:700;font-size:14px;cursor:pointer;color:var(--ink-soft);}
+  .vfb:hover{border-color:var(--navy);}
+  .vfb.sel{border-color:var(--navy);background:var(--navy);color:#fff;}
+  .vfb.correct{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .vfb.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+  .vfexp{display:none;font-size:13.8px;color:var(--ink-soft);margin-top:6px;}
+  .vfexp.show{display:block;}
+  .vfexp b{color:var(--navy-deep);}
 
   .openbox{margin-top:6px;}
   .reveal-btn{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;}
@@ -91,6 +122,12 @@
   .sol.show{display:block;}
   .sol .sl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--teal);margin-bottom:6px;}
   .sol .stext{font-family:var(--mono);font-size:14.5px;color:var(--navy-deep);}
+  .selfgrade{display:none;margin-top:10px;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--ink-soft);}
+  .sol.show + .selfgrade{display:flex;}
+  .sg{border:1.5px solid var(--line-strong);background:#fff;border-radius:20px;padding:4px 12px;font-family:var(--body);font-weight:600;font-size:13px;cursor:pointer;color:var(--ink-soft);}
+  .sg.on[data-v="1"]{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .sg.on[data-v="0.5"]{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .sg.on[data-v="0"]{background:var(--red);border-color:var(--red);color:#fff;}
 
   .exp{display:none;margin-top:12px;font-size:14.5px;color:var(--ink-soft);border-top:1px dashed var(--line-strong);padding-top:10px;}
   .exp.show{display:block;}
@@ -99,11 +136,13 @@
   .submit-bar{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--paper) 30%);padding:20px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
   .btn-check{background:var(--red);color:#fff;border:none;border-radius:11px;padding:13px 26px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;box-shadow:var(--shadow);}
   .btn-check:hover{filter:brightness(1.07);}
-  .result{font-family:var(--display);font-size:20px;color:var(--navy-deep);font-weight:600;}
+  .result{font-family:var(--display);font-size:19px;color:var(--navy-deep);font-weight:600;}
   .result .pct{color:var(--red);}
+  .result small{display:block;font-family:var(--body);font-size:13px;color:var(--ink-soft);font-weight:500;}
 
   footer{border-top:1px solid var(--line);padding:34px 22px 70px;text-align:center;color:var(--ink-soft);font-size:14px;max-width:860px;margin:0 auto;}
   ::selection{background:#F6D5A9;}
+  @media(max-width:560px){.topic{flex-direction:column;gap:6px;}.vfrow{flex-direction:column;gap:6px;}}
 </style>
 </head>
 <body>
@@ -118,27 +157,33 @@
 <div id="homeView">
   <header class="hero">
     <div class="eyebrow">Práctica autocorregida</div>
-    <h1>Practicá tema por tema, en tres niveles</h1>
-    <p>Elegí un tema y una dificultad. Las de opción múltiple se corrigen solas; las abiertas traen la solución explicada. Al final, un examen integrador con todos los temas.</p>
+    <h1>Practicá tema por tema, en cuatro niveles</h1>
+    <p>Elegí un tema y una dificultad. Las de opción múltiple y las de verdadero/falso se corrigen solas. Las abiertas traen la solución explicada y te dejan autoevaluarte. Al final hay <strong>parciales modelo</strong> por unidad y un integrador.</p>
     <div class="legend">
       <span class="chip"><span class="dot b"></span> Básico · conceptos y cuentas simples</span>
-      <span class="chip"><span class="dot n"></span> Normal · nivel de práctica de clase</span>
+      <span class="chip"><span class="dot n"></span> Normal · práctica de clase</span>
       <span class="chip"><span class="dot e"></span> Examen · como en el parcial</span>
+      <span class="chip"><span class="dot p"></span> Parcial · nivel terciario, con gráficos y V/F</span>
     </div>
   </header>
 
   <div class="wrap">
     <div class="stitle">Ruta de aprendizaje</div>
-    <p class="ssub">En orden: cada tema usa lo del anterior. Seguí de arriba hacia abajo.</p>
+    <p class="ssub">Ordenada por unidad, como el programa. Dentro de cada unidad, cada tema usa lo del anterior.</p>
     <div class="path" id="topicList"></div>
+
+    <div class="stitle">Parciales modelo</div>
+    <p class="ssub">Exámenes completos, armados como un parcial real: ejercicios para desarrollar, problemas con enunciado y bloques de verdadero/falso que se responden <strong>solo leyendo un gráfico o una situación</strong>.</p>
+    <div class="pm-grid" id="pmList"></div>
 
     <div class="final-card">
       <h3>Examen final integrador</h3>
-      <p>Mezcla los 10 temas. Ideal para la semana previa al parcial.</p>
+      <p>Mezcla las 4 unidades. Ideal para la semana previa al parcial.</p>
       <div class="levels">
         <button class="lv b" data-topic="final" data-level="basico"><span class="lvdot"></span>Básico</button>
         <button class="lv n" data-topic="final" data-level="normal"><span class="lvdot"></span>Normal</button>
         <button class="lv e" data-topic="final" data-level="examen"><span class="lvdot"></span>Examen</button>
+        <button class="lv p" data-topic="final" data-level="parcial"><span class="lvdot"></span>Parcial</button>
       </div>
     </div>
   </div>
@@ -152,6 +197,7 @@
       <div class="lvl-tag" id="lvlTag"></div>
       <h2 id="examTitle"></h2>
       <div class="meta" id="examMeta"></div>
+      <div class="rules" id="examRules" style="display:none"></div>
     </div>
     <div id="questions"></div>
     <div class="submit-bar">
@@ -162,287 +208,50 @@
 </div>
 
 <footer>
-  Simulador de práctica · Elementos de Análisis Matemático y Álgebra Lineal. En los conjuntos, el <b>0 se toma como natural</b>.
+  Simulador de práctica · Elementos de Análisis Matemático y Álgebra Lineal. En los conjuntos, el <b>0 se toma como natural</b>. Las opciones de cada pregunta se mezclan cada vez que abrís un examen.
 </footer>
 
+<script src="graficos.js"></script>
+<script src="examenes-datos.js"></script>
 <script>
-/* Helpers para armar preguntas */
-function mc(q,o,c,e){return {t:'mc',q:q,o:o,c:c,e:e};}
-function op(q,s,e){return {t:'op',q:q,s:s,e:e||''};}
-
-const CURSO = {
- topics:[
- {id:'t1',n:'01',titulo:'Lenguaje simbólico y noción de conjunto',pre:'Punto de partida',desc:'Símbolos (∈, /, ∀, ∃), qué es un conjunto, elemento, pertenencia y cardinal.',
-  exams:{
-   basico:[
-    mc('¿Qué significa el símbolo <span class="mono">∈</span>?',['pertenece','está incluido','para todo','existe'],0,'∈ relaciona un elemento con un conjunto: "pertenece".'),
-    mc('El cardinal de A = {2, 4, 6, 8} es:',['2','4','8','16'],1,'El cardinal (#A) es la cantidad de elementos: 4.'),
-    mc('¿Cuál NO es un conjunto bien definido?',['los números pares','los días de la semana','los mejores jugadores','las vocales'],2,'"Los mejores" no tiene un criterio claro para decidir quién entra.'),
-    mc('El cardinal de las letras de la palabra "banana" es:',['6','3','2','5'],1,'Letras distintas: b, a, n → 3 (no se repiten).')
-   ],
-   normal:[
-    mc('¿Verdadero o falso? &nbsp; <span class="mono">3 ∈ {1, 3, 5}</span>',['Verdadero','Falso'],0,'El 3 está en el conjunto, así que pertenece.'),
-    mc('En <span class="mono">{x / x es par}</span>, la barra <span class="mono">/</span> se lee:',['tal que','para todo','pertenece','existe'],0,'La barra significa "tal que".'),
-    mc('¿Cuál es el cardinal de <span class="mono">{x / x ∈ ℕ, x &lt; 5}</span>?',['4','5','6','infinito'],1,'{0,1,2,3,4} → 5 elementos (el 0 es natural).'),
-    mc('¿Cuál afirmación es correcta?',['∀ significa "existe"','∃ significa "para todo"','∅ tiene cardinal 0','{0} es el conjunto vacío'],2,'El vacío no tiene elementos: #∅ = 0. Ojo: {0} es unitario.')
-   ],
-   examen:[
-    op('Escribí en lenguaje simbólico: "existe un número natural x tal que x es mayor que 100".','∃ x ∈ ℕ / x &gt; 100','∃ = existe, / = tal que.'),
-    op('Dado A = {a, e, i, o, u}: indicá #A y decidí si es verdadero <span class="mono">e ∈ A</span> y <span class="mono">{e} ∈ A</span>.','#A = 5 · e ∈ A: Verdadero · {e} ∈ A: Falso','{e} es un subconjunto (⊂), no un elemento de A. Por eso {e} ∈ A es falso.'),
-    op('¿"Los números grandes" es un conjunto? Justificá.','No: no está bien definido, no hay criterio para decidir si un número es "grande".',''),
-    op('¿Cuál es el cardinal del conjunto de letras de la palabra "matemática"?','{m, a, t, e, i, c} → #A = 6','Se cuentan las letras distintas, sin repetir.')
-   ]
-  }},
-
- {id:'t2',n:'02',titulo:'Extensión y comprensión',pre:'Necesitás: <b>qué es un conjunto</b>',desc:'Pasar de la propiedad a la lista de elementos y al revés.',
-  exams:{
-   basico:[
-    mc('Definir un conjunto "por extensión" es:',['listar sus elementos','dar la propiedad','dibujarlo','contarlo'],0,'Por extensión se escriben todos los elementos entre llaves.'),
-    mc('<span class="mono">{x / x es vocal}</span> por extensión es:',['{a, e, i, o, u}','{a, b, c}','{vocales}','{1, 2, 3}'],0,'Las vocales listadas.'),
-    mc('<span class="mono">{x / x ∈ ℕ, x &lt; 4}</span> por extensión es:',['{1, 2, 3}','{0, 1, 2, 3}','{0, 1, 2, 3, 4}','{1, 2, 3, 4}'],1,'Con 0 natural y x menor que 4: {0,1,2,3}.'),
-    mc('<span class="mono">{x / x es día de la semana}</span> está definido por:',['comprensión','extensión'],0,'Se da la propiedad, no la lista → comprensión.')
-   ],
-   normal:[
-    mc('<span class="mono">{x / x ∈ ℕ, 2 &lt; x ≤ 6}</span> por extensión:',['{3, 4, 5, 6}','{2, 3, 4, 5, 6}','{3, 4, 5}','{2, 3, 4, 5}'],0,'&gt; 2 deja afuera el 2; ≤ 6 incluye el 6.'),
-    mc('El conjunto {lunes, ..., domingo} por comprensión es:',['{x / x es día de la semana}','{x / x es mes}','{x / x es vocal}','{x / x ∈ ℕ}'],0,'La propiedad común es "ser día de la semana".'),
-    mc('<span class="mono">{x / x ∈ ℕ, 5 ≤ x &lt; 9}</span> por extensión:',['{5, 6, 7, 8}','{5, 6, 7, 8, 9}','{6, 7, 8}','{5, 6, 7}'],0,'≥ 5 incluye el 5; &lt; 9 deja afuera el 9.'),
-    mc('{1, 4, 9, 16, 25} por comprensión es:',['{x / x es cuadrado perfecto, 0 &lt; x &lt; 30}','{x / x es par}','{x / x es primo}','{x / x ∈ ℕ}'],0,'1,4,9,16,25 son 1², 2², 3², 4², 5².')
-   ],
-   examen:[
-    op('Pasá a extensión: A = {x / x ∈ ℕ, 4 &lt; x ≤ 10}.','A = {5, 6, 7, 8, 9, 10}','&gt; 4 deja afuera el 4; ≤ 10 incluye el 10.'),
-    op('Pasá a comprensión: {3, 6, 9, 12, 15, 18}.','{x / x ∈ ℕ, x múltiplo de 3, 0 &lt; x &lt; 19}','Todos son múltiplos de 3 entre 3 y 18.'),
-    op('Pasá a extensión: {x / x es letra de la palabra "otoño"}.','{o, t, ñ}','o, t, o, ñ, o → sin repetir queda {o, t, ñ}.'),
-    op('Pasá a extensión: B = {x / x ∈ ℕ, x par, x &lt; 10}.','B = {0, 2, 4, 6, 8}','Pares menores que 10. El 0 es par y natural.')
-   ]
-  }},
-
- {id:'t3',n:'03',titulo:'Tipos de conjuntos · pertenencia e inclusión',pre:'Necesitás: <b>cardinal</b> y la idea de <b>subconjunto</b>',desc:'Vacío, unitario, finito, infinito, y la diferencia entre ∈ (elemento) y ⊂ (conjunto).',
-  exams:{
-   basico:[
-    mc('Un conjunto con un solo elemento se llama:',['unitario','vacío','universal','infinito'],0,'Un elemento → unitario.'),
-    mc('El símbolo <span class="mono">∅</span> representa el conjunto:',['vacío','unitario','universal','infinito'],0,'∅ = conjunto vacío (sin elementos).'),
-    mc('ℕ (los naturales) es un conjunto:',['finito','infinito','vacío','unitario'],1,'No termina nunca → infinito.'),
-    mc('Completá: <span class="mono">{2, 4} ___ {2, 4, 6}</span>',['⊂','∈','∉','='],0,'Los dos son conjuntos y todos los elementos de {2,4} están → ⊂.')
-   ],
-   normal:[
-    mc('Completá: <span class="mono">5 ___ {1, 3, 5}</span>',['∈','⊂','∉','⊄'],0,'5 es un elemento suelto y está en el conjunto → ∈.'),
-    mc('{1, 2} respecto de {1, 2}, ¿cómo son?',['iguales','disjuntos','uno pertenece al otro','no relacionados'],0,'Tienen los mismos elementos → iguales.'),
-    mc('¿Cuál de estos es unitario?',['{x / x es capital de Argentina}','{x / x ∈ ℕ, x &lt; 3}','{x / x es vocal}','∅'],0,'Una sola capital → un elemento → unitario.'),
-    mc('{1, 2} y {3, 4} son conjuntos:',['disjuntos','iguales','uno subconjunto del otro','unitarios'],0,'No comparten ningún elemento → disjuntos.')
-   ],
-   examen:[
-    op('A = {0, 1, 2, 3}, B = {1, 3}. Completá con ∈, ∉, ⊂ o ⊄: &nbsp; B__A · 2__A · 5__A · {0}__A','B ⊂ A · 2 ∈ A · 5 ∉ A · {0} ⊂ A','Conjuntos (B, {0}) → ⊂/⊄. Elementos sueltos (2, 5) → ∈/∉.'),
-    op('Clasificá: <span class="mono">{x / x ∈ ℕ, 3 &lt; x &lt; 4}</span>.','Vacío (∅)','No existe ningún natural entre 3 y 4.'),
-    op('Clasificá: {x / x es punto de intersección de dos rectas paralelas no coincidentes}.','Vacío (∅)','Las rectas paralelas no se cortan nunca.'),
-    op('Si A = {a, b, c}, ¿cuántos subconjuntos tiene (cardinal de P(A))?','#P(A) = 2³ = 8','La fórmula del conjunto de partes es 2 elevado a la cantidad de elementos.')
-   ]
-  }},
-
- {id:'t4',n:'04',titulo:'Operaciones entre conjuntos',pre:'Necesitás: <b>tipos, pertenencia e inclusión</b>',desc:'Unión, intersección, diferencia y complemento.',
-  exams:{
-   basico:[
-    mc('Con A = {1, 2, 3} y B = {3, 4}: &nbsp; A ∪ B =',['{1, 2, 3, 4}','{3}','{1, 2, 4}','{1, 2, 3}'],0,'La unión junta todo sin repetir.'),
-    mc('Con A = {1, 2, 3} y B = {3, 4}: &nbsp; A ∩ B =',['{3}','{1, 2, 3, 4}','∅','{1, 2}'],0,'La intersección son los elementos comunes: solo el 3.'),
-    mc('Con A = {1, 2, 3} y B = {3, 4}: &nbsp; A − B =',['{1, 2}','{4}','{3}','{1, 2, 3}'],0,'A − B: lo de A que no está en B.'),
-    mc('Si <span class="mono">A ∩ B = ∅</span>, los conjuntos son:',['disjuntos','iguales','uno incluido en el otro','unitarios'],0,'Sin elementos comunes → disjuntos.')
-   ],
-   normal:[
-    mc('A = {1, 2, 3, 4}, B = {3, 4, 5, 6}. &nbsp; A ∪ B =',['{1, 2, 3, 4, 5, 6}','{3, 4}','{1, 2, 5, 6}','{1, 2, 3, 4}'],0,'Todos los elementos de ambos, sin repetir.'),
-    mc('A = {1, 2, 3, 4}, B = {3, 4, 5, 6}. &nbsp; A ∩ B =',['{3, 4}','{1, 2}','{5, 6}','∅'],0,'Comunes: 3 y 4.'),
-    mc('A = {1, 2, 3, 4}, B = {3, 4, 5, 6}. &nbsp; B − A =',['{5, 6}','{1, 2}','{3, 4}','{1, 2, 3, 4}'],0,'Lo de B que no está en A.'),
-    mc('𝒰 = {1,2,3,4,5,6}, A = {1, 2, 3, 4}. &nbsp; El complemento Ā =',['{5, 6}','{1, 2}','∅','{1,2,3,4}'],0,'Ā = 𝒰 − A: lo del universal que no está en A.')
-   ],
-   examen:[
-    op('A = {1, 2, 3, 4, 5}, B = {2, 4, 6}, 𝒰 = {1, 2, ..., 7}. Hallá A ∪ B, A ∩ B, A − B y el complemento de B.','A ∪ B = {1,2,3,4,5,6} · A ∩ B = {2,4} · A − B = {1,3,5} · B̄ = {1,3,5,7}','B̄ = 𝒰 − B = {1,3,5,7}.'),
-    op('Con A = {a, b, c, d} y B = {c, d, e}: hallá A − B y B − A.','A − B = {a, b} · B − A = {e}','Notá que A − B ≠ B − A.'),
-    op('¿Qué operación da "los elementos que están en A o en B (o en ambos)"?','La unión: A ∪ B',''),
-    op('Si A ⊂ B, ¿cuánto vale A ∩ B? ¿Y A ∪ B?','A ∩ B = A · A ∪ B = B','Si A está incluido en B, la intersección es el más chico y la unión el más grande.')
-   ]
-  }},
-
- {id:'t5',n:'05',titulo:'Conjuntos numéricos e intervalos',pre:'Necesitás: <b>inclusión</b> y desigualdades',desc:'ℕ, ℤ, ℚ, 𝕀, ℝ, imaginarios, y los intervalos de la recta real.',
-  exams:{
-   basico:[
-    mc('El número √2 es:',['irracional','racional','entero','natural'],0,'√2 tiene infinitos decimales no periódicos → irracional.'),
-    mc('El número −5 pertenece a:',['ℤ (y no a ℕ)','ℕ','a ninguno','solo a 𝕀'],0,'Es entero negativo: está en ℤ pero no en ℕ.'),
-    mc('¿Cuál es la cadena de inclusiones correcta?',['ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ','ℝ ⊂ ℚ ⊂ ℤ ⊂ ℕ','ℤ ⊂ ℕ ⊂ ℚ ⊂ ℝ','ℚ ⊂ ℕ ⊂ ℤ ⊂ ℝ'],0,'Cada conjunto contiene al anterior.'),
-    mc('El intervalo [2, 5] incluye…',['al 2 y al 5','a ninguno de los dos','solo al 2','solo al 5'],0,'Corchete = extremo incluido.')
-   ],
-   normal:[
-    mc('El decimal periódico 0,333… es:',['racional','irracional','entero','imaginario'],0,'0,333… = 1/3, es una fracción → racional.'),
-    mc('El número π es:',['irracional','racional','entero','natural'],0,'Decimales infinitos no periódicos → irracional.'),
-    mc('El intervalo (1, 4) significa:',['1 &lt; x &lt; 4','1 ≤ x ≤ 4','x &gt; 1','x &lt; 4'],0,'Paréntesis = extremos NO incluidos.'),
-    mc('¿Cuál de estos NO es un número real?',['√−1','√2','−3','0,5'],0,'√−1 = i es imaginario, no real.')
-   ],
-   examen:[
-    op('Clasificá cada uno como ℕ, ℤ, ℚ, 𝕀 o ℝ (el más ajustado): &nbsp; −7 · 3/4 · √9 · √3 · 0','−7 ∈ ℤ · 3/4 ∈ ℚ · √9 = 3 ∈ ℕ · √3 ∈ 𝕀 · 0 ∈ ℕ','√9 vale 3 (natural). √3 no da exacto → irracional.'),
-    op('Escribí como intervalo: {x ∈ ℝ / −2 ≤ x &lt; 3}.','[−2, 3)','≤ → corchete; &lt; → paréntesis.'),
-    op('Escribí con desigualdad el intervalo (0, +∞).','x &gt; 0','Todos los reales mayores que 0.'),
-    op('¿Verdadero o falso? "Todo número entero es racional." Justificá.','Verdadero: todo entero n se escribe como n/1, que es una fracción.','')
-   ]
-  }},
-
- {id:'t6',n:'06',titulo:'Producto cartesiano',pre:'Necesitás: <b>conjuntos</b> y pares',desc:'Par ordenado, A × B, cardinal (#A · #B) y por qué no es conmutativo.',
-  exams:{
-   basico:[
-    mc('Los pares (2 ; 5) y (5 ; 2) son:',['distintos','iguales'],0,'El orden importa en un par ordenado.'),
-    mc('Si #A = 2 y #B = 3, entonces #(A × B) =',['5','6','8','9'],1,'#(A×B) = #A · #B = 2·3 = 6.'),
-    mc('En el par (a ; b), <span class="mono">a</span> es la:',['primera componente','segunda componente','tercera componente','ninguna'],0,'a es la primera, b la segunda.'),
-    mc('A × B es:',['un conjunto de pares ordenados','una suma','un número','una recta'],0,'Es el conjunto de todos los pares ordenados posibles.')
-   ],
-   normal:[
-    mc('A = {1, 2}, B = {3, 4}. &nbsp; A × B =',['{(1;3),(1;4),(2;3),(2;4)}','{(3;1),(4;1),(3;2),(4;2)}','{1,2,3,4}','{(1;2),(3;4)}'],0,'Cada elemento de A con cada uno de B.'),
-    mc('¿Es cierto que A × B = B × A siempre?',['No, en general no','Sí, siempre'],0,'El producto cartesiano no es conmutativo.'),
-    mc('Si #A = 3, ¿cuánto vale #(A × A)?',['6','9','3','12'],1,'3 · 3 = 9.'),
-    mc('B = {3, 4}, A = {1, 2}. ¿Cuál es un par de B × A?',['(3 ; 1)','(1 ; 3)','(3 ; 3)','(1 ; 1)'],0,'En B × A la primera componente sale de B.')
-   ],
-   examen:[
-    op('A = {0, 2}, B = {1, 3, 5}. Hallá A × B por extensión.','{(0;1),(0;3),(0;5),(2;1),(2;3),(2;5)}','Son #A · #B = 2·3 = 6 pares.'),
-    op('C = {x ∈ ℕ impar, 0 &lt; x &lt; 5} y D = {x ∈ ℕ par, 0 &lt; x &lt; 5}. Hallá C × D.','C = {1,3}, D = {2,4} → C × D = {(1;2),(1;4),(3;2),(3;4)}','Primero pasá C y D a extensión.'),
-    op('¿Cuántos pares tiene A × B si A tiene 4 elementos y B tiene 5?','#(A × B) = 4 · 5 = 20',''),
-    op('Si A × B tiene 12 pares y #A = 3, ¿cuánto vale #B?','#B = 12 / 3 = 4','Porque 12 = #A · #B = 3 · #B.')
-   ]
-  }},
-
- {id:'t7',n:'07',titulo:'Matrices: definición, tipos y operaciones',pre:'Necesitás: <b>números</b> y orden de filas/columnas',desc:'Dimensión, tipos, suma, resta, opuesta, escalar, producto y traspuesta.',
-  exams:{
-   basico:[
-    mc('Una matriz de dimensión 3 × 2 tiene:',['3 filas y 2 columnas','2 filas y 3 columnas','3 elementos','6 filas'],0,'Se lee "3 por 2": filas por columnas.'),
-    mc('La matriz identidad tiene en su diagonal principal:',['unos','ceros','la fila','números al azar'],0,'Unos en la diagonal y ceros en el resto.'),
-    mc('Para sumar dos matrices, deben tener:',['la misma dimensión','ser cuadradas','ser inversas','determinante igual'],0,'La suma es elemento a elemento, exige igual dimensión.'),
-    mc('La opuesta de la matriz [1 &nbsp; −2] es:',['[−1 &nbsp; 2]','[1 &nbsp; 2]','[2 &nbsp; −1]','[−1 &nbsp; −2]'],0,'Se cambia el signo de cada elemento.')
-   ],
-   normal:[
-    mc('[1 2 ; 3 4] + [5 6 ; 7 8] =',['[6 8 ; 10 12]','[5 12 ; 21 32]','[6 8 ; 10 11]','[5 6 ; 7 8]'],0,'Se suma casillero por casillero.'),
-    mc('2 · [1 0 ; −1 3] =',['[2 0 ; −2 6]','[2 0 ; −1 3]','[1 0 ; −2 6]','[3 2 ; 1 5]'],0,'Cada elemento por 2.'),
-    mc('Para poder calcular A · B con A de 2 × 3, la matriz B debe tener:',['3 filas','2 filas','3 columnas','2 columnas'],0,'Las columnas de A (3) deben igualar las filas de B.'),
-    mc('La traspuesta de [1 &nbsp; 2 &nbsp; 3] (que es 1 × 3) es:',['una columna 3 × 1','una fila 1 × 3','una matriz 2 × 2','[3 2 1]'],0,'Al trasponer, la fila se vuelve columna.')
-   ],
-   examen:[
-    op('A = [1 2 ; 3 4], B = [0 1 ; 1 0]. Hallá A + B y A − B.','A + B = [1 3 ; 4 4] · A − B = [1 1 ; 2 4]','Elemento a elemento.'),
-    op('Con A = [1 2 ; 3 4] y B = [0 1 ; 1 0], hallá A · B.','A · B = [2 1 ; 4 3]','Fila×columna: (1,1)=1·0+2·1=2; (1,2)=1·1+2·0=1; (2,1)=3·0+4·1=4; (2,2)=3·1+4·0=3.'),
-    op('Hallá la traspuesta de [1 2 3 ; 4 5 6].','[1 4 ; 2 5 ; 3 6]','Las filas pasan a columnas: la 2×3 queda 3×2.'),
-    op('Hallá el producto [1 2 3] · [1 ; 0 ; −1] (una 1×3 por una 3×1).','[−1] &nbsp; (es decir, −2… verificá)','1·1 + 2·0 + 3·(−1) = 1 + 0 − 3 = −2. El resultado es la matriz 1×1 [−2].')
-   ]
-  }},
-
- {id:'t8',n:'08',titulo:'Determinantes',pre:'Necesitás: <b>matrices cuadradas</b>',desc:'Determinante de orden 1, 2 y 3 (Sarrus), y sus propiedades básicas.',
-  exams:{
-   basico:[
-    mc('El determinante existe solo para matrices:',['cuadradas','rectangulares','de una fila','de una columna'],0,'Solo las cuadradas (m = n) tienen determinante.'),
-    mc('El determinante de [a b ; c d] es:',['ad − bc','ab − cd','ad + bc','ac − bd'],0,'Producto de la diagonal principal menos el de la otra.'),
-    mc('det[2 0 ; 0 3] =',['6','5','0','9'],0,'2·3 − 0·0 = 6.'),
-    mc('Si det(A) = 0, entonces la matriz A:',['no tiene inversa','tiene inversa','es la identidad','es rectangular'],0,'Determinante 0 → singular → sin inversa.')
-   ],
-   normal:[
-    mc('det[3 1 ; 2 4] =',['10','14','11','−10'],0,'3·4 − 1·2 = 12 − 2 = 10.'),
-    mc('det[5 −2 ; 1 3] =',['17','13','−17','15'],0,'5·3 − (−2)·1 = 15 + 2 = 17.'),
-    mc('El determinante de la triangular [2 5 ; 0 3] es:',['6','16','10','15'],0,'En una triangular es el producto de la diagonal: 2·3 = 6.'),
-    mc('Si una matriz tiene dos filas iguales, su determinante es:',['0','1','no se puede calcular','negativo'],0,'Dos filas iguales → det = 0.')
-   ],
-   examen:[
-    op('Calculá det[4 −1 ; 2 3].','12 − (−2) = 12 + 2 = 14','4·3 − (−1)·2. Cuidado con el signo del −1.'),
-    op('Calculá por Sarrus det[1 2 3 ; 0 1 4 ; 5 6 0].','= (0 + 40 + 0) − (15 + 24 + 0) = 40 − 39 = 1','Diagonales ↘ menos diagonales ↙.'),
-    op('Calculá det[2 0 0 ; 0 5 0 ; 0 0 3] (diagonal).','2 · 5 · 3 = 30','En una diagonal, el determinante es el producto de la diagonal.'),
-    op('¿Para qué valor de k es det[k 2 ; 3 4] = 0?','4k − 6 = 0 → k = 3/2','Se plantea el determinante igualado a 0 y se despeja k.')
-   ]
-  }},
-
- {id:'t9',n:'09',titulo:'Operaciones de fila y forma escalonada',pre:'Necesitás: <b>matrices</b>',desc:'Las 3 operaciones elementales de fila y la forma escalonada reducida.',
-  exams:{
-   basico:[
-    mc('¿Cuál NO es una operación elemental de fila?',['multiplicar una fila por 0','intercambiar dos filas','sumar un múltiplo de una fila a otra','multiplicar una fila por 2'],0,'Multiplicar por una constante SÍ, pero debe ser distinta de 0.'),
-    mc('<span class="mono">R₁ ↔ R₂</span> significa:',['intercambiar las filas 1 y 2','sumar la fila 1 a la 2','multiplicar la fila 1 por 2','borrar la fila 2'],0,'La flecha doble indica intercambio.'),
-    mc('En la forma escalonada, las filas de solo ceros van:',['abajo','arriba','al medio','no importa'],0,'Los renglones nulos quedan en la parte inferior.'),
-    mc('El primer número distinto de cero de cada fila (pivote) debe ser:',['1','0','cualquier número','negativo'],0,'En la forma reducida el pivote es un 1 (1 delantero).')
-   ],
-   normal:[
-    mc('El símbolo <span class="mono">∼</span> entre dos matrices significa que son:',['equivalentes por filas','iguales','opuestas','inversas'],0,'Una se obtiene de la otra con operaciones de fila.'),
-    mc('¿Cuál está en forma escalonada reducida?',['[1 0 ; 0 1]','[0 1 ; 1 0]','[1 2 ; 3 4]','[2 0 ; 0 2]'],0,'Pivotes 1 en escalera y ceros en sus columnas.'),
-    mc('<span class="mono">R₂ − 2R₁</span> quiere decir:',['a la fila 2 le resto 2 veces la fila 1','a la fila 1 le sumo la 2','multiplico la fila 2 por −2','intercambio las filas'],0,'Se combina la fila 2 con un múltiplo de la 1.'),
-    mc('Si al reducir aparece una fila entera de ceros, la matriz…',['no es equivalente a la identidad (sin inversa)','es la identidad','no tiene determinante','es simétrica'],0,'Fila de ceros → no se llega a la identidad → no hay inversa.')
-   ],
-   examen:[
-    op('Aplicá <span class="mono">R₂ − 2R₁</span> a la matriz [1 3 ; 2 5].','[1 3 ; 0 −1]','Fila 2 nueva = (2, 5) − 2·(1, 3) = (0, −1).'),
-    op('¿La matriz [1 0 2 ; 0 1 5 ; 0 0 0] está en forma escalonada reducida? Justificá.','Sí','La fila de ceros está abajo, los pivotes son 1 en escalera y sus columnas tienen ceros en el resto.'),
-    op('Llevá [1 2 ; 3 4] a forma escalonada (hacé cero el 3).','R₂ − 3R₁ → [1 2 ; 0 −2]','Fila 2 = (3, 4) − 3·(1, 2) = (0, −2).'),
-    op('¿Cuáles son las 3 operaciones elementales de fila?','1) Intercambiar dos filas. 2) Multiplicar una fila por un número ≠ 0. 3) Sumar a una fila un múltiplo de otra.','')
-   ]
-  }},
-
- {id:'t10',n:'10',titulo:'Inversa, ecuaciones matriciales y Cramer',pre:'Necesitás: <b>matrices, determinantes y operaciones de fila</b>',desc:'Matriz inversa (atajo 2×2 y Gauss-Jordan), A·X = B y la regla de Cramer.',
-  exams:{
-   basico:[
-    mc('El producto <span class="mono">A · A⁻¹</span> da:',['I (la identidad)','0','A','A²'],0,'La inversa "deshace" a la matriz y da la identidad.'),
-    mc('Una matriz cuadrada A tiene inversa si:',['det(A) ≠ 0','det(A) = 0','es rectangular','tiene una fila de ceros'],0,'Determinante distinto de 0 → invertible.'),
-    mc('En <span class="mono">A · X = B</span>, se despeja X como:',['A⁻¹ · B','B · A','B − A','A · B'],0,'Se multiplica por la inversa a la izquierda: X = A⁻¹B.'),
-    mc('La regla de Cramer sirve para:',['resolver sistemas de ecuaciones','sumar matrices','trasponer','graficar'],0,'Resuelve sistemas n×n con determinante ≠ 0.')
-   ],
-   normal:[
-    mc('La inversa de [3 1 ; 2 4] (det = 10) es:',['(1/10)·[4 −1 ; −2 3]','[4 −1 ; −2 3]','(1/10)·[3 1 ; 2 4]','[4 1 ; 2 3]'],0,'Atajo 2×2: intercambio a↔d, cambio signo a b y c, divido por det.'),
-    mc('Para [a b ; c d], la inversa se multiplica por el factor:',['1/(ad − bc)','ad − bc','1/(ab)','ad + bc'],0,'Es 1 sobre el determinante.'),
-    mc('En Cramer, x = det(Aₓ)/det(A). Si det(A) = 5 y det(Aₓ) = 10, entonces x =',['2','0,5','50','−2'],0,'10 / 5 = 2.'),
-    mc('El método de Gauss-Jordan para la inversa parte de la matriz:',['[A | I]','[A | B]','[I | I]','[A | 0]'],0,'Se aumenta A con la identidad y se reduce.')
-   ],
-   examen:[
-    op('Hallá la inversa de [2 1 ; 5 3].','det = 6 − 5 = 1 → A⁻¹ = [3 −1 ; −5 2]','Como det = 1, la inversa es directamente [d −b ; −c a].'),
-    op('Resolvé por Cramer: &nbsp; 2x + y = 5 &nbsp; ; &nbsp; x − y = 1.','x = 2, y = 1','det(A) = −3. det(Aₓ) = |5 1 ; 1 −1| = −6 → x = 2. det(A_y) = |2 5 ; 1 1| = −3 → y = 1.'),
-    op('Resolvé A·X = B con A = [1 2 ; 3 4] (det = −2) y B = [5 ; 6].','x = −4, y = 4,5','A⁻¹ = (1/−2)[4 −2 ; −3 1]. X = A⁻¹B → x = −4, y = 4,5. Verificás: 1·(−4)+2·4,5 = 5 ✓.'),
-    op('¿En qué caso NO se puede usar la regla de Cramer?','Cuando det(A) = 0 (no hay solución única).','')
-   ]
-  }}
- ],
-
- final:{
-  basico:[
-   mc('El cardinal de {a, e, i, o, u} es:',['5','4','6','10'],0,'Cinco vocales.'),
-   mc('<span class="mono">{x / x ∈ ℕ, x &lt; 3}</span> por extensión es:',['{0, 1, 2}','{1, 2}','{0, 1, 2, 3}','{1, 2, 3}'],0,'Con 0 natural: {0, 1, 2}.'),
-   mc('El número √2 es:',['irracional','racional','entero','natural'],0,'Decimales infinitos no periódicos.'),
-   mc('Si #A = 2 y #B = 4, entonces #(A × B) =',['8','6','2','4'],0,'2 · 4 = 8.'),
-   mc('det[1 0 ; 0 5] =',['5','0','1','6'],0,'1·5 − 0·0 = 5.'),
-   mc('El producto A · A⁻¹ da:',['la identidad I','0','A','B'],0,'La inversa da la identidad.')
-  ],
-  normal:[
-   mc('A = {1, 2, 3}, B = {2, 3, 4}. &nbsp; A ∩ B =',['{2, 3}','{1, 4}','{1, 2, 3, 4}','∅'],0,'Comunes: 2 y 3.'),
-   mc('¿Cuál es la cadena de inclusiones correcta?',['ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ','ℝ ⊂ ℚ ⊂ ℤ ⊂ ℕ','ℚ ⊂ ℤ ⊂ ℕ ⊂ ℝ','ℤ ⊂ ℕ ⊂ ℝ ⊂ ℚ'],0,'Cada uno contiene al anterior.'),
-   mc('El intervalo abierto (1, 5) significa:',['1 &lt; x &lt; 5','1 ≤ x ≤ 5','x &gt; 5','x &lt; 1'],0,'Paréntesis = extremos excluidos.'),
-   mc('A = {1, 2}, B = {3, 4}. &nbsp; A × B =',['{(1;3),(1;4),(2;3),(2;4)}','{(3;1),(4;2)}','{1,2,3,4}','{(1;2),(3;4)}'],0,'Cada uno de A con cada uno de B.'),
-   mc('[1 2 ; 3 4] + [1 1 ; 1 1] =',['[2 3 ; 4 5]','[1 2 ; 3 4]','[2 2 ; 4 4]','[1 3 ; 4 5]'],0,'Elemento a elemento.'),
-   mc('det[3 2 ; 1 4] =',['10','14','11','−10'],0,'3·4 − 2·1 = 12 − 2 = 10.')
-  ],
-  examen:[
-   op('A = {0, 1, 2, 3, 4}, B = {2, 4, 6}, 𝒰 = {0, 1, ..., 7}. Hallá A ∪ B, A ∩ B, A − B y el complemento de B.','A ∪ B = {0,1,2,3,4,6} · A ∩ B = {2,4} · A − B = {0,1,3} · B̄ = {0,1,3,5,7}','B̄ = 𝒰 − B.'),
-   op('Clasificá en el conjunto numérico más ajustado: &nbsp; −3 · 2/5 · √16 · √2.','−3 ∈ ℤ · 2/5 ∈ ℚ · √16 = 4 ∈ ℕ · √2 ∈ 𝕀','√16 = 4 es natural; √2 es irracional.'),
-   op('C = {1, 2}, D = {3, 4, 5}. Hallá C × D y su cardinal.','C × D = {(1;3),(1;4),(1;5),(2;3),(2;4),(2;5)} · #(C × D) = 6','#(C×D) = 2 · 3 = 6.'),
-   op('A = [1 2 ; 3 4], B = [2 0 ; 1 1]. Hallá A · B.','A · B = [4 2 ; 10 4]','(1,1)=1·2+2·1=4; (1,2)=1·0+2·1=2; (2,1)=3·2+4·1=10; (2,2)=3·0+4·1=4.'),
-   op('Calculá por Sarrus det[2 1 0 ; 1 3 1 ; 0 1 2].','= (12 + 0 + 0) − (0 + 2 + 2) = 8','↘: 2·3·2, 1·1·0, 0·1·1. ↙: 0·3·0, 2·1·1, 1·1·2.'),
-   op('Resolvé por Cramer: &nbsp; x + y = 3 &nbsp; ; &nbsp; 2x − y = 0.','x = 1, y = 2','det(A) = −3. det(Aₓ) = |3 1 ; 0 −1| = −3 → x = 1. det(A_y) = |1 3 ; 2 0| = −6 → y = 2. Verificás: 1+2 = 3 ✓.')
-  ]
- }
-};
-
 /* ================= LÓGICA ================= */
-const LV = {basico:{tag:'Básico',cls:'b',time:'Sin límite · repasá con calma'},normal:{tag:'Normal',cls:'n',time:'Tiempo sugerido: 15 min'},examen:{tag:'Examen',cls:'e',time:'Tiempo sugerido: 25 min · como en el parcial'}};
+const LV = {
+  basico:{tag:'Básico',cls:'b',color:'teal',time:'Sin límite · repasá con calma'},
+  normal:{tag:'Normal',cls:'n',color:'gold',time:'Tiempo sugerido: 15 min'},
+  examen:{tag:'Examen',cls:'e',color:'red',time:'Tiempo sugerido: 30 min · como en el parcial'},
+  parcial:{tag:'Parcial · nivel terciario',cls:'p',color:'purple',time:'Tiempo sugerido: 45 min · sin calculadora salvo que se indique'},
+  modelo:{tag:'Parcial modelo',cls:'p',color:'purple',time:'Tiempo sugerido: 2 horas'}
+};
 const homeView=document.getElementById('homeView');
 const examView=document.getElementById('examView');
 const topicList=document.getElementById('topicList');
-let state={};
+let state={},selfGrade={};
 
-/* render home */
+/* render home: agrupado por unidad */
+let lastUnit=null;
 CURSO.topics.forEach(function(t){
+  if(t.u!==lastUnit){
+    lastUnit=t.u;const U=CURSO.unidades[t.u];
+    const h=document.createElement('div');h.className='unit-head';
+    h.innerHTML='<span class="uk">Unidad '+t.u+'</span><h3>'+U.n+'</h3>'+(U.guia?'<a href="'+U.guia+'">Ir a la guía ›</a>':'');
+    topicList.appendChild(h);
+  }
   const div=document.createElement('div');
   div.className='topic';
-  div.innerHTML='<div class="tnum">'+t.n+'</div><div class="tbody"><h3>'+t.titulo+'</h3>'+
+  const lv=['basico','normal','examen','parcial'].filter(l=>t.exams[l]);
+  div.innerHTML='<div class="tnum">'+t.n+'</div><div class="tbody"><h3>'+t.titulo+(t.nuevo?'<span class="tnew">NUEVO</span>':'')+'</h3>'+
     '<p class="tprereq">'+t.pre+'</p><p class="tdesc">'+t.desc+'</p>'+
-    '<div class="levels">'+
-      '<button class="lv b" data-topic="'+t.id+'" data-level="basico"><span class="lvdot"></span>Básico</button>'+
-      '<button class="lv n" data-topic="'+t.id+'" data-level="normal"><span class="lvdot"></span>Normal</button>'+
-      '<button class="lv e" data-topic="'+t.id+'" data-level="examen"><span class="lvdot"></span>Examen</button>'+
+    '<div class="levels">'+lv.map(l=>'<button class="lv '+LV[l].cls+'" data-topic="'+t.id+'" data-level="'+l+'"><span class="lvdot"></span>'+(l==='parcial'?'Parcial':LV[l].tag)+'</button>').join('')+
     '</div></div>';
   topicList.appendChild(div);
 });
+const pmList=document.getElementById('pmList');
+CURSO.modelos.forEach(function(m){
+  const d=document.createElement('div');d.className='pm';
+  d.innerHTML='<div class="pk">'+m.k+'</div><h4>'+m.titulo+'</h4><p>'+m.desc+'</p><div><button class="lv p" data-topic="'+m.id+'" data-level="modelo"><span class="lvdot"></span>Rendir</button></div>';
+  pmList.appendChild(d);
+});
 
-/* click en cualquier botón de nivel */
 document.addEventListener('click',function(e){
   const b=e.target.closest('[data-level]');
   if(b){openExam(b.dataset.topic,b.dataset.level);}
@@ -450,45 +259,63 @@ document.addEventListener('click',function(e){
 
 function getExam(topicId,level){
   if(topicId==='final')return {titulo:'Examen final integrador',qs:CURSO.final[level]};
+  const m=CURSO.modelos.find(x=>x.id===topicId);
+  if(m)return {titulo:m.titulo,qs:m.qs,rules:m.rules};
   const t=CURSO.topics.find(x=>x.id===topicId);
   return {titulo:t.titulo,qs:t.exams[level]};
 }
 
+function shuffle(n){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function fig(q){return q.g?'<div class="qfig">'+q.g+(q.cap?'<div class="cap">'+q.cap+'</div>':'')+'</div>':'';}
+const KIND={mc:'OPCIÓN MÚLTIPLE',vf:'VERDADERO / FALSO',vfm:'V / F · INTERPRETACIÓN',op:'DESARROLLO'};
+
 function openExam(topicId,level){
-  const {titulo,qs}=getExam(topicId,level);
-  state={};
+  const {titulo,qs,rules}=getExam(topicId,level);
+  state={};selfGrade={};
   const lv=LV[level];
-  document.getElementById('lvlTag').textContent='Nivel '+lv.tag;
-  document.getElementById('lvlTag').style.color='var(--'+(lv.cls==='b'?'teal':lv.cls==='n'?'gold':'red')+')';
+  const tag=document.getElementById('lvlTag');
+  tag.textContent='Nivel '+lv.tag;tag.style.color='var(--'+lv.color+')';
   document.getElementById('examTitle').textContent=titulo;
-  document.getElementById('examMeta').textContent=qs.length+' preguntas · '+lv.time;
+  let pts=0;qs.forEach(q=>{pts+=q.t==='vfm'?q.items.length:1;});
+  document.getElementById('examMeta').textContent=qs.length+' preguntas ('+pts+' ítems) · '+lv.time;
+  const r=document.getElementById('examRules');
+  if(rules){r.innerHTML=rules;r.style.display='block';}else{r.style.display='none';}
   const cont=document.getElementById('questions');
   cont.innerHTML='';
   qs.forEach(function(q,i){
     const card=document.createElement('div');
     card.className='qcard';
-    let html='<div class="qnum">PREGUNTA '+(i+1)+'</div><div class="qtext">'+q.q+'</div>';
-    if(q.t==='mc'){
-      html+='<div class="opts" data-qi="'+i+'">';
-      q.o.forEach(function(opt,j){
-        html+='<button class="opt" data-qi="'+i+'" data-oi="'+j+'"><span class="mk">'+String.fromCharCode(97+j)+')</span>'+opt+'</button>';
+    let html='<div class="qnum">PREGUNTA '+(i+1)+'<span class="qkind">'+KIND[q.t]+'</span></div><div class="qtext">'+q.q+'</div>'+fig(q);
+    if(q.t==='mc'||q.t==='vf'){
+      const order=q.t==='vf'?[0,1]:shuffle(q.o.length);
+      q._order=order;
+      html+='<div class="opts">';
+      order.forEach(function(oi,pos){
+        html+='<button class="opt" data-qi="'+i+'" data-oi="'+oi+'"><span class="mk">'+String.fromCharCode(97+pos)+')</span>'+q.o[oi]+'</button>';
       });
       html+='</div><div class="exp" id="exp'+i+'"></div>';
+    }else if(q.t==='vfm'){
+      html+='<div class="vfm">';
+      q.items.forEach(function(it,k){
+        html+='<div class="vfrow"><div class="st"><span class="mk">'+String.fromCharCode(97+k)+')</span>'+it[0]+'<div class="vfexp" id="vfe'+i+'_'+k+'"></div></div>'+
+          '<div class="vfbtns"><button class="vfb" data-vq="'+i+'" data-vk="'+k+'" data-vv="1">V</button><button class="vfb" data-vq="'+i+'" data-vk="'+k+'" data-vv="0">F</button></div></div>';
+      });
+      html+='</div>';
     }else{
       html+='<div class="openbox"><button class="reveal-btn" data-rev="'+i+'">Ver solución</button>'+
-        '<div class="sol" id="sol'+i+'"><div class="sl">Solución</div><div class="stext">'+q.s+'</div>'+(q.e?'<div class="exp show" style="border:none;padding-top:8px;margin-top:6px"><b>Cómo se hace:</b> '+q.e+'</div>':'')+'</div></div>';
+        '<div class="sol" id="sol'+i+'"><div class="sl">Solución</div><div class="stext">'+q.s+'</div>'+(q.e?'<div class="exp show" style="border:none;padding-top:8px;margin-top:6px"><b>Cómo se hace:</b> '+q.e+'</div>':'')+'</div>'+
+        '<div class="selfgrade">¿Cómo te fue? <button class="sg" data-sq="'+i+'" data-v="1">Bien</button><button class="sg" data-sq="'+i+'" data-v="0.5">A medias</button><button class="sg" data-sq="'+i+'" data-v="0">Mal</button></div></div>';
     }
     card.innerHTML=html;
     cont.appendChild(card);
   });
-  document.getElementById('result').textContent='';
-  window._examQs=qs;
+  document.getElementById('result').innerHTML='';
+  window._examQs=qs;window._checked=false;
   homeView.style.display='none';
   examView.style.display='block';
   window.scrollTo(0,0);
 }
 
-/* seleccionar opción / revelar */
 document.getElementById('questions').addEventListener('click',function(e){
   const opt=e.target.closest('.opt');
   if(opt && !opt.disabled){
@@ -497,44 +324,73 @@ document.getElementById('questions').addEventListener('click',function(e){
     opt.classList.add('sel');
     state[qi]=parseInt(opt.dataset.oi);
   }
+  const vb=e.target.closest('.vfb');
+  if(vb && !vb.disabled){
+    const key=vb.dataset.vq+'_'+vb.dataset.vk;
+    document.querySelectorAll('.vfb[data-vq="'+vb.dataset.vq+'"][data-vk="'+vb.dataset.vk+'"]').forEach(o=>o.classList.remove('sel'));
+    vb.classList.add('sel');
+    state[key]=vb.dataset.vv==='1';
+  }
   const rev=e.target.closest('[data-rev]');
   if(rev){document.getElementById('sol'+rev.dataset.rev).classList.toggle('show');}
+  const sg=e.target.closest('.sg');
+  if(sg){
+    document.querySelectorAll('.sg[data-sq="'+sg.dataset.sq+'"]').forEach(o=>o.classList.remove('on'));
+    sg.classList.add('on');selfGrade[sg.dataset.sq]=parseFloat(sg.dataset.v);
+    if(window._checked)score();
+  }
 });
 
-/* corregir */
-document.getElementById('checkBtn').addEventListener('click',function(){
-  const qs=window._examQs;let correct=0,totalMC=0;
+function score(){
+  const qs=window._examQs;let ok=0,tot=0,opOk=0,opTot=0,opGraded=0;
   qs.forEach(function(q,i){
-    if(q.t==='mc'){
-      totalMC++;
-      document.querySelectorAll('.opt[data-qi="'+i+'"]').forEach(function(o){o.disabled=true;});
+    if(q.t==='mc'||q.t==='vf'){tot++;if(state[i]===q.c)ok++;}
+    else if(q.t==='vfm'){q.items.forEach(function(it,k){tot++;if(state[i+'_'+k]===it[1])ok++;});}
+    else{opTot++;if(selfGrade[i]!==undefined){opGraded++;opOk+=selfGrade[i];}}
+  });
+  const res=document.getElementById('result');
+  let html='';
+  if(tot>0){html+='Autocorregidas: <span class="pct">'+ok+' / '+tot+'</span> · '+Math.round(ok/tot*100)+'%';}
+  if(opTot>0){
+    html+='<small>Desarrollo: '+(opGraded?('te pusiste '+opOk+' / '+opTot+' (marcaste '+opGraded+' de '+opTot+')'):'mirá las soluciones y marcá "Bien / A medias / Mal" para sumarlas a tu nota')+'.</small>';
+    if(opGraded===opTot&&tot>0){const all=Math.round((ok+opOk)/(tot+opTot)*100);html+='<small>Nota global estimada: <b>'+all+'%</b> '+(all>=60?'· aprobado (≥ 60%)':'· todavía no llega al 60%')+'</small>';}
+  }
+  if(!html)html='Revisá tus respuestas contra las soluciones mostradas.';
+  res.innerHTML=html;
+}
+
+document.getElementById('checkBtn').addEventListener('click',function(){
+  const qs=window._examQs;
+  qs.forEach(function(q,i){
+    if(q.t==='mc'||q.t==='vf'){
       const chosen=state[i];
       document.querySelectorAll('.opt[data-qi="'+i+'"]').forEach(function(o){
-        const oi=parseInt(o.dataset.oi);
-        if(oi===q.c)o.classList.add('correct');
-        else if(oi===chosen)o.classList.add('wrong');
+        o.disabled=true;const oi=parseInt(o.dataset.oi);
+        if(oi===q.c)o.classList.add('correct');else if(oi===chosen)o.classList.add('wrong');
       });
       const exp=document.getElementById('exp'+i);
-      const ok=chosen===q.c;
-      if(chosen===undefined){exp.innerHTML='<b>Sin responder.</b> '+q.e;}
-      else{exp.innerHTML='<b>'+(ok?'Correcto.':'Incorrecto.')+'</b> '+q.e;}
+      exp.innerHTML='<b>'+(chosen===undefined?'Sin responder.':(chosen===q.c?'Correcto.':'Incorrecto.'))+'</b> '+q.e;
       exp.classList.add('show');
-      if(ok)correct++;
+    }else if(q.t==='vfm'){
+      q.items.forEach(function(it,k){
+        const chosen=state[i+'_'+k];
+        document.querySelectorAll('.vfb[data-vq="'+i+'"][data-vk="'+k+'"]').forEach(function(b){
+          b.disabled=true;const v=b.dataset.vv==='1';
+          if(v===it[1])b.classList.add('correct');else if(chosen===v)b.classList.add('wrong');
+        });
+        const ex=document.getElementById('vfe'+i+'_'+k);
+        ex.innerHTML='<b>'+(it[1]?'Verdadero':'Falso')+(chosen===undefined?' (sin responder)':(chosen===it[1]?' ✓':' ✗'))+'.</b> '+(it[2]||'');
+        ex.classList.add('show');
+      });
     }else{
       document.getElementById('sol'+i).classList.add('show');
     }
   });
-  const res=document.getElementById('result');
-  if(totalMC>0){
-    const pct=Math.round(correct/totalMC*100);
-    res.innerHTML='Puntaje (opción múltiple): <span class="pct">'+correct+' / '+totalMC+'</span> · '+pct+'%';
-  }else{
-    res.innerHTML='Revisá tus respuestas contra las soluciones mostradas.';
-  }
-  res.scrollIntoView({behavior:'smooth',block:'center'});
+  window._checked=true;
+  score();
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'center'});
 });
 
-/* volver */
 document.getElementById('backBtn').addEventListener('click',function(){
   examView.style.display='none';homeView.style.display='block';window.scrollTo(0,0);
 });
