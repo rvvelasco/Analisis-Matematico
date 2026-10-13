@@ -12,6 +12,8 @@ Portal de estudio interactivo para la carrera de Analista en Sistemas. Guías te
 | `guia-relaciones-funciones.html` | **Análisis Matemático · Unidad 4**: relaciones y sus propiedades, equivalencia y orden, funciones (inyectiva, sobreyectiva, biyectiva, composición, inversa, gráficas e intersecciones), Venn con 3 conjuntos y conteo, conjunto potencia, numerabilidad, aritmética modular y congruencias. |
 | `guia-bases-de-datos.html` | **Bases de Datos**: modelo Entidad-Relación, paso a tablas, integridad referencial, Verdadero/Falso conceptual. |
 | `guia-logica-computacional.html` | **Lógica Computacional**: sistemas de numeración y conversiones entre bases (binario, octal, decimal, hexadecimal). |
+| `guia-examen-logica.html` | **Lógica Computacional · parcial**: cómo resolver cada ejercicio del parcial (punto flotante, cambio de base sin decimal, Ca2 y banderas), con calculadoras para practicar. |
+| `simulador-logica.html` | Simulador del parcial de Lógica: 5 modelos de examen con el formato del original, corrección automática y nota. |
 | `simulador-examenes.html` | Simulador de exámenes de Análisis: 20 temas en 4 niveles (básico, normal, examen y **parcial terciario**), 4 parciales modelo por unidad y un integrador. Incluye preguntas de V/F que se responden interpretando gráficos o situaciones. Las de opción múltiple y V/F se corrigen solas; las de desarrollo tienen la solución explicada y autoevaluación. |
 | `graficos.js` | Mini-librería de gráficos SVG (funciones, vectores, Venn, diagramas sagitales, grafos, reloj modular) que usan las guías y el simulador. |
 | `examenes-datos.js` | Banco de preguntas del simulador. |

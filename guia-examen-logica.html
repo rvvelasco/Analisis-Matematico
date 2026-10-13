@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía del Parcial de Lógica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;--card:#FFFFFF;--ink:#1E2A32;--soft:#51616B;--navy:#153A5B;--deep:#0D2942;
+    --red:#C42430;--redsoft:#FBEBEC;--gold:#B8791F;--goldsoft:#FAF1DF;--teal:#177567;--tealsoft:#E4F1EE;
+    --crio:#EEF3E4;--criob:#5F8A2E;--criot:#33421C;--line:#E2E3DB;--line2:#CBCDC2;
+    --sgn:#F4C7DA;--exp:#BFE6C9;--man:#F6E7A6;
+    --shadow:0 1px 2px rgba(13,41,66,.05),0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,serif;--body:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#10181E;--card:#17222A;--ink:#E4EAEE;--soft:#9DAFB9;--navy:#8DB7DA;--deep:#EEF2F4;
+    --red:#FF7D86;--redsoft:#3A1D22;--gold:#E3B464;--goldsoft:#352A16;--teal:#62D2BE;--tealsoft:#14322D;
+    --crio:#1E2A17;--criob:#8CBF52;--criot:#D3E6BC;--line:#26333C;--line2:#344550;
+    --sgn:#5a2a3f;--exp:#22492f;--man:#4a4120;}}
+  :root[data-theme="dark"]{
+    --paper:#10181E;--card:#17222A;--ink:#E4EAEE;--soft:#9DAFB9;--navy:#8DB7DA;--deep:#EEF2F4;
+    --red:#FF7D86;--redsoft:#3A1D22;--gold:#E3B464;--goldsoft:#352A16;--teal:#62D2BE;--tealsoft:#14322D;
+    --crio:#1E2A17;--criob:#8CBF52;--criot:#D3E6BC;--line:#26333C;--line2:#344550;
+    --sgn:#5a2a3f;--exp:#22492f;--man:#4a4120;}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:70px;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .topbar-in{max-width:1100px;margin:0 auto;padding:11px 16px;display:flex;gap:14px;align-items:center;}
+  .brand{font-family:var(--display);font-weight:600;color:var(--deep);font-size:17px;white-space:nowrap;}
+  .brand b{color:var(--red);} .brand a{color:var(--soft);text-decoration:none;font:600 14px var(--body);margin-right:6px;}
+  nav{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  nav a{font-size:13px;color:var(--soft);text-decoration:none;padding:6px 9px;border-radius:8px;font-weight:500;}
+  nav a:hover{background:var(--card);color:var(--navy);}
+  @media(max-width:1020px){nav{display:none;}}
+  main{max-width:840px;margin:0 auto;padding:0 16px 120px;}
+  .hero{padding:54px 0 16px;}
+  .eye{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);font-weight:700;}
+  h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,7vw,54px);line-height:1.04;letter-spacing:-.02em;color:var(--deep);margin:12px 0 14px;}
+  h1 i{color:var(--red);}
+  .lead{font-size:19px;color:var(--soft);margin:0;}
+  .cta{display:inline-block;margin-top:18px;background:var(--red);color:#fff;text-decoration:none;font-weight:700;padding:11px 18px;border-radius:10px;}
+  .section{padding-top:54px;}
+  .shead{display:flex;gap:14px;align-items:baseline;border-bottom:2px solid var(--navy);padding-bottom:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .snum{font-family:var(--mono);font-weight:700;color:var(--red);font-size:14px;}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,4.4vw,33px);color:var(--deep);margin:0;line-height:1.1;}
+  .pct{font-family:var(--mono);font-size:12.5px;font-weight:700;background:var(--redsoft);color:var(--red);padding:3px 9px;border-radius:20px;}
+  h3{font-family:var(--display);font-weight:600;font-size:21px;color:var(--deep);margin:28px 0 8px;}
+  strong{color:var(--deep);font-weight:600;}
+  .m{font-family:var(--mono);font-size:.92em;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap;}
+  pre.box{font-family:var(--mono);font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;line-height:1.5;}
+  .fbox{display:inline-block;font-family:var(--mono);font-size:17px;background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:12px 18px;margin:6px 0;color:var(--deep);box-shadow:var(--shadow);}
+  .callout{border-radius:14px;padding:15px 18px;margin:18px 0;border:1px solid var(--line);}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px;}
+  .callout p{margin:6px 0;}
+  .c-calc{background:var(--goldsoft);border-left:4px solid var(--gold);}.c-calc .tag{color:var(--gold);}
+  .c-warn{background:var(--redsoft);border-left:4px solid var(--red);}.c-warn .tag{color:var(--red);}
+  .c-tip{background:var(--tealsoft);border-left:4px solid var(--teal);}.c-tip .tag{color:var(--teal);}
+  .c-crio{background:var(--crio);border-left:4px solid var(--criob);}.c-crio .tag{color:var(--criob);}.c-crio p{color:var(--criot);}
+  table.t{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.t th{background:var(--navy);color:var(--paper);text-align:left;padding:10px 12px;font-size:13px;font-weight:600;}
+  table.t td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top;}
+  table.t td.mono{font-family:var(--mono);font-size:14px;}
+  .scroll{overflow-x:auto;}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:14px 0;}
+  .steps li{counter-increment:s;position:relative;padding:11px 14px 11px 52px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin:9px 0;}
+  .steps li::before{content:counter(s);position:absolute;left:13px;top:10px;width:27px;height:27px;border-radius:50%;background:var(--navy);color:var(--paper);font:700 13.5px var(--mono);display:flex;align-items:center;justify-content:center;}
+  .bits32{display:grid;grid-template-columns:repeat(32,1fr);border:1px solid var(--line2);border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:12px;margin:10px 0;background:var(--card);}
+  .bits32 span{text-align:center;padding:4px 0;border-right:1px solid var(--line);}
+  .bits32 .s{background:var(--sgn);} .bits32 .e{background:var(--exp);} .bits32 .x{background:var(--man);}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--soft);}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+  .ex{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;box-shadow:var(--shadow);}
+  .ex .q{font-weight:600;color:var(--deep);}
+  .btn{margin-top:10px;background:var(--navy);color:var(--paper);border:none;border-radius:9px;padding:8px 14px;font:600 13.5px var(--body);cursor:pointer;}
+  .btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+  .sol{display:none;margin-top:10px;border-top:1px dashed var(--line2);padding-top:10px;font-size:15px;}
+  .sol.open{display:block;}
+  .sol pre{font-family:var(--mono);font-size:13.5px;background:var(--paper);border-radius:8px;padding:10px 12px;overflow-x:auto;line-height:1.4;margin:8px 0;}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin:18px 0;}
+  .tool .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0;}
+  .tool input,.tool select{font:15px var(--mono);background:var(--paper);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:7px 9px;}
+  .tool input.w32{width:100%;max-width:520px;}
+  .tool input.n{width:100px;}
+  .out{font-size:15px;margin-top:8px;}
+  .out pre{font-family:var(--mono);font-size:13.5px;background:var(--paper);border-radius:8px;padding:10px 12px;overflow-x:auto;line-height:1.4;}
+  .err{color:var(--red);font-size:13.5px;}
+  .check li{margin:6px 0;}
+  footer{border-top:1px solid var(--line);padding:30px 16px 60px;text-align:center;color:var(--soft);font-size:14px;max-width:840px;margin:0 auto;}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-in">
+  <span class="brand"><a href="index.html">‹ Inicio</a> Parcial de <b>Lógica</b></span>
+  <nav>
+    <a href="#examen">El examen</a><a href="#e1">Ej. 1</a><a href="#e2">Ej. 2</a><a href="#e3">Ej. 3</a>
+    <a href="#e4">Ej. 4</a><a href="#e5">Ej. 5</a><a href="#errores">Errores típicos</a><a href="simulador-logica.html">Simulador</a>
+  </nav>
+</div></div>
+
+<main>
+<header class="hero">
+  <div class="eye">Lógica Computacional · parcial</div>
+  <h1>Cómo resolver <i>cada ejercicio</i> del parcial</h1>
+  <p class="lead">El método paso a paso para los 5 ejercicios del modelo de examen, con los ejercicios del modelo resuelto por el profe como ejemplos y dos calculadoras para practicar.</p>
+  <a class="cta" href="simulador-logica.html">Ir a los 5 modelos de examen →</a>
+</header>
+
+<!-- 0 -->
+<section class="section" id="examen">
+  <div class="shead"><span class="snum">00</span><h2>Cómo es el examen</h2></div>
+  <table class="t">
+    <tr><th>Ejercicio</th><th>Tema</th><th>Vale</th></tr>
+    <tr><td>1</td><td>Verdadero o Falso de conceptos</td><td>10%</td></tr>
+    <tr><td>2</td><td>Elegir el menor o el mayor en distintos convenios y bases</td><td>10%</td></tr>
+    <tr><td>3</td><td>Leer un número en punto flotante (32 bits)</td><td>10%</td></tr>
+    <tr><td>4</td><td>Cambio de base <strong>sin</strong> pasar por decimal</td><td>30%</td></tr>
+    <tr><td>5</td><td>Sumas y restas en complemento a 2 (módulo 10) con banderas</td><td>40%</td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">Estrategia</span>
+    <p>Se aprueba con <strong>60%</strong>. Los ejercicios 4 y 5 suman el 70%: si los dominás, aprobás aunque te equivoques en los de opción múltiple. Conviene arrancar por el 5 y el 4, que son mecánicos, y dejar el V/F para el final.</p>
+  </div>
+</section>
+
+<!-- E1 -->
+<section class="section" id="e1">
+  <div class="shead"><span class="snum">01</span><h2>Ejercicio 1 · Verdadero o Falso</h2><span class="pct">10%</span></div>
+  <p>Son afirmaciones de concepto. Estas son las que tenés que tener claras (todas son <strong>verdaderas</strong>; las trampas del examen suelen ser estas mismas, pero cambiadas):</p>
+  <table class="t">
+    <tr><th style="width:42%">Tema</th><th>Lo correcto</th></tr>
+    <tr><td>Cambio de base</td><td>Siempre se puede pasar de una base a otra sin pasar por decimal. El método <em>sencillo</em> (agrupar dígitos) solo sirve cuando una base es potencia de la otra.</td></tr>
+    <tr><td>De 16 a 8</td><td>Se pasa por <strong>base 2</strong> (16 = 2⁴, 8 = 2³). Por base 4 no es directo.</td></tr>
+    <tr><td>Comparar números con signo</td><td>Tienen que estar con el <strong>mismo módulo</strong> (misma cantidad de bits).</td></tr>
+    <tr><td>Bit de signo</td><td>Es el <strong>MSB</strong> (el de más a la izquierda), en todos los convenios. Nunca el LSB.</td></tr>
+    <tr><td>Punto flotante</td><td>Puede representar negativos: tiene un bit de signo.</td></tr>
+    <tr><td>El cero</td><td>Signo y magnitud tiene <strong>dos</strong> ceros (+0 y −0). Ca2 tiene <strong>uno</strong>.</td></tr>
+    <tr><td>Rangos con n bits</td><td>No signado: 0 a 2ⁿ − 1. Ca2: −2ⁿ⁻¹ a 2ⁿ⁻¹ − 1 (con 8 bits: −128 a 127; con 10: −512 a 511).</td></tr>
+    <tr><td>Banderas</td><td>El desborde en Ca2 lo marca <strong>V</strong>, no C. S copia el MSB del resultado. Z = 1 solo si el resultado es todo ceros.</td></tr>
+    <tr><td>Simple precisión</td><td>1 bit de signo, 8 de exponente (exceso 127), 23 de mantisa.</td></tr>
+  </table>
+  <div class="callout c-crio"><span class="tag">En criollo</span>
+    <p>En el V/F casi siempre te cambian una palabra clave: MSB por LSB, “igual” por “distinto”, base 2 por base 4, V por C. Leé despacio buscando esa palabra.</p>
+  </div>
+</section>
+
+<!-- E2 -->
+<section class="section" id="e2">
+  <div class="shead"><span class="snum">02</span><h2>Ejercicio 2 · Elegir el menor o el mayor</h2><span class="pct">10%</span></div>
+  <h3>Los tres convenios</h3>
+  <div class="scroll"><table class="t">
+    <tr><th>Bits</th><th>No signado</th><th>Signo y magnitud</th><th>Complemento a 2</th></tr>
+    <tr><td class="mono">0111</td><td>7</td><td>+7</td><td>+7</td></tr>
+    <tr><td class="mono">0001</td><td>1</td><td>+1</td><td>+1</td></tr>
+    <tr><td class="mono">1000</td><td>8</td><td>−0</td><td>−8</td></tr>
+    <tr><td class="mono">1001</td><td>9</td><td>−1</td><td>−7</td></tr>
+    <tr><td class="mono">1110</td><td>14</td><td>−6</td><td>−2</td></tr>
+    <tr><td class="mono">1111</td><td>15</td><td>−7</td><td>−1</td></tr>
+  </table></div>
+  <ul class="check">
+    <li><strong>No signado:</strong> sumás los pesos (8, 4, 2, 1). No hay negativos.</li>
+    <li><strong>Signo y magnitud:</strong> el MSB es el signo y el resto es el valor. <span class="m">1110</span> = − (110) = −6.</li>
+    <li><strong>Complemento a 2:</strong> si el MSB es 1 es negativo. Para saber cuánto vale: invertís todos los bits y sumás 1. <span class="m">1110</span> → <span class="m">0001</span> + 1 = <span class="m">0010</span> = 2 → vale −2. Atajo: el MSB pesa negativo (−8) y el resto suma: −8 + 4 + 2 = −2.</li>
+  </ul>
+  <div class="callout c-calc"><span class="tag">Atajo para elegir rápido</span>
+    <p><strong>El menor</strong> siempre está entre los que empiezan con 1 (negativos). En signo y magnitud, el menor es el negativo con <em>más</em> magnitud. En Ca2, el menor es <span class="m">1000…0</span> y, entre negativos, cuanto más “chico” el resto, más negativo.</p>
+    <p><strong>El mayor</strong> está entre los que empiezan con 0 (positivos), salvo en no signado, donde todos son positivos y simplemente gana el de valor binario más grande.</p>
+  </div>
+  <h3>Comparar números en distintas bases</h3>
+  <p>Pasá cada uno a decimal y compará. Si todos tienen los <strong>mismos dígitos</strong> (como 45₆, 45₈, 45₁₀, 45₁₂), el mayor es el de la base más grande y el menor el de la base más chica.</p>
+  <h3>Dígito válido para su base</h3>
+  <p>En base b los dígitos van de 0 a b − 1. Las letras valen A = 10, B = 11, C = 12, D = 13, E = 14, F = 15. Ejemplo: <span class="m">6D₁₂</span> no es válido, porque D = 13 y en base 12 el máximo es 11 (B).</p>
+  <div class="ex"><div class="q">Ejemplo del modelo resuelto · ejercicio 2 completo</div>
+    <button class="btn" data-t="s-e2">Ver solución</button>
+    <div class="sol" id="s-e2">
+      1) Signo y magnitud: 0111 = +7 · 1010 = −2 · 1001 = −1 · 1110 = −6 → menor: <strong>d) 1110</strong>.<br>
+      2) Ca2: 00100 = 4 · 10000 = −16 · 10100 = −12 · 11010 = −6 → menor: <strong>b) 10000</strong>.<br>
+      3) 45₆ = 29 · 45₈ = 37 · 45₁₀ = 45 · 45₁₂ = 53 → mayor: <strong>d) 45₁₂</strong>.<br>
+      4) No signado: 00100 = 4 · 10000 = 16 · 10100 = 20 · 11010 = 26 → menor: <strong>a) 00100</strong>.<br>
+      5) 54₃ no (5 no existe en base 3) · 34₅ sí · 6D₁₂ no (D = 13) → <strong>b) 34₅</strong>.
+    </div></div>
+  <div class="callout c-crio"><span class="tag">En criollo</span>
+    <p>La misma tira de bits vale distinto según el convenio. Antes de comparar, preguntate: “¿qué convenio me dicen?”. Y si te dan bases distintas, pasalo todo a decimal: es lo más seguro.</p>
+  </div>
+</section>
+
+<!-- E3 -->
+<section class="section" id="e3">
+  <div class="shead"><span class="snum">03</span><h2>Ejercicio 3 · Punto flotante (32 bits)</h2><span class="pct">10%</span></div>
+  <p>Es el formato IEEE 754 de simple precisión. Los 32 bits se dividen así:</p>
+  <div class="bits32" aria-hidden="true" id="demo32"></div>
+  <div class="legend"><span><i style="background:var(--sgn)"></i>1 bit de signo</span><span><i style="background:var(--exp)"></i>8 bits de exponente (E)</span><span><i style="background:var(--man)"></i>23 bits de mantisa (M)</span></div>
+  <p>El valor es:</p>
+  <div class="fbox">(signo) 1,M · 2<sup>E − 127</sup></div>
+  <ol class="steps">
+    <li><strong>Signo:</strong> el primer bit. 0 = positivo, 1 = negativo.</li>
+    <li><strong>Exponente:</strong> los 8 bits siguientes en binario no signado (pesos 128, 64, 32, 16, 8, 4, 2, 1). Le restás 127.</li>
+    <li><strong>Mantisa:</strong> le agregás un “1,” adelante a los bits que siguen (el 1 implícito). Los bits después de la coma pesan 0,5 · 0,25 · 0,125 · 0,0625…</li>
+    <li><strong>Armás el número</strong> y lo comparás con las opciones. Si las opciones tienen un número entero adelante, <strong>corré la coma</strong> hasta el final de la mantisa y restale al exponente los lugares que corriste.</li>
+  </ol>
+  <div class="callout c-calc"><span class="tag">El truco de correr la coma</span>
+    <p><span class="m">1,111 · 2⁹⁸</span>: correr la coma 3 lugares a la derecha es multiplicar por 2³, así que al exponente le restás 3: <span class="m">1111 · 2⁹⁵ = 15 · 2⁹⁵</span>.</p>
+  </div>
+  <table class="t">
+    <tr><th>Caso especial</th><th>Significa</th></tr>
+    <tr><td>E = 255 (todos 1) y M = 0</td><td>±∞ (según el signo)</td></tr>
+    <tr><td>E = 255 y M ≠ 0</td><td>Error (NaN)</td></tr>
+    <tr><td>E = 0 y M = 0</td><td>0</td></tr>
+  </table>
+  <h3>Ejemplos del modelo resuelto</h3>
+  <div id="ex3"></div>
+  <h3>Calculadora para practicar</h3>
+  <div class="tool">
+    <div class="row"><label for="fbits">Pegá los 32 bits (con o sin espacios):</label></div>
+    <div class="row"><input class="w32" id="fbits" value="0 10001100 10100000000000000000000" autocomplete="off" spellcheck="false"></div>
+    <div class="out" id="fout" aria-live="polite"></div>
+  </div>
+  <div class="callout c-crio"><span class="tag">En criollo</span>
+    <p>Es notación científica, pero en binario. El exponente viene “corrido” 127 lugares para poder guardar exponentes negativos sin signo: siempre le restás 127. Y la mantisa trae escondido un “1,” adelante.</p>
+  </div>
+</section>
+
+<!-- E4 -->
+<section class="section" id="e4">
+  <div class="shead"><span class="snum">04</span><h2>Ejercicio 4 · Cambio de base sin decimal</h2><span class="pct">30%</span></div>
+  <p>Se puede usar un método sencillo cuando una base es <strong>potencia</strong> de la otra: cada dígito de la base grande equivale a un grupo fijo de dígitos de la chica. Si ninguna es potencia de la otra pero las dos son potencias de una misma base (como 16 y 8, las dos potencias de 2), pasás por esa base en el medio.</p>
+  <table class="t">
+    <tr><th>Conversión</th><th>Por qué</th><th>Cómo</th></tr>
+    <tr><td>2 ↔ 16</td><td>16 = 2⁴</td><td>grupos de 4 bits</td></tr>
+    <tr><td>2 ↔ 8</td><td>8 = 2³</td><td>grupos de 3 bits</td></tr>
+    <tr><td>2 ↔ 4</td><td>4 = 2²</td><td>grupos de 2 bits</td></tr>
+    <tr><td>16 = 4²</td><td>4² = 16</td><td>cada dígito hex = 2 dígitos de base 4</td></tr>
+    <tr><td>3 ↔ 9</td><td>9 = 3²</td><td>grupos de 2 dígitos de base 3</td></tr>
+    <tr><td>16 ↔ 8, 8 ↔ 4, 4 ↔ 8, 8 ↔ 16</td><td>todas potencias de 2</td><td>pasar por binario y reagrupar</td></tr>
+  </table>
+  <ol class="steps">
+    <li><strong>Escribí la justificación</strong> (el enunciado la pide y suma puntos): “Como 2⁴ = 16, cada dígito hexadecimal equivale a 4 dígitos binarios”.</li>
+    <li><strong>Pasá cada dígito</strong> de la base de origen a su grupo (con ceros a la izquierda para completar el grupo).</li>
+    <li><strong>Reagrupá desde la derecha</strong> según la base de destino, completando con ceros a la izquierda si falta.</li>
+    <li><strong>Traducí cada grupo</strong> a un dígito. Sacá los ceros que sobren adelante.</li>
+  </ol>
+  <div class="scroll"><table class="t">
+    <tr><th>Dígito</th><th>4 bits</th><th>Dígito</th><th>4 bits</th><th>Base 9</th><th>Base 3</th></tr>
+    <tr><td class="mono">0</td><td class="mono">0000</td><td class="mono">8</td><td class="mono">1000</td><td class="mono">0</td><td class="mono">00</td></tr>
+    <tr><td class="mono">1</td><td class="mono">0001</td><td class="mono">9</td><td class="mono">1001</td><td class="mono">1</td><td class="mono">01</td></tr>
+    <tr><td class="mono">2</td><td class="mono">0010</td><td class="mono">A</td><td class="mono">1010</td><td class="mono">2</td><td class="mono">02</td></tr>
+    <tr><td class="mono">3</td><td class="mono">0011</td><td class="mono">B</td><td class="mono">1011</td><td class="mono">3</td><td class="mono">10</td></tr>
+    <tr><td class="mono">4</td><td class="mono">0100</td><td class="mono">C</td><td class="mono">1100</td><td class="mono">4</td><td class="mono">11</td></tr>
+    <tr><td class="mono">5</td><td class="mono">0101</td><td class="mono">D</td><td class="mono">1101</td><td class="mono">5</td><td class="mono">12</td></tr>
+    <tr><td class="mono">6</td><td class="mono">0110</td><td class="mono">E</td><td class="mono">1110</td><td class="mono">6</td><td class="mono">20</td></tr>
+    <tr><td class="mono">7</td><td class="mono">0111</td><td class="mono">F</td><td class="mono">1111</td><td class="mono">7</td><td class="mono">21</td></tr>
+    <tr><td></td><td></td><td></td><td></td><td class="mono">8</td><td class="mono">22</td></tr>
+  </table></div>
+  <p style="font-size:15px;color:var(--soft)">Para octal usás los 3 últimos bits de la primera columna (0 = 000 … 7 = 111). Para base 4, cada par de bits: 00 = 0, 01 = 1, 10 = 2, 11 = 3.</p>
+  <h3>Ejemplos del modelo resuelto</h3>
+  <div class="ex"><div class="q">1) 11010011₂ → base 16</div><button class="btn" data-t="s41">Ver solución</button><div class="sol" id="s41">Como 2⁴ = 16, agrupo de a 4 bits desde la derecha.<pre>1101 0011
+  D    3</pre>→ <strong>D3₁₆</strong></div></div>
+  <div class="ex"><div class="q">2) EA2₁₆ → base 8</div><button class="btn" data-t="s42">Ver solución</button><div class="sol" id="s42">2⁴ = 16 (cada dígito hex son 4 bits) y 2³ = 8 (cada 3 bits, un dígito octal). Paso por binario.<pre>E → 1110   A → 1010   2 → 0010
+111010100010
+111 010 100 010
+ 7   2   4   2</pre>→ <strong>7242₈</strong></div></div>
+  <div class="ex"><div class="q">3) 58₁₆ → base 4</div><button class="btn" data-t="s43">Ver solución</button><div class="sol" id="s43">Como 4² = 16, cada dígito hexadecimal equivale a 2 dígitos de base 4 (también se puede pasar por binario).<pre>5 → 0101 → 01 01 → 1 1
+8 → 1000 → 10 00 → 2 0</pre>→ <strong>1120₄</strong></div></div>
+  <div class="ex"><div class="q">4) 212₃ → base 9</div><button class="btn" data-t="s44">Ver solución</button><div class="sol" id="s44">Como 3² = 9, agrupo de a 2 dígitos desde la derecha (relleno con un 0 adelante).<pre>02 12
+ 2  5     (12₃ = 1·3 + 2 = 5)</pre>→ <strong>25₉</strong></div></div>
+  <div class="ex"><div class="q">5) 2421₈ → base 4</div><button class="btn" data-t="s45">Ver solución</button><div class="sol" id="s45">2³ = 8 (cada dígito octal son 3 bits) y 2² = 4 (cada 2 bits, un dígito de base 4). Paso por binario.<pre>2 → 010   4 → 100   2 → 010   1 → 001
+010100010001
+01 01 00 01 00 01
+ 1  1  0  1  0  1</pre>→ <strong>110101₄</strong></div></div>
+  <div class="callout c-crio"><span class="tag">En criollo</span>
+    <p>Binario, base 4, octal y hexadecimal son primos hermanos: todos se arman con bits. Cambiar entre ellos es cortar la misma tira de bits en pedazos de otro tamaño. Base 3 y base 9 son otra familia, que funciona igual pero con dígitos de base 3.</p>
+  </div>
+</section>
+
+<!-- E5 -->
+<section class="section" id="e5">
+  <div class="shead"><span class="snum">05</span><h2>Ejercicio 5 · Complemento a 2 y banderas</h2><span class="pct">40%</span></div>
+  <p>“Módulo igual a diez” significa que trabajás con <strong>10 bits</strong>. Pesos: <span class="m">512 256 128 64 32 16 8 4 2 1</span>. En Ca2 el MSB es el signo, así que el rango es <strong>−512 a +511</strong>.</p>
+  <ol class="steps">
+    <li><strong>Positivos:</strong> los escribís en binario con 10 bits. +154 = <span class="m">0010011010</span>.</li>
+    <li><strong>Negativos:</strong> escribís el positivo, invertís todos los bits y sumás 1. −200: +200 = <span class="m">0011001000</span> → invierto <span class="m">1100110111</span> → +1 → <span class="m">1100111000</span>. Atajo: copiás desde la derecha hasta el primer 1 inclusive y el resto lo invertís.</li>
+    <li><strong>Restas:</strong> restar es sumar el opuesto. <span class="m">−60 − 478</span> = <span class="m">−60 + (−478)</span>.</li>
+    <li><strong>Sumás</strong> en binario de derecha a izquierda, anotando los acarreos (1 + 1 = 0 y me llevo 1; 1 + 1 + 1 = 1 y me llevo 1).</li>
+    <li><strong>El resultado son los 10 bits</strong>. Lo que sale por la izquierda no es parte del resultado: es la bandera C.</li>
+    <li><strong>Marcás las banderas</strong> (tabla de abajo).</li>
+  </ol>
+  <table class="t">
+    <tr><th style="width:12%">Bandera</th><th>Vale 1 cuando…</th></tr>
+    <tr><td><strong>C</strong> (carry)</td><td>sale un acarreo del MSB (el “11.º bit”).</td></tr>
+    <tr><td><strong>S</strong> (signo)</td><td>el MSB del resultado es 1.</td></tr>
+    <tr><td><strong>Z</strong> (cero)</td><td>los 10 bits del resultado son 0.</td></tr>
+    <tr><td><strong>V</strong> (overflow)</td><td>los dos números que sumás tienen el <strong>mismo signo</strong> y el resultado queda con el <strong>signo contrario</strong>. Es decir, el resultado real no entra en −512…511.</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">Las trampas</span>
+    <p><strong>C y V no son lo mismo.</strong> Puede haber C = 1 sin desborde (127 − 126) y V = 1 sin acarreo (511 + 100).</p>
+    <p>Si los signos de lo que sumás son <strong>distintos</strong>, V siempre es 0.</p>
+    <p>En una resta, el chequeo de V se hace con los números que efectivamente sumás (el primero y el opuesto del segundo).</p>
+  </div>
+  <h3>Ejemplos del modelo resuelto (calculados paso a paso)</h3>
+  <div id="ex5"></div>
+  <h3>Calculadora para practicar</h3>
+  <div class="tool">
+    <div class="row"><input class="n" id="ca" value="-200" aria-label="Primer número"><select id="cop" aria-label="Operación"><option value="+">+</option><option value="-">−</option></select><input class="n" id="cb" value="154" aria-label="Segundo número"></div>
+    <div class="err" id="cerr"></div>
+    <div class="out" id="cout" aria-live="polite"></div>
+  </div>
+  <div class="callout c-crio"><span class="tag">En criollo</span>
+    <p>Con 10 bits tenés un cuentakilómetros que va de −512 a 511. Si te pasás de 511 “da la vuelta” y aparece un negativo: eso es el overflow (V). La C es otra cosa: solo te dice si al sumar “se cayó” un 1 por la izquierda.</p>
+  </div>
+</section>
+
+<!-- ERRORES -->
+<section class="section" id="errores">
+  <div class="shead"><span class="snum">06</span><h2>Errores típicos (repasalos antes de entregar)</h2></div>
+  <ul class="check">
+    <li>Confundir <strong>MSB</strong> (izquierda, signo) con <strong>LSB</strong> (derecha).</li>
+    <li>En punto flotante, olvidarse de <strong>restar 127</strong> o del <strong>“1,” implícito</strong> de la mantisa.</li>
+    <li>Al correr la coma, no restarle esos lugares al exponente.</li>
+    <li>En el ejercicio 4, <strong>no escribir la justificación</strong> (“como 2⁴ = 16…”).</li>
+    <li>Agrupar bits desde la izquierda: siempre se agrupa <strong>desde la derecha</strong>.</li>
+    <li>En Ca2, escribir el negativo en signo y magnitud en vez de invertir y sumar 1.</li>
+    <li>Contar el acarreo final como parte del resultado (es la C, no un bit más).</li>
+    <li>Marcar V = 1 solo porque C = 1.</li>
+  </ul>
+  <p><a class="cta" href="simulador-logica.html">Practicar con los 5 modelos →</a></p>
+</section>
+</main>
+
+<footer>Guía del parcial de Lógica Computacional · parte del centro de estudio de Analista en Sistemas.</footer>
+
+<script>
+/* demo de 32 bits */
+(function(){const b='01000110010100000000000000000000';document.getElementById('demo32').innerHTML=[...b].map((c,i)=>'<span class="'+(i===0?'s':i<9?'e':'x')+'">'+c+'</span>').join('');})();
+
+/* ---- punto flotante ---- */
+function decodeF(bits){
+  const s=bits[0],E=parseInt(bits.slice(1,9),2),M=bits.slice(9),mt=M.replace(/0+$/,'');
+  let h='<pre>Signo: '+s+' ('+(s==='1'?'negativo':'positivo')+')\nExponente: '+bits.slice(1,9)+' = '+E+'\nMantisa: '+M+'</pre>';
+  const sg=s==='1'?'−':'';
+  if(E===255)return h+(mt?'E = 255 y M ≠ 0 → <strong>Error (NaN)</strong>':'E = 255 y M = 0 → <strong>'+(s==='1'?'−∞':'+∞')+'</strong>');
+  if(E===0&&!mt)return h+'E = 0 y M = 0 → <strong>0</strong>';
+  if(E===0)return h+'E = 0 con M ≠ 0 es un caso que no se toma en el parcial (número desnormalizado).';
+  const e=E-127;let man=1;for(let i=0;i<mt.length;i++)if(mt[i]==='1')man+=Math.pow(2,-(i+1));
+  h+='Exponente real: '+E+' − 127 = <strong>'+e+'</strong><br>Mantisa con el 1 implícito: 1,'+(mt||'0')+'₂ = '+man+'<br>';
+  h+='Valor: <strong>'+sg+man+' · 2<sup>'+e+'</sup></strong>';
+  if(mt){const k=parseInt('1'+mt,2);h+='<br>Corriendo la coma '+mt.length+' lugares: <strong>'+sg+k+' · 2<sup>'+(e-mt.length)+'</sup></strong>';}
+  return h;
+}
+const EX3=[
+ ['10100000001100000000000000000000','c) −1.375 ∗ 2⁻⁶³'],
+ ['01110000111100000000000000000000','a) 15 ∗ 2⁹⁵'],
+ ['10100000100000100000000000000000','e) −65 ∗ 2⁻⁶⁸'],
+ ['01000110010100000000000000000000','d) 13 ∗ 2¹⁰'],
+ ['01000000000000000000000000000000','a) 2']];
+document.getElementById('ex3').innerHTML=EX3.map((x,i)=>'<div class="ex"><div class="q">'+(i+1)+') <span class="m">'+x[0].slice(0,1)+' '+x[0].slice(1,9)+' '+x[0].slice(9)+'</span></div><button class="btn" data-t="s3'+i+'">Ver solución</button><div class="sol" id="s3'+i+'">'+decodeF(x[0])+'<br>→ Opción del examen: <strong>'+x[1]+'</strong></div></div>').join('');
+function fupd(){const v=document.getElementById('fbits').value.replace(/\s/g,'');const o=document.getElementById('fout');
+  if(!/^[01]{32}$/.test(v)){o.innerHTML='<span class="err">Tienen que ser exactamente 32 bits (ahora hay '+v.replace(/[^01]/g,'').length+'). Solo 0 y 1.</span>';return;}
+  o.innerHTML=decodeF(v);}
+document.getElementById('fbits').addEventListener('input',fupd);fupd();
+
+/* ---- complemento a 2 ---- */
+const tc=v=>((v&1023)>>>0).toString(2).padStart(10,'0');
+const inv=s=>[...s].map(c=>c==='1'?'0':'1').join('');
+const fm=n=>n<0?'−'+Math.abs(n):String(n);
+function ca2op(a,op,b){
+  const b2=op==='+'?b:-b;const A=tc(a),B=tc(b2);const sum=(a&1023)+(b2&1023);const C=sum>>10,r=sum&1023,R=r.toString(2).padStart(10,'0');
+  const S=+R[0],Z=r===0?1:0,V=(A[0]===B[0]&&R[0]!==A[0])?1:0;const real=a+b2;
+  const rep=(v,l)=>{if(v===-512)return l+' = −512 → '+tc(v)+' (el menor del rango)';if(v>=0)return l+' = +'+v+' → '+tc(v);const p=tc(-v);return l+' = '+fm(v)+':  +'+(-v)+' = '+p+'  →  invierto '+inv(p)+'  →  +1  →  '+tc(v);};
+  let c=0,row=Array(10).fill(' ');for(let i=9;i>=0;i--){const s=+A[i]+ +B[i]+c;c=s>1?1:0;if(i>0)row[i-1]=c?'1':' ';}
+  let h='';
+  if(op==='-')h+='Restar es sumar el opuesto: '+fm(a)+' − '+(b<0?'('+fm(b)+')':b)+' = '+fm(a)+' + '+(b2<0?'('+fm(b2)+')':b2)+'<br>';
+  h+='<pre>'+rep(a,'A')+'\n'+rep(b2,'B')+'\n\n  '+row.join('')+'   (acarreos)\n  '+A+'\n+ '+B+'\n  ──────────\n'+C+' '+R+'</pre>';
+  h+='<strong>C = '+C+'</strong> · <strong>S = '+S+'</strong> · <strong>Z = '+Z+'</strong> · <strong>V = '+V+'</strong><br>';
+  h+=(A[0]!==B[0]?'Signos distintos → V = 0 seguro.':V?'Mismo signo y el resultado cambió de signo → desborde: el real ('+fm(real)+') no entra en −512…511.':'Mismo signo y el resultado lo conserva → sin desborde.');
+  return {h,ok:-512<=a&&a<=511&&-512<=b2&&b2<=511};
+}
+const EX5=[[511,'+',100],[-200,'+',154],[-60,'-',478],[127,'-',126]];
+document.getElementById('ex5').innerHTML=EX5.map((x,i)=>'<div class="ex"><div class="q">'+(i+1)+') '+fm(x[0])+' '+(x[1]==='+'?'+':'−')+' '+x[2]+'</div><button class="btn" data-t="s5'+i+'">Ver solución</button><div class="sol" id="s5'+i+'">'+ca2op(...x).h+'</div></div>').join('');
+function cupd(){const a=Number(document.getElementById('ca').value.replace('−','-')),b=Number(document.getElementById('cb').value.replace('−','-')),op=document.getElementById('cop').value;
+  const e=document.getElementById('cerr'),o=document.getElementById('cout');
+  if(!Number.isInteger(a)||!Number.isInteger(b)){e.textContent='Escribí números enteros.';o.innerHTML='';return;}
+  const r=ca2op(a,op,b);if(!r.ok){e.textContent='Con 10 bits los números (y el opuesto del segundo, si restás) tienen que estar entre −512 y 511.';o.innerHTML='';return;}
+  e.textContent='';o.innerHTML=r.h;}
+['ca','cb','cop'].forEach(id=>document.getElementById(id).addEventListener('input',cupd));cupd();
+
+/* botones ver solución */
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-t]');if(!b)return;const s=document.getElementById(b.dataset.t);const o=s.classList.toggle('open');b.textContent=o?'Ocultar solución':'Ver solución';});
+</script>
+</body>
+</html>
