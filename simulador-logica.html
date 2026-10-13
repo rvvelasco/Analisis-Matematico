@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador · Parcial Lógica Computacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#E9EAE6;--page:#FFFFFF;--ink:#111;--soft:#555;--line:#222;--ok:#177567;--oksoft:#E4F1EE;--bad:#B3261E;--badsoft:#FBEBEC;--warn:#8A5A00;--warnsoft:#FAF1DF;--accent:#153A5B;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;}
+  .bar{position:sticky;top:0;z-index:10;background:#0D2942;color:#fff;}
+  .bar-in{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .bar a{color:#cfd9e2;text-decoration:none;font-weight:600;font-size:14px;margin-right:6px;}
+  .bar .t{font-weight:700;font-size:15px;margin-right:auto;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .tabs button{background:transparent;color:#fff;border:1px solid #5f7a92;border-radius:8px;padding:6px 12px;font:600 13.5px Inter;cursor:pointer;}
+  .tabs button.on{background:#fff;color:#0D2942;border-color:#fff;}
+  .tabs button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #C42430;outline-offset:2px;}
+  .page{max-width:820px;margin:22px auto 30px;background:var(--page);box-shadow:0 2px 12px rgba(0,0,0,.12);padding:46px 56px 50px;font-family:Tinos,'Times New Roman',serif;font-size:17px;line-height:1.45;}
+  @media(max-width:700px){.page{padding:26px 16px;margin:10px 0;}}
+  .hdr{display:flex;justify-content:space-between;font-size:15px;margin-bottom:10px;}
+  h1{font-size:22px;text-align:center;text-decoration:underline;margin:6px 0 12px;}
+  .modelo{text-align:center;font-family:Inter;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#C42430;font-weight:700;margin-bottom:6px;}
+  p.reg{text-indent:28px;text-align:justify;margin:0 0 10px;}
+  table.notas{border-collapse:collapse;margin:6px 0 18px;width:100%;font-size:15px;}
+  table.notas td{border:1px solid var(--line);text-align:center;padding:2px 4px;}
+  table.notas td:first-child{font-weight:700;}
+  .ej{margin-top:22px;}
+  .ej h2{font-size:17px;font-weight:400;margin:0 0 8px;}
+  .ej h2 b{font-size:19px;text-decoration:underline;}
+  .it{margin:10px 0 4px;padding:6px 8px;border-radius:6px;}
+  .it.ok{background:var(--oksoft);} .it.no{background:var(--badsoft);} .it.part{background:var(--warnsoft);}
+  .opts{display:flex;flex-wrap:wrap;gap:4px 26px;margin:4px 0 0 14px;}
+  .opts label{cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+  .opts label.right{outline:2px solid var(--ok);border-radius:4px;padding:0 4px;}
+  .opts label.wrong{outline:2px solid var(--bad);border-radius:4px;padding:0 4px;}
+  input[type=radio]{accent-color:#153A5B;}
+  select,input[type=text]{font:16px Tinos,serif;border:none;border-bottom:1.5px solid #333;background:transparent;padding:1px 3px;}
+  input.ans{width:130px;font-family:'JetBrains Mono',monospace;font-size:15px;}
+  input.bits{width:150px;font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:1px;}
+  table.bits{border-collapse:collapse;margin:6px 0;width:100%;table-layout:fixed;}
+  table.bits td{border:1px solid var(--line);text-align:center;font-size:14px;padding:2px 0;}
+  sub{font-size:.7em;}
+  .ops{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center;}
+  .flags{display:inline-flex;gap:10px;flex-wrap:wrap;margin-left:6px;font-size:15px;}
+  .sol{display:none;margin:6px 0 2px 14px;font-family:Inter,sans-serif;font-size:13.5px;line-height:1.55;color:#222;background:#F6F7F4;border-left:3px solid #153A5B;padding:8px 11px;border-radius:0 6px 6px 0;}
+  .sol.show{display:block;}
+  .sol .m{font-family:'JetBrains Mono',monospace;font-size:13px;}
+  .sol pre{font-family:'JetBrains Mono',monospace;font-size:13px;margin:6px 0;line-height:1.35;white-space:pre;overflow-x:auto;}
+  .pts{font-family:Inter;font-size:12px;color:var(--soft);margin-left:6px;}
+  .actions{max-width:820px;margin:0 auto 60px;display:flex;gap:10px;flex-wrap:wrap;padding:0 16px;}
+  .actions button{border:none;border-radius:9px;padding:12px 22px;font:700 15px Inter;cursor:pointer;}
+  .b1{background:#C42430;color:#fff;} .b2{background:#fff;color:#0D2942;border:1px solid #9aa !important;}
+  .result{display:none;max-width:820px;margin:0 auto 18px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:18px 22px;font-family:Inter;}
+  .result.show{display:block;}
+  .result .big{font-size:34px;font-weight:700;color:#C42430;}
+  .result table{border-collapse:collapse;margin-top:8px;font-size:14px;}
+  .result td{padding:3px 12px 3px 0;}
+  .err{color:var(--bad);font-family:Inter;font-size:13px;margin-left:8px;}
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+  <a href="index.html">‹ Inicio</a><span class="t">Simulador · Parcial Lógica</span>
+  <div class="tabs" id="tabs"></div>
+</div></div>
+
+<div class="result" id="result" aria-live="polite"></div>
+<div class="page" id="page"></div>
+<div class="actions">
+  <button class="b1" id="corregir">Corregir examen</button>
+  <button class="b2" id="vaciar">Borrar respuestas</button>
+  <button class="b2" id="versol">Ver soluciones sin corregir</button>
+</div>
+
+<script id="data" type="application/json">[{"e1": [{"s": "Es posible pasar de una base cualquiera a otra sin pasar por decimal.", "v": true, "e": "Siempre se puede: por ejemplo haciendo las divisiones sucesivas en la base de origen. Cuando una base es potencia de la otra, además hay un método sencillo (agrupar dígitos)."}, {"s": "Se puede pasar de base 2 a base 16 agrupando los bits de a 4.", "v": true, "e": "16 = 2⁴: cada grupo de 4 bits es un dígito hexadecimal."}, {"s": "En signo y magnitud existen dos representaciones del cero.", "v": true, "e": "+0 = 0000 y −0 = 1000 (con 4 bits)."}, {"s": "En complemento a 2, la bandera C indica que hubo desborde (overflow).", "v": false, "e": "El desborde en Ca2 lo indica <b>V<\/b>. C es solo el acarreo que sale del MSB."}, {"s": "Con la representación en punto flotante se pueden representar números negativos.", "v": true, "e": "Tiene un bit de signo: 0 positivo, 1 negativo."}], "e2": [{"q": "Dados los siguientes números en signo y magnitud, señalar el menor:", "o": ["0110", "1011", "1101", "1001"], "c": 2, "vals": [6, -3, -5, -1], "kind": "sm"}, {"q": "Dados los siguientes números en complemento a 2, señalar el menor:", "o": ["01000", "11100", "10011", "10110"], "c": 2, "vals": [8, -4, -13, -10], "kind": "ca2"}, {"q": "Seleccione el número más grande:", "o": [["52", 7], ["44", 9], ["35", 10], ["2B", 14]], "c": 1, "vals": [37, 40, 35, 39], "kind": "bases"}, {"q": "Dados los siguientes números en binario no signado, señalar el menor:", "o": ["01011", "00111", "10001", "01100"], "c": 1, "vals": [11, 7, 17, 12], "kind": "ns"}, {"q": "Seleccionar el número correcto respecto de su base:", "o": [["47", 6], ["1A", 10], ["38", 9], ["2G", 16], "Todas las anteriores son correctas"], "c": 2, "ok": [false, false, true, false], "kind": "valid"}], "e3": [{"bits": "10100001010100000000000000000000", "o": ["−13 ∗ 2^{64}", "−1.625 ∗ 2^{-61}", "13 ∗ 2^{-64}", "−1.625 ∗ 2^{66}", "−1.625 ∗ 2^{61}"], "c": 1, "E": 66, "e": -61, "sign": 1, "m": "101", "man": "1.625", "k": 13, "L": 3, "style": "norm"}, {"bits": "01101110011010000000000000000000", "o": ["29 ∗ 2^{97}", "−29 ∗ 2^{89}", "29 ∗ 2^{93}", "29 ∗ 2^{89}", "1.8125 ∗ 2^{220}"], "c": 3, "E": 220, "e": 93, "sign": 0, "m": "1101", "man": "1.8125", "k": 29, "L": 4, "style": "int"}, {"bits": "10100011000001010000000000000000", "o": ["133 ∗ 2^{-64}", "−1.0390625 ∗ 2^{70}", "−133 ∗ 2^{-64}", "−133 ∗ 2^{-57}", "−133 ∗ 2^{64}"], "c": 2, "E": 70, "e": -57, "sign": 1, "m": "0000101", "man": "1.0390625", "k": 133, "L": 7, "style": "int"}, {"bits": "01000101001100000000000000000000", "o": ["1.375 ∗ 2^{138}", "1.375 ∗ 2^{-11}", "0.375 ∗ 2^{11}", "−1.375 ∗ 2^{11}", "11 ∗ 2^{8}"], "c": 4, "E": 138, "e": 11, "sign": 0, "m": "011", "man": "1.375", "k": 11, "L": 3, "style": "int"}, {"bits": "01000000010000000000000000000000", "o": ["3", "−∞", "+∞", "Error", "0"], "c": 0, "E": 128, "e": 1, "sign": 0, "m": "1", "special": true}], "e4": [{"n": "10110110", "b1": 2, "b2": 16, "ans": "B6", "fam3": false}, {"n": "3C7", "b1": 16, "b2": 8, "ans": "1707", "fam3": false}, {"n": "2D", "b1": 16, "b2": 4, "ans": "231", "fam3": false}, {"n": "1201", "b1": 3, "b2": 9, "ans": "51", "fam3": true}, {"n": "6315", "b1": 8, "b2": 4, "ans": "303031", "fam3": false}], "e5": [{"a": 300, "op": "+", "b": 250, "b2": 250, "A": "0100101100", "B": "0011111010", "Bpos": "0011111010", "R": "1000100110", "C": 0, "S": 1, "Z": 0, "V": 1, "real": 550, "rv": -474}, {"a": -150, "op": "+", "b": 90, "b2": 90, "A": "1101101010", "B": "0001011010", "Bpos": "0001011010", "R": "1111000100", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -60, "rv": -60}, {"a": -100, "op": "-", "b": 420, "b2": -420, "A": "1110011100", "B": "1001011100", "Bpos": "0110100100", "R": "0111111000", "C": 1, "S": 0, "Z": 0, "V": 1, "real": -520, "rv": 504}, {"a": 200, "op": "-", "b": 199, "b2": -199, "A": "0011001000", "B": "1100111001", "Bpos": "0011000111", "R": "0000000001", "C": 1, "S": 0, "Z": 0, "V": 0, "real": 1, "rv": 1}]}, {"e1": [{"s": "Para pasar de base 8 a base 16 sin decimal conviene pasar por base 2.", "v": true, "e": "8 = 2³ y 16 = 2⁴: se pasa a binario (de a 3 bits) y se reagrupa de a 4."}, {"s": "Para comparar números en algún convenio de números negativos el módulo debe ser distinto.", "v": false, "e": "Es al revés: para comparar, los números tienen que estar con el <b>mismo<\/b> módulo (misma cantidad de bits)."}, {"s": "En complemento a 2 existen dos representaciones del cero.", "v": false, "e": "En Ca2 el cero es único (todos los bits en 0). El que tiene dos ceros es signo y magnitud."}, {"s": "Con 10 bits en complemento a 2 el mayor número representable es el 511.", "v": true, "e": "Rango: −512 a +511 (2⁹ − 1 = 511)."}, {"s": "En punto flotante de simple precisión el exponente ocupa 8 bits.", "v": true, "e": "1 bit de signo + 8 de exponente + 23 de mantisa = 32 bits."}], "e2": [{"q": "Dados los siguientes números en signo y magnitud, señalar el mayor:", "o": ["1111", "0011", "1000", "0101"], "c": 3, "vals": [-7, 3, 0, 5], "kind": "sm"}, {"q": "Dados los siguientes números en complemento a 2, señalar el mayor:", "o": ["11111", "01011", "10101", "00110"], "c": 1, "vals": [-1, 11, -11, 6], "kind": "ca2"}, {"q": "Seleccione el número más chico:", "o": [["100", 2], ["12", 3], ["11", 5], ["10", 6]], "c": 0, "vals": [4, 5, 6, 6], "kind": "bases"}, {"q": "Dados los siguientes números en binario no signado, señalar el mayor:", "o": ["10010", "01111", "10100", "10011"], "c": 2, "vals": [18, 15, 20, 19], "kind": "ns"}, {"q": "Seleccionar el número correcto respecto de su base:", "o": [["29", 8], ["C3", 12], ["101", 2], ["4E", 14], "Todas las anteriores son correctas"], "c": 2, "ok": [false, false, true, false], "kind": "valid"}], "e3": [{"bits": "01000001010000000000000000000000", "o": ["−3 ∗ 2^{2}", "1.5 ∗ 2^{-3}", "1.5 ∗ 2^{3}", "1.5 ∗ 2^{130}", "0.5 ∗ 2^{3}"], "c": 2, "E": 130, "e": 3, "sign": 0, "m": "1", "man": "1.5", "k": 3, "L": 1, "style": "norm"}, {"bits": "11100100001010000000000000000000", "o": ["−21 ∗ 2^{69}", "21 ∗ 2^{69}", "−1.3125 ∗ 2^{-73}", "−1.3125 ∗ 2^{200}", "1.3125 ∗ 2^{73}"], "c": 0, "E": 200, "e": 73, "sign": 1, "m": "0101", "man": "1.3125", "k": 21, "L": 4, "style": "int"}, {"bits": "00110010011000000000000000000000", "o": ["1.75 ∗ 2^{-27}", "7 ∗ 2^{-25}", "−7 ∗ 2^{-29}", "−1.75 ∗ 2^{-27}", "7 ∗ 2^{-27}"], "c": 0, "E": 100, "e": -27, "sign": 0, "m": "11", "man": "1.75", "k": 7, "L": 2, "style": "norm"}, {"bits": "11000001110010000000000000000000", "o": ["−0.5625 ∗ 2^{4}", "−25 ∗ 2^{8}", "−25 ∗ 2^{4}", "−1.5625 ∗ 2^{4}", "1.5625 ∗ 2^{4}"], "c": 3, "E": 131, "e": 4, "sign": 1, "m": "1001", "man": "1.5625", "k": 25, "L": 4, "style": "norm"}, {"bits": "11111111100000000000000000000000", "o": ["4", "−∞", "+∞", "Error", "0"], "c": 1, "E": 255, "e": 128, "sign": 1, "m": "", "special": true}], "e4": [{"n": "111001101", "b1": 2, "b2": 8, "ans": "715", "fam3": false}, {"n": "7B", "b1": 16, "b2": 4, "ans": "1323", "fam3": false}, {"n": "2210", "b1": 3, "b2": 9, "ans": "83", "fam3": true}, {"n": "375", "b1": 8, "b2": 16, "ans": "FD", "fam3": false}, {"n": "3021", "b1": 4, "b2": 16, "ans": "C9", "fam3": false}], "e5": [{"a": 456, "op": "+", "b": 60, "b2": 60, "A": "0111001000", "B": "0000111100", "Bpos": "0000111100", "R": "1000000100", "C": 0, "S": 1, "Z": 0, "V": 1, "real": 516, "rv": -508}, {"a": -300, "op": "+", "b": 300, "b2": 300, "A": "1011010100", "B": "0100101100", "Bpos": "0100101100", "R": "0000000000", "C": 1, "S": 0, "Z": 1, "V": 0, "real": 0, "rv": 0}, {"a": -256, "op": "-", "b": 256, "b2": -256, "A": "1100000000", "B": "1100000000", "Bpos": "0100000000", "R": "1000000000", "C": 1, "S": 1, "Z": 0, "V": 0, "real": -512, "rv": -512}, {"a": 85, "op": "-", "b": 120, "b2": -120, "A": "0001010101", "B": "1110001000", "Bpos": "0001111000", "R": "1111011101", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -35, "rv": -35}]}, {"e1": [{"s": "Se puede pasar de base 16 a base 8 fácilmente pasando por base 4 en el medio.", "v": false, "e": "El paso sencillo es por <b>base 2<\/b>: 16 = 2⁴ y 8 = 2³. 8 no es potencia de 4, así que base 4 no sirve de puente directo."}, {"s": "En signo y magnitud el MSB indica el signo.", "v": true, "e": "MSB 0 = positivo, MSB 1 = negativo; el resto de los bits es el valor absoluto."}, {"s": "Con módulo 8, en complemento a 2 se puede representar el +128.", "v": false, "e": "Con 8 bits el rango de Ca2 es de −128 a +127. El +128 no entra."}, {"s": "La bandera Z vale 1 cuando el resultado de la operación es cero.", "v": true, "e": "Z (zero) se prende solo si todos los bits del resultado son 0."}, {"s": "Si el exponente y la mantisa valen 0, el número representado es el 0.", "v": true, "e": "E = 0 y M = 0 → 0."}], "e2": [{"q": "Dados los siguientes números en signo y magnitud, señalar el menor:", "o": ["1010", "1111", "0001", "1100"], "c": 1, "vals": [-2, -7, 1, -4], "kind": "sm"}, {"q": "Dados los siguientes números en complemento a 2, señalar el menor:", "o": ["10001", "11001", "01111", "10000"], "c": 3, "vals": [-15, -7, 15, -16], "kind": "ca2"}, {"q": "Seleccione el número más grande:", "o": [["63", 7], ["47", 9], ["35", 12], ["2F", 16]], "c": 3, "vals": [45, 43, 41, 47], "kind": "bases"}, {"q": "Dados los siguientes números en binario no signado, señalar el menor:", "o": ["11000", "10111", "11011", "10110"], "c": 3, "vals": [24, 23, 27, 22], "kind": "ns"}, {"q": "Seleccionar el número correcto respecto de su base:", "o": [["B7", 11], ["320", 3], ["88", 9], ["1F", 15], "Todas las anteriores son correctas"], "c": 2, "ok": [false, false, true, false], "kind": "valid"}], "e3": [{"bits": "10111100011100000000000000000000", "o": ["−15 ∗ 2^{-7}", "−1.875 ∗ 2^{-7}", "−15 ∗ 2^{10}", "−15 ∗ 2^{-4}", "15 ∗ 2^{-10}"], "c": 1, "E": 120, "e": -7, "sign": 1, "m": "111", "man": "1.875", "k": 15, "L": 3, "style": "norm"}, {"bits": "01000011001100000000000000000000", "o": ["11 ∗ 2^{4}", "11 ∗ 2^{-4}", "−11 ∗ 2^{4}", "−1.375 ∗ 2^{7}", "0.375 ∗ 2^{7}"], "c": 0, "E": 134, "e": 7, "sign": 0, "m": "011", "man": "1.375", "k": 11, "L": 3, "style": "int"}, {"bits": "11001011000011000000000000000000", "o": ["−35 ∗ 2^{18}", "−0.09375 ∗ 2^{23}", "−35 ∗ 2^{23}", "−35 ∗ 2^{28}", "−1.09375 ∗ 2^{150}"], "c": 0, "E": 150, "e": 23, "sign": 1, "m": "00011", "man": "1.09375", "k": 35, "L": 5, "style": "int"}, {"bits": "00101101011010000000000000000000", "o": ["29 ∗ 2^{-37}", "1.8125 ∗ 2^{37}", "0.8125 ∗ 2^{-37}", "−29 ∗ 2^{-41}", "1.8125 ∗ 2^{-37}"], "c": 4, "E": 90, "e": -37, "sign": 0, "m": "1101", "man": "1.8125", "k": 29, "L": 4, "style": "norm"}, {"bits": "00000000000000000000000000000000", "o": ["1", "−∞", "+∞", "Error", "0"], "c": 4, "E": 0, "e": -127, "sign": 0, "m": "", "special": true}], "e4": [{"n": "1101101011", "b1": 2, "b2": 16, "ans": "36B", "fam3": false}, {"n": "4F", "b1": 16, "b2": 8, "ans": "117", "fam3": false}, {"n": "12021", "b1": 3, "b2": 9, "ans": "167", "fam3": true}, {"n": "5C", "b1": 16, "b2": 2, "ans": "1011100", "fam3": false}, {"n": "713", "b1": 8, "b2": 4, "ans": "13023", "fam3": false}], "e5": [{"a": 128, "op": "+", "b": 127, "b2": 127, "A": "0010000000", "B": "0001111111", "Bpos": "0001111111", "R": "0011111111", "C": 0, "S": 0, "Z": 0, "V": 0, "real": 255, "rv": 255}, {"a": -511, "op": "+", "b": 20, "b2": 20, "A": "1000000001", "B": "0000010100", "Bpos": "0000010100", "R": "1000010101", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -491, "rv": -491}, {"a": -45, "op": "-", "b": 470, "b2": -470, "A": "1111010011", "B": "1000101010", "Bpos": "0111010110", "R": "0111111101", "C": 1, "S": 0, "Z": 0, "V": 1, "real": -515, "rv": 509}, {"a": 64, "op": "-", "b": 64, "b2": -64, "A": "0001000000", "B": "1111000000", "Bpos": "0001000000", "R": "0000000000", "C": 1, "S": 0, "Z": 1, "V": 0, "real": 0, "rv": 0}]}, {"e1": [{"s": "Se puede pasar de base 3 a base 9 agrupando los dígitos de a 2.", "v": true, "e": "9 = 3²: cada par de dígitos en base 3 es un dígito en base 9."}, {"s": "Para todos los convenios estudiados en el curso el LSB representa el signo.", "v": false, "e": "El signo lo da el <b>MSB<\/b> (el bit de más a la izquierda), no el LSB."}, {"s": "Con módulo 8, en complemento a 2 se puede representar el −128.", "v": true, "e": "Es el menor número del rango: 10000000."}, {"s": "Si se suman dos números positivos en Ca2 y el resultado da negativo, hubo overflow (V = 1).", "v": true, "e": "Mismo signo en los operandos y signo distinto en el resultado → V = 1."}, {"s": "Un exponente con todos sus bits en 1 y mantisa en 0 representa ±infinito.", "v": true, "e": "E = 255 y M = 0 → ±∞ (según el signo)."}], "e2": [{"q": "Dados los siguientes números en signo y magnitud, señalar el mayor:", "o": ["1011", "1001", "0000", "1110"], "c": 2, "vals": [-3, -1, 0, -6], "kind": "sm"}, {"q": "Dados los siguientes números en complemento a 2, señalar el menor:", "o": ["111111", "100100", "110000", "011111"], "c": 1, "vals": [-1, -28, -16, 31], "kind": "ca2"}, {"q": "Seleccione el número más chico:", "o": [["22", 3], ["13", 4], ["9", 10], ["10", 8]], "c": 1, "vals": [8, 7, 9, 8], "kind": "bases"}, {"q": "Dados los siguientes números en binario no signado, señalar el mayor:", "o": ["00111", "01000", "00110", "00101"], "c": 1, "vals": [7, 8, 6, 5], "kind": "ns"}, {"q": "Seleccionar el número correcto respecto de su base:", "o": [["A0", 9], ["77", 7], ["5C", 13], ["82", 8], "Todas las anteriores son correctas"], "c": 2, "ok": [false, false, true, false], "kind": "valid"}], "e3": [{"bits": "01000000101000000000000000000000", "o": ["1.25 ∗ 2^{129}", "1.25 ∗ 2^{-2}", "5 ∗ 2^{2}", "1.25 ∗ 2^{2}", "−5 ∗ 2^{0}"], "c": 3, "E": 129, "e": 2, "sign": 0, "m": "01", "man": "1.25", "k": 5, "L": 2, "style": "norm"}, {"bits": "10100011010110000000000000000000", "o": ["−1.6875 ∗ 2^{-57}", "27 ∗ 2^{-61}", "−1.6875 ∗ 2^{57}", "−27 ∗ 2^{61}", "−1.6875 ∗ 2^{70}"], "c": 0, "E": 70, "e": -57, "sign": 1, "m": "1011", "man": "1.6875", "k": 27, "L": 4, "style": "norm"}, {"bits": "01010000000010100000000000000000", "o": ["1.078125 ∗ 2^{160}", "69 ∗ 2^{33}", "−1.078125 ∗ 2^{33}", "69 ∗ 2^{27}", "69 ∗ 2^{-27}"], "c": 3, "E": 160, "e": 33, "sign": 0, "m": "000101", "man": "1.078125", "k": 69, "L": 6, "style": "int"}, {"bits": "11000000011100000000000000000000", "o": ["−15 ∗ 2^{4}", "1.875 ∗ 2^{1}", "−15 ∗ 2^{1}", "−15 ∗ 2^{2}", "−15 ∗ 2^{-2}"], "c": 4, "E": 128, "e": 1, "sign": 1, "m": "111", "man": "1.875", "k": 15, "L": 3, "style": "int"}, {"bits": "01111111110000000000000000000000", "o": ["3", "−∞", "+∞", "Error", "0"], "c": 3, "E": 255, "e": 128, "sign": 0, "m": "1", "special": true}], "e4": [{"n": "11110001", "b1": 2, "b2": 8, "ans": "361", "fam3": false}, {"n": "A9", "b1": 16, "b2": 4, "ans": "2221", "fam3": false}, {"n": "84", "b1": 9, "b2": 3, "ans": "2211", "fam3": true}, {"n": "1032", "b1": 4, "b2": 8, "ans": "116", "fam3": false}, {"n": "2E5", "b1": 16, "b2": 8, "ans": "1345", "fam3": false}], "e5": [{"a": 410, "op": "+", "b": 101, "b2": 101, "A": "0110011010", "B": "0001100101", "Bpos": "0001100101", "R": "0111111111", "C": 0, "S": 0, "Z": 0, "V": 0, "real": 511, "rv": 511}, {"a": -220, "op": "+", "b": 219, "b2": 219, "A": "1100100100", "B": "0011011011", "Bpos": "0011011011", "R": "1111111111", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -1, "rv": -1}, {"a": -1, "op": "-", "b": 1, "b2": -1, "A": "1111111111", "B": "1111111111", "Bpos": "0000000001", "R": "1111111110", "C": 1, "S": 1, "Z": 0, "V": 0, "real": -2, "rv": -2}, {"a": 300, "op": "-", "b": -250, "b2": 250, "A": "0100101100", "B": "0011111010", "Bpos": "0011111010", "R": "1000100110", "C": 0, "S": 1, "Z": 0, "V": 1, "real": 550, "rv": -474}]}, {"e1": [{"s": "Se puede pasar de base 4 a base 8 agrupando los dígitos de a 2.", "v": false, "e": "8 no es potencia de 4. Se pasa por binario: cada dígito de base 4 son 2 bits y se reagrupa de a 3."}, {"s": "El binario no signado permite representar números negativos.", "v": false, "e": "No signado = solo positivos y el cero."}, {"s": "Si se suman un número positivo y uno negativo en Ca2, nunca hay overflow.", "v": true, "e": "Con signos distintos el resultado siempre queda dentro del rango."}, {"s": "La bandera S toma el valor del MSB del resultado.", "v": true, "e": "S (signo) copia el bit de más a la izquierda del resultado."}, {"s": "Cuando la mantisa y el exponente tienen todos sus bits en 1, el resultado es un error (NaN).", "v": true, "e": "E = 255 con M ≠ 0 → Error (NaN)."}], "e2": [{"q": "Dados los siguientes números en signo y magnitud, señalar el menor:", "o": ["0111", "1110", "1100", "1101"], "c": 1, "vals": [7, -6, -4, -5], "kind": "sm"}, {"q": "Dados los siguientes números en complemento a 2, señalar el mayor:", "o": ["10111", "11110", "00011", "00001"], "c": 2, "vals": [-9, -2, 3, 1], "kind": "ca2"}, {"q": "Seleccione el número más grande:", "o": [["54", 6], ["41", 8], ["36", 10], ["23", 16]], "c": 2, "vals": [34, 33, 36, 35], "kind": "bases"}, {"q": "Dados los siguientes números en binario no signado, señalar el menor:", "o": ["01001", "01010", "00111", "01000"], "c": 2, "vals": [9, 10, 7, 8], "kind": "ns"}, {"q": "Seleccionar el número correcto respecto de su base:", "o": [["19", 9], ["D2", 13], ["3A", 11], ["80", 8], "Todas las anteriores son correctas"], "c": 2, "ok": [false, false, true, false], "kind": "valid"}], "e3": [{"bits": "10111111110000000000000000000000", "o": ["−3 ∗ 2^{0}", "−0.5 ∗ 2^{0}", "1.5 ∗ 2^{0}", "−1.5 ∗ 2^{0}", "3 ∗ 2^{-1}"], "c": 3, "E": 127, "e": 0, "sign": 1, "m": "1", "man": "1.5", "k": 3, "L": 1, "style": "norm"}, {"bits": "00010000100110000000000000000000", "o": ["19 ∗ 2^{-94}", "−1.1875 ∗ 2^{-94}", "19 ∗ 2^{98}", "0.1875 ∗ 2^{-94}", "19 ∗ 2^{-98}"], "c": 4, "E": 33, "e": -94, "sign": 0, "m": "0011", "man": "1.1875", "k": 19, "L": 4, "style": "int"}, {"bits": "11101001011000000000000000000000", "o": ["−0.75 ∗ 2^{83}", "−7 ∗ 2^{-81}", "−7 ∗ 2^{85}", "−1.75 ∗ 2^{83}", "−7 ∗ 2^{83}"], "c": 3, "E": 210, "e": 83, "sign": 1, "m": "11", "man": "1.75", "k": 7, "L": 2, "style": "norm"}, {"bits": "01000010110001000000000000000000", "o": ["0.53125 ∗ 2^{6}", "49 ∗ 2^{11}", "49 ∗ 2^{-1}", "49 ∗ 2^{1}", "49 ∗ 2^{6}"], "c": 3, "E": 133, "e": 6, "sign": 0, "m": "10001", "man": "1.53125", "k": 49, "L": 5, "style": "int"}, {"bits": "01000000100000000000000000000000", "o": ["4", "−∞", "+∞", "Error", "0"], "c": 0, "E": 129, "e": 2, "sign": 0, "m": "", "special": true}], "e4": [{"n": "1011100", "b1": 2, "b2": 16, "ans": "5C", "fam3": false}, {"n": "D7", "b1": 16, "b2": 8, "ans": "327", "fam3": false}, {"n": "20112", "b1": 3, "b2": 9, "ans": "215", "fam3": true}, {"n": "64", "b1": 8, "b2": 16, "ans": "34", "fam3": false}, {"n": "233", "b1": 4, "b2": 2, "ans": "101111", "fam3": false}], "e5": [{"a": 255, "op": "+", "b": 257, "b2": 257, "A": "0011111111", "B": "0100000001", "Bpos": "0100000001", "R": "1000000000", "C": 0, "S": 1, "Z": 0, "V": 1, "real": 512, "rv": -512}, {"a": -400, "op": "+", "b": 113, "b2": 113, "A": "1001110000", "B": "0001110001", "Bpos": "0001110001", "R": "1011100001", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -287, "rv": -287}, {"a": -512, "op": "+", "b": 1, "b2": 1, "A": "1000000000", "B": "0000000001", "Bpos": "0000000001", "R": "1000000001", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -511, "rv": -511}, {"a": 15, "op": "-", "b": 300, "b2": -300, "A": "0000001111", "B": "1011010100", "Bpos": "0100101100", "R": "1011100011", "C": 0, "S": 1, "Z": 0, "V": 0, "real": -285, "rv": -285}]}]</script>
+<script>
+const MODELS=JSON.parse(document.getElementById('data').textContent);
+let cur=0;
+const L='abcde';
+const NOTA=p=>p<20?1:p<59?2:p<60?3:p<61?4:p<=65?5:p<70?6:p<80?7:p<90?8:p<95?9:10;
+const sup=s=>s.replace(/2\^\{(-?\d+)\}/g,'2<sup>$1</sup>');
+const bs=(d,b)=>d+'<sub>'+b+'</sub>';
+const esc=s=>String(s);
+
+function render(){
+  const m=MODELS[cur];let h='';
+  h+='<div class="hdr"><span>IFTS 18</span><span>TSAS</span></div>';
+  h+='<div class="modelo">Modelo de práctica '+(cur+1)+' de 5</div>';
+  h+='<h1>Examen Parcial Lógica Computacional</h1>';
+  h+='<p class="reg">Reglamento: El examen se aprueba con un 60% bien resuelto. Para ello en cada enunciado se señala su valor porcentual del examen. También se adjunta una tabla que representa la nota según el porcentaje obtenido.</p>';
+  h+='<table class="notas"><tr><td>Nota</td>'+[1,2,3,4,5,6,7,8,9,10].map(n=>'<td>'+n+'</td>').join('')+'</tr><tr><td>%</td>'+['0-19','20-58','59','60','61-65','65-69','70-79','80-89','90-95','95-100'].map(n=>'<td>'+n+'</td>').join('')+'</tr></table>';
+  // E1
+  h+='<div class="ej"><h2><b>Ejercicio 1</b> (10% del examen): Verdadero o Falso</h2>';
+  m.e1.forEach((it,i)=>{h+='<div class="it" id="i1_'+i+'">'+(i+1)+') '+it.s+' <select id="e1_'+i+'" aria-label="Verdadero o falso '+(i+1)+'"><option value="">___</option><option value="V">V</option><option value="F">F</option></select><div class="sol" id="s1_'+i+'"></div></div>';});
+  h+='</div>';
+  // E2
+  h+='<div class="ej"><h2><b>Ejercicio 2</b> (10% del examen): Elegir la única opción correcta</h2>';
+  m.e2.forEach((it,i)=>{h+='<div class="it" id="i2_'+i+'">'+(i+1)+') '+it.q+'<div class="opts">';
+    it.o.forEach((o,j)=>{const t=Array.isArray(o)?bs(o[0],o[1]):o;h+='<label data-j="'+j+'"><input type="radio" name="e2_'+i+'" value="'+j+'"><span>'+L[j]+'- '+t+'</span></label>';});
+    h+='</div><div class="sol" id="s2_'+i+'"></div></div>';});
+  h+='</div>';
+  // E3
+  h+='<div class="ej"><h2><b>Ejercicio 3</b> (10% del examen): Elegir la única opción correcta</h2>';
+  m.e3.forEach((it,i)=>{h+='<div class="it" id="i3_'+i+'">'+(i+1)+')<table class="bits"><tr>'+it.bits.split('').map(b=>'<td>'+b+'</td>').join('')+'</tr></table><div class="opts">';
+    it.o.forEach((o,j)=>{h+='<label data-j="'+j+'"><input type="radio" name="e3_'+i+'" value="'+j+'"><span>'+L[j]+') '+sup(o)+'</span></label>';});
+    h+='</div><div class="sol" id="s3_'+i+'"></div></div>';});
+  h+='</div>';
+  // E4
+  h+='<div class="ej"><h2><b>Ejercicio 4</b> (30% del examen): Transformar el número de la base especificada a la solicitada SIN pasar por base decimal (Explicar en cada caso por qué se puede usar un método sencillo)</h2>';
+  m.e4.forEach((it,i)=>{h+='<div class="it" id="i4_'+i+'">'+(i+1)+') '+bs(it.n,it.b1)+' = <input type="text" class="ans" id="e4_'+i+'" aria-label="Resultado en base '+it.b2+'" autocomplete="off" spellcheck="false"><sub>'+it.b2+'</sub><span class="pts">6%</span><div class="sol" id="s4_'+i+'"></div></div>';});
+  h+='</div>';
+  // E5
+  h+='<div class="ej"><h2><b>Ejercicio 5</b> (40% del examen): Realizar las operaciones especificadas en complemento a2 (módulo igual a diez) indicando el valor de las banderas (<i>flags</i>) C, S, Z y V en cada caso.</h2>';
+  m.e5.forEach((it,i)=>{const bt=it.b<0?'('+fm(it.b)+')':it.b;
+    h+='<div class="it" id="i5_'+i+'">'+(i+1)+') '+fm(it.a)+' '+(it.op==='+'?'+':'−')+' '+bt+'<span class="pts">10%</span><br>Resultado (10 bits): <input type="text" class="bits" id="e5r_'+i+'" maxlength="14" aria-label="Resultado en 10 bits" autocomplete="off" spellcheck="false"><span class="flags">'+
+      ['C','S','Z','V'].map(f=>'<label>'+f+' = <select id="e5'+f+'_'+i+'" aria-label="Bandera '+f+'"><option value="">–</option><option>0</option><option>1</option></select></label>').join('')+'</span><span class="err" id="er5_'+i+'"></span><div class="sol" id="s5_'+i+'"></div></div>';});
+  h+='</div>';
+  document.getElementById('page').innerHTML=h;
+  document.getElementById('result').className='result';
+  document.querySelectorAll('#tabs button').forEach((b,k)=>b.classList.toggle('on',k===cur));
+  document.querySelectorAll('.page input.bits').forEach(inp=>inp.addEventListener('input',()=>{document.getElementById('er5_'+inp.id.split('_')[1]).textContent='';}));
+}
+function fm(n){return n<0?'−'+Math.abs(n):String(n);}
+
+/* ---------- soluciones ---------- */
+function sol1(it){return '<b>'+(it.v?'Verdadero':'Falso')+'.</b> '+it.e;}
+function sol2(it){
+  if(it.kind==='valid'){return it.o.slice(0,4).map((o,j)=>{const[d,b]=o;const dig='0123456789ABCDEFGHIJ';const bad=[...d].filter(c=>dig.indexOf(c)>=b);
+    return L[j]+') '+bs(d,b)+': '+(bad.length?'<b>no</b>, en base '+b+' los dígitos van de 0 a '+dig[b-1]+(b>10?' ('+(b-1)+')':'')+' y aparece '+bad.join(', ')+(bad.some(c=>c>'9')?' (='+bad.map(c=>dig.indexOf(c)).join(', ')+')':''):'<b>sí</b>, todos sus dígitos son menores que '+b);}).join('<br>')+'<br>→ La única correcta es la <b>'+L[it.c]+'</b>.';}
+  if(it.kind==='bases'){return 'Paso todo a decimal para comparar:<br>'+it.o.map((o,j)=>L[j]+') '+bs(o[0],o[1])+' = '+it.vals[j]).join(' · ')+'<br>→ Respuesta: <b>'+L[it.c]+'</b>.';}
+  const how={sm:'Signo y magnitud: el MSB es el signo (1 = negativo) y el resto es el valor absoluto.',ca2:'Complemento a 2: si el MSB es 1, es negativo; su valor sale de invertir y sumar 1 (o pesando el MSB como −2<sup>n−1</sup>).',ns:'No signado: todos los bits suman con su peso, no hay negativos.'}[it.kind];
+  return how+'<br>'+it.o.map((o,j)=>L[j]+') '+o+' = '+(it.vals[j]>0?'+':'')+it.vals[j]).join(' · ')+'<br>→ Respuesta: <b>'+L[it.c]+'</b>.';
+}
+function sol3(it){
+  const b=it.bits,sg=b[0],E=b.slice(1,9),M=b.slice(9);
+  let h='<span class="m">Signo '+sg+' | Exponente '+E+' | Mantisa '+M.slice(0,10)+'…</span><br>';
+  h+='Signo '+sg+' → '+(sg==='1'?'negativo':'positivo')+'. Exponente guardado E = '+it.E+'.<br>';
+  if(it.special){
+    const mz=!it.m;
+    if(it.E===255)h+='E = 255 (todos 1) '+(mz?'y M = 0 → <b>'+(sg==='1'?'−∞':'+∞')+'</b>.':'y M ≠ 0 → <b>Error (NaN)</b>.');
+    else if(it.E===0&&mz)h+='E = 0 y M = 0 → <b>0</b>.';
+    else h+='No es caso especial: exponente real = '+it.E+' − 127 = '+it.e+'. Valor = 1,'+(it.m||'0')+' ∗ 2<sup>'+it.e+'</sup> = <b>'+it.o[it.c]+'</b>.';
+    return h+'<br>Casos especiales: E = 255 y M = 0 → ±∞ · E = 255 y M ≠ 0 → Error · E = 0 y M = 0 → 0.';
+  }
+  h+='Exponente real = '+it.E+' − 127 = <b>'+it.e+'</b>.<br>';
+  h+='Mantisa con el 1 implícito: 1,'+it.m+'<sub>2</sub> = '+it.man+'.<br>';
+  h+='Valor = '+(sg==='1'?'−':'')+'1,'+it.m+' ∗ 2<sup>'+it.e+'</sup> = '+(sg==='1'?'−':'')+it.man+' ∗ 2<sup>'+it.e+'</sup>';
+  if(it.L)h+='<br>Si corrés la coma '+it.L+' lugares para que la mantisa quede entera: '+(sg==='1'?'−':'')+'1'+it.m+'<sub>2</sub> = '+it.k+', y al exponente le restás '+it.L+': '+(sg==='1'?'−':'')+it.k+' ∗ 2<sup>'+(it.e-it.L)+'</sup>';
+  return h+'<br>→ Respuesta: <b>'+L[it.c]+') '+sup(it.o[it.c])+'</b>.';
+}
+const DIG='0123456789ABCDEF';
+function lg(b,base){let k=0,v=1;while(v<b){v*=base;k++;}return k;}
+function sol4(it){
+  const{b1,b2,n}=it;const fam=(b1%3===0)?3:2;const k1=lg(b1,fam),k2=lg(b2,fam);
+  const name=x=>({2:'binario',3:'base 3',4:'base 4',8:'octal',9:'base 9',16:'hexadecimal'})[x];
+  let why='';
+  if(k1===1||k2===1){const big=k1===1?b2:b1,k=Math.max(k1,k2);why='Como '+fam+'<sup>'+k+'</sup> = '+big+', cada dígito de '+name(big)+' equivale a '+k+' dígitos de '+name(fam)+'. Por eso se puede agrupar sin pasar por decimal.';}
+  else why='Como '+b1+' = '+fam+'<sup>'+k1+'</sup> y '+b2+' = '+fam+'<sup>'+k2+'</sup>, se pasa por '+name(fam)+' en el medio: cada dígito de '+name(b1)+' son '+k1+' dígitos de '+name(fam)+', y después se reagrupa de a '+k2+'.';
+  // paso a base fam
+  const toFam=c=>{let v=DIG.indexOf(c),s='';for(let i=0;i<k1;i++){s=(v%fam)+s;v=Math.floor(v/fam);}return s;};
+  let pre='';let mid;
+  if(k1===1){mid=n;}else{pre+=[...n].map(c=>c+' → '+toFam(c)).join('   ')+'\n';mid=[...n].map(toFam).join('');pre+='Junto: '+mid+'\n';}
+  let out;
+  if(k2===1){out=mid.replace(/^0+(?=.)/,'');}
+  else{let s=mid.replace(/^0+(?=.)/,'');while(s.length%k2)s='0'+s;const g=s.match(new RegExp('.{'+k2+'}','g'));
+    pre+='Agrupo de a '+k2+' desde la derecha: '+g.join(' ')+'\n';
+    pre+=g.map(x=>{let v=0;for(const c of x)v=v*fam+ +c;return x+' → '+DIG[v];}).join('   ')+'\n';
+    out=g.map(x=>{let v=0;for(const c of x)v=v*fam+ +c;return DIG[v];}).join('').replace(/^0+(?=.)/,'');}
+  return why+'<pre>'+pre+'</pre>→ <b>'+bs(n,b1)+' = '+bs(it.ans,b2)+'</b>'+(out!==it.ans?' ⚠':'');
+}
+function inv(s){return [...s].map(c=>c==='1'?'0':'1').join('');}
+function sol5(it){
+  let h='';const rep=(v,lbl)=>{if(v===-512)return lbl+' = −512: es el menor número del rango, '+fmtb(v)+' (no tiene opuesto positivo en 10 bits).';if(v>=0)return lbl+' = +'+v+' → '+fmtb(v);const p=fmtb(-v);return lbl+' = −'+(-v)+': +'+(-v)+' = '+p+' → invierto '+inv(p)+' → +1 → '+fmtb(v);};
+  h+=rep(it.a,'A')+'<br>';
+  if(it.op==='-')h+='Restar es sumar el opuesto: '+fm(it.a)+' − '+(it.b<0?'('+fm(it.b)+')':it.b)+' = '+fm(it.a)+' + '+(it.b2<0?'('+fm(it.b2)+')':it.b2)+'<br>';
+  h+=rep(it.b2,'B')+'<br>';
+  const carries=carryRow(it.A,it.B);
+  h+='<pre>  '+carries.row+'   (acarreos)\n  '+it.A+'\n+ '+it.B+'\n  '+'─'.repeat(10)+'\n'+it.C+' '+it.R+'</pre>';
+  h+='<b>C = '+it.C+'</b>: '+(it.C?'sale un 1 del MSB.':'no sale acarreo del MSB.')+'<br>';
+  h+='<b>S = '+it.S+'</b>: es el MSB del resultado.<br>';
+  h+='<b>Z = '+it.Z+'</b>: '+(it.Z?'el resultado es todo ceros.':'el resultado no es cero.')+'<br>';
+  const sa=it.A[0],sb=it.B[0];
+  h+='<b>V = '+it.V+'</b>: '+(sa!==sb?'los operandos tienen signos distintos, nunca hay desborde.':(it.V?'los dos operandos tienen el mismo signo ('+(sa==='0'?'+':'−')+') y el resultado quedó con signo contrario: desborde. El resultado real ('+fm(it.real)+') no entra en el rango −512 a 511.':'los dos operandos tienen el mismo signo y el resultado conserva ese signo: no hay desborde.'))+'<br>';
+  h+='Resultado leído en Ca2: '+fm(it.rv)+(it.V?' (incorrecto por el desborde; el real es '+fm(it.real)+').':'.');
+  return h;
+}
+function fmtb(v){return ((v&1023)>>>0).toString(2).padStart(10,'0');}
+function carryRow(a,b){let c=0,row=Array(10).fill(' ');for(let i=9;i>=0;i--){const s=+a[i]+ +b[i]+c;c=s>1?1:0;if(i>0)row[i-1]=c?'1':' ';}return{row:row.join('')};}
+
+/* ---------- corrección ---------- */
+function corregir(show){
+  const m=MODELS[cur];let tot=0;const parts={};
+  const mark=(id,cls)=>{const el=document.getElementById(id);el.classList.remove('ok','no','part');if(cls)el.classList.add(cls);};
+  let p=0;m.e1.forEach((it,i)=>{const v=document.getElementById('e1_'+i).value;const ok=v===(it.v?'V':'F');if(ok)p+=2;if(!show)mark('i1_'+i,ok?'ok':'no');document.getElementById('s1_'+i).innerHTML=sol1(it);document.getElementById('s1_'+i).classList.add('show');});parts.e1=p;tot+=p;
+  [['e2',sol2,'2'],['e3',sol3,'3']].forEach(([k,fn,n])=>{let p=0;m[k].forEach((it,i)=>{const sel=document.querySelector('input[name='+k+'_'+i+']:checked');const v=sel?+sel.value:-1;const ok=v===it.c;if(ok)p+=2;
+    document.querySelectorAll('#i'+n+'_'+i+' label').forEach(l=>{l.classList.remove('right','wrong');const j=+l.dataset.j;if(j===it.c)l.classList.add('right');else if(!show&&j===v)l.classList.add('wrong');});
+    if(!show)mark('i'+n+'_'+i,ok?'ok':'no');const s=document.getElementById('s'+n+'_'+i);s.innerHTML=fn(it);s.classList.add('show');});parts[k]=p;tot+=p;});
+  p=0;m.e4.forEach((it,i)=>{const v=document.getElementById('e4_'+i).value.toUpperCase().replace(/[\s_]/g,'').replace(/^0+(?=.)/,'');const ok=v===it.ans;if(ok)p+=6;if(!show)mark('i4_'+i,ok?'ok':'no');const s=document.getElementById('s4_'+i);s.innerHTML=sol4(it);s.classList.add('show');});parts.e4=p;tot+=p;
+  p=0;let bad=false;m.e5.forEach((it,i)=>{const r=document.getElementById('e5r_'+i).value.replace(/\s/g,'');let pts=0;
+    if(!show&&r&&!/^[01]{10}$/.test(r)){document.getElementById('er5_'+i).textContent='Escribí exactamente 10 bits (solo 0 y 1).';bad=true;}
+    if(r===it.R)pts+=4;['C','S','Z','V'].forEach(f=>{if(document.getElementById('e5'+f+'_'+i).value===String(it[f]))pts+=1.5;});
+    p+=pts;if(!show)mark('i5_'+i,pts===10?'ok':pts>0?'part':'no');const s=document.getElementById('s5_'+i);s.innerHTML=sol5(it)+'<br><i>Puntaje: resultado 4% + cada bandera 1,5%.</i>';s.classList.add('show');});parts.e5=p;tot+=p;
+  if(show){document.getElementById('result').className='result';return;}
+  const pct=Math.round(tot*100)/100;const r=document.getElementById('result');
+  r.innerHTML='<div>Modelo '+(cur+1)+' · resultado</div><div class="big">'+String(pct).replace('.',',')+'% → Nota '+NOTA(pct)+'</div><div>'+(pct>=60?'Aprobado (se aprueba con 60%).':'No aprobado todavía: se necesita 60%.')+'</div>'+
+    '<table><tr><td>Ejercicio 1 (V/F)</td><td>'+parts.e1+' / 10%</td></tr><tr><td>Ejercicio 2 (opción múltiple)</td><td>'+parts.e2+' / 10%</td></tr><tr><td>Ejercicio 3 (punto flotante)</td><td>'+parts.e3+' / 10%</td></tr><tr><td>Ejercicio 4 (cambio de base)</td><td>'+parts.e4+' / 30%</td></tr><tr><td>Ejercicio 5 (Ca2 y banderas)</td><td>'+String(Math.round(parts.e5*100)/100).replace('.',',')+' / 40%</td></tr></table>'+
+    (bad?'<div class="err" style="margin:8px 0 0">Algún resultado del ejercicio 5 no tiene 10 bits; revisalo.</div>':'')+'<div style="margin-top:8px;color:#555;font-size:13px">Debajo de cada consigna quedó la solución paso a paso.</div>';
+  r.className='result show';r.scrollIntoView({behavior:'smooth',block:'start'});
+}
+const tabs=document.getElementById('tabs');
+MODELS.forEach((_,k)=>{const b=document.createElement('button');b.textContent='Modelo '+(k+1);b.onclick=()=>{cur=k;render();window.scrollTo(0,0);};tabs.appendChild(b);});
+document.getElementById('corregir').onclick=()=>corregir(false);
+document.getElementById('versol').onclick=()=>corregir(true);
+document.getElementById('vaciar').onclick=()=>{render();window.scrollTo(0,0);};
+render();
+</script>
+</body>
+</html>
