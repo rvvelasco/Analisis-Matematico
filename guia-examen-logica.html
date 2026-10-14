@@ -98,7 +98,7 @@
 <div class="topbar"><div class="topbar-in">
   <span class="brand"><a href="index.html">‹ Inicio</a> Parcial de <b>Lógica</b></span>
   <nav>
-    <a href="#examen">El examen</a><a href="#e1">Ej. 1</a><a href="#e2">Ej. 2</a><a href="#e3">Ej. 3</a>
+    <a href="#examen">El examen</a><a href="#e1">Ej. 1</a><a href="#convenios">Signo y Ca2</a><a href="#e2">Ej. 2</a><a href="#e3">Ej. 3</a>
     <a href="#e4">Ej. 4</a><a href="#e5">Ej. 5</a><a href="#errores">Errores típicos</a><a href="simulador-logica.html">Simulador</a>
   </nav>
 </div></div>
@@ -146,6 +146,117 @@
   <div class="callout c-crio"><span class="tag">En criollo</span>
     <p>En el V/F casi siempre te cambian una palabra clave: MSB por LSB, “igual” por “distinto”, base 2 por base 4, V por C. Leé despacio buscando esa palabra.</p>
   </div>
+</section>
+
+<!-- CONVENIOS DESDE CERO -->
+<section class="section" id="convenios">
+  <div class="shead"><span class="snum">★</span><h2>Desde cero: signo y magnitud y complemento a 2</h2></div>
+  <p>Esta sección es la base de los ejercicios 2 y 5. Si no tenés claro qué es “signo y magnitud” o “Ca2”, empezá por acá.</p>
+
+  <h3>El problema: la computadora no tiene “signo menos”</h3>
+  <p>La compu solo guarda <strong>0 y 1</strong>: no existe un casillero para el “−”. Para guardar números negativos hay que inventar una regla que diga qué combinaciones de bits son negativas. A esa regla se la llama <strong>convenio</strong>. Los dos que entran en el parcial son <strong>signo y magnitud</strong> y <strong>complemento a 2</strong> (el profe lo escribe “Ca2” o “A2”, es lo mismo).</p>
+  <table class="t">
+    <tr><th style="width:24%">Palabra</th><th>Qué significa</th></tr>
+    <tr><td><strong>Módulo</strong></td><td>La <strong>cantidad de bits</strong> que usás. “Módulo 4” = 4 bits. “Módulo igual a diez” = 10 bits.</td></tr>
+    <tr><td><strong>Magnitud</strong></td><td>El <strong>tamaño del número sin el signo</strong> (el valor absoluto). La magnitud de −5 es 5.</td></tr>
+    <tr><td><strong>MSB</strong></td><td>El bit de más a la <strong>izquierda</strong> (el más importante).</td></tr>
+    <tr><td><strong>LSB</strong></td><td>El bit de más a la <strong>derecha</strong>.</td></tr>
+  </table>
+  <p>Para que se vea fácil, los ejemplos usan 4 bits, con pesos <span class="m">8 · 4 · 2 · 1</span>.</p>
+
+  <h3>1) Signo y magnitud</h3>
+  <p>Es la idea más intuitiva: <strong>el primer bit es un cartelito de signo</strong> y el resto es el número.</p>
+<pre class="box">  [signo] [ magnitud ]
+     1      1  0  1
+     −         5        →  −5</pre>
+  <ul class="check">
+    <li>MSB = <strong>0</strong> → positivo. MSB = <strong>1</strong> → negativo.</li>
+    <li>Los otros 3 bits se leen en binario normal (pesos 4 · 2 · 1).</li>
+    <li><strong>Leer:</strong> <span class="m">1110</span> → el 1 de adelante dice “negativo”, y <span class="m">110</span> = 4 + 2 = 6 → <strong>−6</strong>.</li>
+    <li><strong>Escribir −3:</strong> 3 en tres bits es <span class="m">011</span>, le ponés un 1 adelante → <span class="m">1011</span>.</li>
+    <li>Con 4 bits va de <strong>−7 a +7</strong>.</li>
+  </ul>
+  <div class="callout c-warn"><span class="tag">Sus dos defectos</span>
+    <p><strong>1. Tiene dos ceros:</strong> <span class="m">0000</span> = +0 y <span class="m">1000</span> = −0.</p>
+    <p><strong>2. La suma no funciona sola:</strong> +5 + (−5) → <span class="m">0101</span> + <span class="m">1101</span> = <span class="m">0010</span> = 2. Debería dar 0. Por eso casi no se usa en la compu.</p>
+  </div>
+
+  <h3>2) Complemento a 2 (Ca2, “A2”)</h3>
+  <p>Es el que usan las computadoras de verdad, y el del ejercicio 5. Los positivos se escriben igual que siempre. Los negativos se arman con una <strong>receta de tres pasos</strong>:</p>
+  <ol class="steps">
+    <li>Escribí el número <strong>en positivo</strong>.</li>
+    <li><strong>Invertí</strong> todos los bits (los 0 pasan a 1 y los 1 a 0).</li>
+    <li><strong>Sumá 1</strong>.</li>
+  </ol>
+<pre class="box">+5        →  0101
+invierto  →  1010
++1        →  1011   ←  esto es −5 en Ca2</pre>
+  <div class="callout c-calc"><span class="tag">Atajo para escribirlo</span>
+    <p>Empezando por la derecha, copiás los bits hasta el primer 1 inclusive, y el resto lo invertís. <span class="m">0101</span> → copio el <span class="m">1</span> del final, invierto los demás (<span class="m">010</span> → <span class="m">101</span>) → <span class="m">1011</span>. Da lo mismo.</p>
+  </div>
+
+  <h3>¿Cómo leo un número en Ca2?</h3>
+  <ul class="check">
+    <li>Si empieza con <strong>0</strong> → es positivo, lo leés normal. <span class="m">0110</span> = 6.</li>
+    <li>Si empieza con <strong>1</strong> → es negativo. Para saber cuánto vale, aplicás <strong>la misma receta</strong> y le ponés el signo menos: <span class="m">1011</span> → invierto <span class="m">0100</span> → +1 → <span class="m">0101</span> = 5 → vale <strong>−5</strong>.</li>
+  </ul>
+  <div class="callout c-calc"><span class="tag">Atajo para leerlo</span>
+    <p>El primer bit <strong>pesa en negativo</strong>. Con 4 bits, los pesos pasan a ser <span class="m">−8 · 4 · 2 · 1</span>.</p>
+    <p><span class="m">1011</span> = −8 + 2 + 1 = <strong>−5</strong> ✓ · <span class="m">1110</span> = −8 + 4 + 2 = <strong>−2</strong></p>
+  </div>
+  <p>Con 4 bits va de <strong>−8 a +7</strong>: hay un negativo más que positivos, porque el cero ocupa un lugar del lado positivo.</p>
+  <div class="callout c-tip"><span class="tag">Por qué es mejor</span>
+    <p><strong>1. Un solo cero</strong> (<span class="m">0000</span>).</p>
+    <p><strong>2. La suma funciona directo:</strong> +5 + (−5) → <span class="m">0101</span> + <span class="m">1011</span> = <span class="m">1 0000</span>. El 1 que sobra a la izquierda se descarta (es la bandera <strong>C</strong>) y queda <span class="m">0000</span> = 0 ✓. Por eso la compu puede restar sumando.</p>
+  </div>
+  <div class="callout c-crio"><span class="tag">En criollo · ¿por qué “complemento”?</span>
+    <p>Porque −5 se guarda como lo que <strong>le falta a 5 para llegar a 16</strong> (con 4 bits, 2⁴ = 16): 16 − 5 = 11, y 11 en binario es <span class="m">1011</span>. Justo el −5 de antes. Es como un cuentakilómetros: si estás en 0 y retrocedés 5, aparece 11 en el visor.</p>
+  </div>
+
+  <h3>La misma tira de bits, leída de tres formas</h3>
+  <div class="scroll"><table class="t">
+    <tr><th>Bits</th><th>No signado</th><th>Signo y magnitud</th><th>Ca2</th></tr>
+    <tr><td class="mono">0000</td><td>0</td><td>+0</td><td>0</td></tr>
+    <tr><td class="mono">0001</td><td>1</td><td>+1</td><td>+1</td></tr>
+    <tr><td class="mono">0010</td><td>2</td><td>+2</td><td>+2</td></tr>
+    <tr><td class="mono">0011</td><td>3</td><td>+3</td><td>+3</td></tr>
+    <tr><td class="mono">0100</td><td>4</td><td>+4</td><td>+4</td></tr>
+    <tr><td class="mono">0101</td><td>5</td><td>+5</td><td>+5</td></tr>
+    <tr><td class="mono">0110</td><td>6</td><td>+6</td><td>+6</td></tr>
+    <tr><td class="mono">0111</td><td>7</td><td>+7</td><td>+7</td></tr>
+    <tr><td class="mono">1000</td><td>8</td><td><strong>−0</strong></td><td><strong>−8</strong></td></tr>
+    <tr><td class="mono">1001</td><td>9</td><td>−1</td><td>−7</td></tr>
+    <tr><td class="mono">1010</td><td>10</td><td>−2</td><td>−6</td></tr>
+    <tr><td class="mono">1011</td><td>11</td><td>−3</td><td>−5</td></tr>
+    <tr><td class="mono">1100</td><td>12</td><td>−4</td><td>−4</td></tr>
+    <tr><td class="mono">1101</td><td>13</td><td>−5</td><td>−3</td></tr>
+    <tr><td class="mono">1110</td><td>14</td><td>−6</td><td>−2</td></tr>
+    <tr><td class="mono">1111</td><td>15</td><td>−7</td><td>−1</td></tr>
+  </table></div>
+  <p>Fijate que <strong>los que empiezan con 0 valen lo mismo en los tres convenios</strong>. La diferencia está solo en los que empiezan con 1. Por eso, en el ejercicio 2, lo primero es mirar <strong>en qué convenio está</strong>.</p>
+
+  <h3>Cómo aparece en tu parcial</h3>
+  <p><strong>Ejercicio 2:</strong> te dan 4 números y te piden el menor. Leés cada uno con su convenio y comparás. En Ca2 con 5 bits los pesos son <span class="m">−16 · 8 · 4 · 2 · 1</span>: <span class="m">10000</span> = −16, <span class="m">10100</span> = −16 + 4 = −12, <span class="m">11010</span> = −16 + 8 + 2 = −6. El menor es <span class="m">10000</span>.</p>
+  <p><strong>Ejercicio 5:</strong> usás <strong>10 bits</strong>. Los pesos en Ca2 son <span class="m">−512 · 256 · 128 · 64 · 32 · 16 · 8 · 4 · 2 · 1</span>, así que el rango va de <strong>−512 a +511</strong>. Es lo que hizo el profe con −200:</p>
+<pre class="box">+200      →  0011001000
+invierto  →  1100110111
++1        →  1100111000   ←  −200
+
+Comprobación: −512 + 256 + 32 + 16 + 8 = −200 ✓</pre>
+
+  <h3>Probá vos</h3>
+  <div class="ex"><div class="q">1) ¿Cuánto vale 1101 en signo y magnitud? ¿Y en Ca2?</div><button class="btn" data-t="sc1">Ver solución</button>
+    <div class="sol" id="sc1">Signo y magnitud: 1 → negativo, <span class="m">101</span> = 5 → <strong>−5</strong>.<br>Ca2: −8 + 4 + 1 = <strong>−3</strong>.</div></div>
+  <div class="ex"><div class="q">2) Escribí −6 en Ca2 con 4 bits.</div><button class="btn" data-t="sc2">Ver solución</button>
+    <div class="sol" id="sc2">+6 = <span class="m">0110</span> → invierto <span class="m">1001</span> → +1 → <strong>1010</strong>. Chequeo: −8 + 2 = −6 ✓</div></div>
+  <div class="ex"><div class="q">3) Escribí −1 en Ca2 con 4 bits.</div><button class="btn" data-t="sc3">Ver solución</button>
+    <div class="sol" id="sc3">+1 = <span class="m">0001</span> → invierto <span class="m">1110</span> → +1 → <strong>1111</strong>. Con todos los bits en 1, en Ca2 siempre vale −1.</div></div>
+  <div class="ex"><div class="q">4) En Ca2 de 5 bits, ¿cuál es el menor: 11111, 10001 o 01111?</div><button class="btn" data-t="sc4">Ver solución</button>
+    <div class="sol" id="sc4"><span class="m">11111</span> = −1 · <span class="m">10001</span> = −16 + 1 = −15 · <span class="m">01111</span> = +15 → el menor es <strong>10001</strong>.</div></div>
+  <div class="ex"><div class="q">5) Escribí −100 en Ca2 con 10 bits (como en el ejercicio 5).</div><button class="btn" data-t="sc5">Ver solución</button>
+    <div class="sol" id="sc5"><pre>+100      →  0001100100
+invierto  →  1110011011
++1        →  1110011100</pre>Chequeo: −512 + 256 + 128 + 16 + 8 + 4 = −100 ✓</div></div>
 </section>
 
 <!-- E2 -->
