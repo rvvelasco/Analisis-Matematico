@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementos de Análisis · Derivadas desde cero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Análisis · <b>Derivadas</b></span>
+    <nav class="topnav">
+      <a href="#pendiente">Pendiente</a>
+      <a href="#limites">Límites</a>
+      <a href="#idea">La idea</a>
+      <a href="#definicion">Definición</a>
+      <a href="#interpretacion">Interpretación</a>
+      <a href="#derivabilidad">Derivabilidad</a>
+      <a href="#reglas">Reglas</a>
+      <a href="#cadena">Cadena</a>
+      <a href="#especiales">Implícita / log.</a>
+      <a href="#tangente">Tangente</a>
+      <a href="#analisis">Análisis de f</a>
+      <a href="#estudio">Estudio completo</a>
+      <a href="#optimizacion">Optimización</a>
+      <a href="#lhopital">L'Hôpital</a>
+      <a href="#teoremas">Teoremas</a>
+      <a href="#tips">Tips</a>
+      <a href="#ejercicios">Ejercicios</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Elementos de Análisis Matemático · Cálculo diferencial</div>
+  <h1>Derivadas, <span class="u">desde cero</span></h1>
+  <p class="lead">Qué es una derivada y para qué sirve, cómo se calcula (por definición y con reglas), cómo se usa para analizar una función (crecimiento, máximos, mínimos, concavidad) y cómo se resuelven problemas de optimización. Arranca desde la pendiente de una recta y los límites, así que no hace falta saber nada de antes.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Seguila en orden: cada sección usa la anterior. Las palabras <span class="term term-demo" data-def="derivada" tabindex="0">como esta</span> abren la definición. Al final de cada bloque hay una <strong>autoevaluación</strong> rápida. Cuando termines, practicá en el <a href="simulador-examenes.html">simulador</a> (temas 21 a 27 y el parcial modelo de Derivadas). La continuación es la <a href="guia-integrales.html">guía de Integrales</a>.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 01 PENDIENTE ============ -->
+<section class="section" id="pendiente">
+  <div class="section-head"><span class="section-num">01</span><h2>Antes de empezar: la pendiente y la tasa de cambio</h2></div>
+  <p>Todo el cálculo diferencial gira alrededor de una pregunta: <strong>¿qué tan rápido cambia algo?</strong> Para una recta la respuesta es fácil, porque cambia siempre al mismo ritmo: su <span class="term" data-def="pendiente" tabindex="0">pendiente</span>.</p>
+  <div class="fbox">m = Δy / Δx = (y₂ − y₁) / (x₂ − x₁)</div>
+  <p>En <span class="mono">y = 2x + 1</span> la pendiente es 2: por cada paso de 1 a la derecha, la recta sube 2. Si m &gt; 0 la recta sube, si m &lt; 0 baja, y si m = 0 es horizontal.</p>
+  <div class="fig" data-fig="recta" data-cap="y = 2x + 1: por cada 1 que avanzás en x, subís 2 en y. Esa razón constante es la pendiente."></div>
+  <p>Con una curva el ritmo <strong>cambia de punto a punto</strong>: en algunos tramos sube rápido, en otros despacio, en otros baja. La derivada es justamente la herramienta para medir ese ritmo en cada punto.</p>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>La pendiente es <strong>qué tan empinada está una calle</strong>. En una recta la calle tiene la misma inclinación todo el tiempo. En una curva es como una ruta de montaña: cada tramo tiene su propia inclinación. La derivada te dice la inclinación <strong>justo en el punto donde estás parado</strong>.</p>
+  </div>
+  <div class="callout c-tip"><span class="tag">Tasa de variación media</span>
+    <p>Para una función cualquiera, el ritmo promedio entre a y b es <span class="mono">TVM = [f(b) − f(a)] / (b − a)</span>. Es la pendiente de la <span class="term" data-def="secante" tabindex="0">recta secante</span> que une los puntos (a, f(a)) y (b, f(b)). Ejemplo: si recorriste 120 km en 2 horas, tu velocidad <em>media</em> fue 60 km/h, aunque en algunos momentos fueras a 90 y en otros estuvieras parado.</p>
+  </div>
+</section>
+
+<!-- ============ 02 LÍMITES ============ -->
+<section class="section" id="limites">
+  <div class="section-head"><span class="section-num">02</span><h2>Lo mínimo que necesitás de límites</h2></div>
+  <p>La derivada se define con un <span class="term" data-def="limite" tabindex="0">límite</span>, así que primero veamos qué es. <span class="mono">lim<sub>x→a</sub> f(x) = L</span> significa que <strong>cuando x se acerca a a (sin llegar), f(x) se acerca a L</strong>.</p>
+  <div class="fig" data-fig="hueco" data-cap="f(x) = (x² − 4)/(x − 2) no existe en x = 2 (punto vacío), pero cuando x se acerca a 2 los valores se acercan a 4. El límite es 4."></div>
+  <table class="data">
+    <tr><th>x</th><td class="mono">1,9</td><td class="mono">1,99</td><td class="mono">1,999</td><td class="mono">2</td><td class="mono">2,001</td><td class="mono">2,01</td><td class="mono">2,1</td></tr>
+    <tr><th>f(x)</th><td class="mono">3,9</td><td class="mono">3,99</td><td class="mono">3,999</td><td class="mono" style="color:var(--red)">no existe</td><td class="mono">4,001</td><td class="mono">4,01</td><td class="mono">4,1</td></tr>
+  </table>
+  <h3>Cómo se calcula un límite</h3>
+  <div class="callout c-calc"><span class="tag">Receta</span>
+    <p><strong>1. Reemplazá.</strong> Si da un número, ese es el límite. <span class="mono">lim<sub>x→3</sub> (x² + 1) = 10</span>.</p>
+    <p><strong>2. Si da 0/0 (indeterminación), simplificá:</strong> factoreá y cancelá, o racionalizá. <span class="mono">lim<sub>x→2</sub> (x² − 4)/(x − 2) = lim (x − 2)(x + 2)/(x − 2) = lim (x + 2) = 4</span>.</p>
+    <p><strong>3. Si da k/0 (con k ≠ 0)</strong>, el límite es ±∞: hay una <span class="term" data-def="asintota" tabindex="0">asíntota</span> vertical. Mirá los límites laterales para ver el signo.</p>
+    <p><strong>4. Si x → ∞ con un cociente de polinomios,</strong> dividí todo por la mayor potencia del denominador: <span class="mono">lim<sub>x→∞</sub> (3x² + 1)/(x² − 5) = 3</span>.</p>
+  </div>
+  <ul class="clean">
+    <li><strong>Límites laterales:</strong> x → a⁺ (por la derecha) y x → a⁻ (por la izquierda). El límite existe si ambos existen y coinciden.</li>
+    <li><strong>Límite especial:</strong> <span class="mono">lim<sub>x→0</sub> sen(x)/x = 1</span> (sirve para derivar el seno).</li>
+    <li><strong>Indeterminaciones:</strong> 0/0, ∞/∞, ∞ − ∞, 0·∞, 1^∞, 0⁰, ∞⁰. No son "un número": hay que trabajarlas. Más adelante, la regla de L'Hôpital resuelve las de tipo 0/0 e ∞/∞ con derivadas.</li>
+  </ul>
+  <h3>Continuidad</h3>
+  <p>f es <span class="term" data-def="continua" tabindex="0">continua</span> en a si <strong>f(a) existe, el límite existe y son iguales</strong>: <span class="mono">lim<sub>x→a</sub> f(x) = f(a)</span>. En criollo: la podés dibujar sin levantar el lápiz. Polinomios, senos, cosenos y exponenciales son continuos en todo ℝ; los cocientes, salvo donde se anula el denominador.</p>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>El límite te pregunta <strong>"¿hacia dónde vas?"</strong>, no "¿dónde estás?". Puede que en x = 2 haya un pozo y la función no esté definida, pero si todos los caminos que llegan a 2 apuntan a la altura 4, el límite es 4.</p></div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">Autoevaluación · ¿Cuánto vale lim<sub>x→3</sub> (x² − 9)/(x − 3)?</div>
+    <button class="opt" data-k="a">0</button>
+    <button class="opt" data-k="b">6</button>
+    <button class="opt" data-k="c">No existe</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 03 LA IDEA ============ -->
+<section class="section" id="idea">
+  <div class="section-head"><span class="section-num">03</span><h2>La idea: de la secante a la tangente</h2></div>
+  <p>Queremos la "inclinación" de la curva y = x² justo en el punto P = (1, 1). Una recta que pase por un solo punto no alcanza para calcular una pendiente: necesitamos dos puntos. Entonces hacemos trampa con estilo:</p>
+  <ol>
+    <li>Tomamos un segundo punto Q sobre la curva y calculamos la pendiente de la secante PQ.</li>
+    <li>Acercamos Q a P cada vez más.</li>
+    <li>Las secantes se van "acostando" sobre una recta límite: la <span class="term" data-def="tangente" tabindex="0">recta tangente</span>. Su pendiente es la derivada.</li>
+  </ol>
+  <div class="fig" data-fig="secantes" data-cap="Secantes desde P(1, 1) hasta Q en x = 3 (pendiente 4) y x = 2 (pendiente 3). Al acercar Q, la pendiente tiende a 2: la tangente y = 2x − 1."></div>
+  <table class="data">
+    <tr><th>Q en x =</th><td class="mono">3</td><td class="mono">2</td><td class="mono">1,5</td><td class="mono">1,1</td><td class="mono">1,01</td><td class="mono">→ 1</td></tr>
+    <tr><th>pendiente secante</th><td class="mono">4</td><td class="mono">3</td><td class="mono">2,5</td><td class="mono">2,1</td><td class="mono">2,01</td><td class="mono" style="color:var(--red);font-weight:700">→ 2</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es como hacer <strong>zoom infinito</strong> sobre la curva. Si ampliás muchísimo alrededor de un punto, la curva se ve casi recta. La pendiente de esa "rectita" que ves con zoom es la derivada.</p></div>
+</section>
+
+<!-- ============ 04 DEFINICIÓN ============ -->
+<section class="section" id="definicion">
+  <div class="section-head"><span class="section-num">04</span><h2>Definición formal de derivada</h2></div>
+  <p>Si el segundo punto está a una distancia h, la pendiente de la secante es el <span class="term" data-def="cociente" tabindex="0">cociente incremental</span> [f(x + h) − f(x)]/h. Hacemos h → 0:</p>
+  <div class="fbox">f′(x) = lim<sub>h→0</sub> [ f(x + h) − f(x) ] / h</div>
+  <p>Si ese límite existe, f es <span class="term" data-def="derivable" tabindex="0">derivable</span> en x. Notaciones equivalentes: <span class="mono">f′(x)</span>, <span class="mono">y′</span>, <span class="mono">dy/dx</span>, <span class="mono">df/dx</span>, <span class="mono">D<sub>x</sub>f</span>.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo 1 · f(x) = x²</span>
+    <p class="mono">[f(x + h) − f(x)]/h = [(x + h)² − x²]/h = [x² + 2xh + h² − x²]/h = (2xh + h²)/h = 2x + h</p>
+    <p class="mono">f′(x) = lim<sub>h→0</sub> (2x + h) = 2x</p>
+    <p style="font-family:var(--body)">En x = 1 da f′(1) = 2: la misma pendiente que encontramos con las secantes ✓.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Derivá por definición f(x) = 1/x.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">[1/(x + h) − 1/x]/h = [x − (x + h)] / [x(x + h)·h] = −h / [x(x + h)h] = −1/[x(x + h)]<br>f′(x) = lim<sub>h→0</sub> −1/[x(x + h)] = <strong>−1/x²</strong></div><p class="why">El truco con fracciones es sacar común denominador arriba para que aparezca una h que se cancele.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Derivá por definición f(x) = √x. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">[√(x + h) − √x]/h · [√(x + h) + √x]/[√(x + h) + √x] = h / (h[√(x + h) + √x]) = 1/[√(x + h) + √x]<br>f′(x) = <strong>1/(2√x)</strong> &nbsp;(para x &gt; 0)</div><p class="why">Con raíces se multiplica por el conjugado (racionalizar) para que aparezca la h que se cancela.</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>La fórmula dice: "movete un poquito (h), fijate cuánto cambió la función, dividí por cuánto te moviste, y hacé que ese poquito sea cada vez más chico". Es <strong>velocidad = distancia / tiempo</strong>, pero con un tiempo tendiendo a cero.</p></div>
+  <div class="callout c-tip"><span class="tag">Tranqui</span><p>La definición se usa para <strong>entender</strong> y para algún ejercicio de parcial. En la práctica nadie deriva así: se usan las <a href="#reglas">reglas</a>, que salen justamente de aplicar esta definición una vez.</p></div>
+</section>
+
+<!-- ============ 05 INTERPRETACIÓN ============ -->
+<section class="section" id="interpretacion">
+  <div class="section-head"><span class="section-num">05</span><h2>Qué significa la derivada</h2></div>
+  <table class="data">
+    <tr><th style="width:24%">Contexto</th><th>f(x) es…</th><th>f′(x) es…</th></tr>
+    <tr><td><strong>Geométrico</strong></td><td>la altura de la curva</td><td>la <strong>pendiente de la recta tangente</strong></td></tr>
+    <tr><td><strong>Físico</strong></td><td>la posición s(t)</td><td>la <strong>velocidad</strong> v(t) = s′(t). Y la aceleración es a(t) = v′(t) = s″(t)</td></tr>
+    <tr><td><strong>Económico</strong></td><td>el costo C(x) de producir x unidades</td><td>el <strong>costo marginal</strong>: cuánto cuesta (aprox.) producir una unidad más</td></tr>
+    <tr><td><strong>General</strong></td><td>cualquier magnitud</td><td>la <strong>tasa de cambio instantánea</strong> de esa magnitud</td></tr>
+  </table>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">La posición de un móvil es s(t) = t³ − 6t² + 9t (metros, t en segundos). Hallá la velocidad, la aceleración y cuándo está quieto.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">v(t) = 3t² − 12t + 9 = 3(t − 1)(t − 3) · a(t) = 6t − 12<br>Está quieto cuando v = 0: <strong>t = 1 s y t = 3 s</strong></div><p class="why">Entre t = 1 y t = 3 la velocidad es negativa: el móvil retrocede.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">El costo de producir x unidades es C(x) = x² + 10x + 500. Calculá el costo marginal en x = 20 y comparalo con el costo real de la unidad 21.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">C′(x) = 2x + 10 ⇒ C′(20) = <strong>50</strong> · Real: C(21) − C(20) = 1151 − 1100 = <strong>51</strong></div><p class="why">La derivada da una muy buena aproximación de lo que cuesta "una unidad más", sin calcular dos veces la función.</p></div>
+  </div>
+</section>
+
+<!-- ============ 06 DERIVABILIDAD ============ -->
+<section class="section" id="derivabilidad">
+  <div class="section-head"><span class="section-num">06</span><h2>Derivable vs. continua</h2></div>
+  <div class="callout c-warn"><span class="tag">La relación clave</span>
+    <p><strong>Derivable ⇒ continua.</strong> Pero <strong>continua NO implica derivable</strong>.</p>
+  </div>
+  <p>Una función no es derivable en un punto si ahí tiene:</p>
+  <ul class="clean">
+    <li><strong>Un pico (punto anguloso):</strong> las pendientes por izquierda y por derecha son distintas. Ejemplo: |x| en x = 0 (−1 por izquierda, 1 por derecha).</li>
+    <li><strong>Un salto o un hueco</strong> (no es continua).</li>
+    <li><strong>Una tangente vertical:</strong> pendiente infinita. Ejemplo: ∛x en x = 0.</li>
+  </ul>
+  <div class="figrow">
+    <div class="fig" data-fig="abs" data-cap="|x|: continua, pero con pico en 0. No es derivable ahí."></div>
+    <div class="fig" data-fig="raizcub" data-cap="∛x: continua, pero con tangente vertical en 0. No es derivable ahí."></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Derivable = <strong>"suave"</strong>: sin saltos, sin picos y sin paredes verticales. Si una bolita puede rodar por la curva sin trabarse ni saltar, la función es derivable ahí.</p></div>
+</section>
+
+<!-- ============ 07 REGLAS ============ -->
+<section class="section" id="reglas">
+  <div class="section-head"><span class="section-num">07</span><h2>Tabla de derivadas y reglas de derivación</h2></div>
+  <h3>Derivadas que hay que saber de memoria</h3>
+  <table class="data">
+    <tr><th>f(x)</th><th>f′(x)</th><th>f(x)</th><th>f′(x)</th></tr>
+    <tr><td class="mono">k (constante)</td><td class="mono">0</td><td class="mono">eˣ</td><td class="mono">eˣ</td></tr>
+    <tr><td class="mono">x</td><td class="mono">1</td><td class="mono">aˣ</td><td class="mono">aˣ · ln a</td></tr>
+    <tr><td class="mono">xⁿ</td><td class="mono">n · xⁿ⁻¹</td><td class="mono">ln x</td><td class="mono">1/x</td></tr>
+    <tr><td class="mono">√x</td><td class="mono">1/(2√x)</td><td class="mono">log<sub>a</sub> x</td><td class="mono">1/(x · ln a)</td></tr>
+    <tr><td class="mono">1/x</td><td class="mono">−1/x²</td><td class="mono">sen x</td><td class="mono">cos x</td></tr>
+    <tr><td class="mono">ⁿ√x = x^(1/n)</td><td class="mono">(1/n)·x^(1/n − 1)</td><td class="mono">cos x</td><td class="mono">−sen x</td></tr>
+    <tr><td class="mono">arcsen x</td><td class="mono">1/√(1 − x²)</td><td class="mono">tg x</td><td class="mono">1/cos² x = 1 + tg² x</td></tr>
+    <tr><td class="mono">arctg x</td><td class="mono">1/(1 + x²)</td><td class="mono">arccos x</td><td class="mono">−1/√(1 − x²)</td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">Tip para potencias</span><p>Pasá todo a potencia antes de derivar: <span class="mono">√x = x^(1/2)</span>, <span class="mono">1/x³ = x⁻³</span>, <span class="mono">1/√x = x^(−1/2)</span>. Así, una sola regla (n·xⁿ⁻¹) te sirve para todo. Ejemplo: (1/x³)′ = (x⁻³)′ = −3x⁻⁴ = −3/x⁴.</p></div>
+
+  <h3>Reglas de derivación</h3>
+  <table class="data">
+    <tr><th style="width:26%">Regla</th><th>Fórmula</th><th>Ejemplo</th></tr>
+    <tr><td><strong>Constante por función</strong></td><td class="mono">(k·f)′ = k·f′</td><td class="mono">(5x³)′ = 15x²</td></tr>
+    <tr><td><strong>Suma / resta</strong></td><td class="mono">(f ± g)′ = f′ ± g′</td><td class="mono">(x² + sen x)′ = 2x + cos x</td></tr>
+    <tr><td><strong>Producto</strong></td><td class="mono">(f·g)′ = f′·g + f·g′</td><td class="mono">(x²·sen x)′ = 2x·sen x + x²·cos x</td></tr>
+    <tr><td><strong>Cociente</strong></td><td class="mono">(f/g)′ = (f′·g − f·g′) / g²</td><td class="mono">((x+1)/(x−1))′ = −2/(x − 1)²</td></tr>
+    <tr><td><strong>Cadena</strong></td><td class="mono">(f(g(x)))′ = f′(g(x)) · g′(x)</td><td class="mono">(sen(x²))′ = cos(x²)·2x</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">Errores que restan puntos</span>
+    <p><strong>(f·g)′ ≠ f′·g′.</strong> La derivada del producto NO es el producto de las derivadas.</p>
+    <p><strong>En el cociente el orden importa:</strong> es f′g − fg′ (primero la derivada de arriba). Al revés cambia el signo.</p>
+    <p><strong>La derivada de una constante es 0,</strong> pero la de k·x es k. Y (e²)′ = 0, porque e² es un número.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo · producto y cociente</span>
+    <p><strong>Producto:</strong> "derivo el primero y dejo el segundo, más dejo el primero y derivo el segundo".</p>
+    <p><strong>Cociente:</strong> "derivada de arriba por abajo, menos arriba por derivada de abajo, todo sobre abajo al cuadrado". Un clásico para acordarse: <em>"de arriba, abajo; menos arriba, de abajo; sobre abajo al cuadrado"</em>.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">f(x) = 4x⁵ − 3x² + 7x − 2 + 6/x</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = 20x⁴ − 6x + 7 − 6/x²</div><p class="why">6/x = 6x⁻¹ ⇒ −6x⁻². La constante −2 desaparece.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">f(x) = eˣ · ln x</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = eˣ·ln x + eˣ·(1/x) = eˣ·(ln x + 1/x)</div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">f(x) = (x² + 1)/(x − 3)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = [2x(x − 3) − (x² + 1)·1]/(x − 3)² = (x² − 6x − 1)/(x − 3)²</div><p class="why">Desarrollá el numerador y simplificá: 2x² − 6x − x² − 1. El denominador se deja factorizado.</p></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">Autoevaluación · La derivada de x³·cos x es…</div>
+    <button class="opt" data-k="a">3x²·(−sen x)</button>
+    <button class="opt" data-k="b">3x²·cos x + x³·sen x</button>
+    <button class="opt" data-k="c">3x²·cos x − x³·sen x</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 08 CADENA ============ -->
+<section class="section" id="cadena">
+  <div class="section-head"><span class="section-num">08</span><h2>Regla de la cadena</h2></div>
+  <p>Es la regla más importante (y la que más se equivoca). Se usa cuando hay una <span class="term" data-def="compuesta" tabindex="0">función compuesta</span>: una función "adentro" de otra.</p>
+  <div class="fbox">[ f(g(x)) ]′ = f′(g(x)) · g′(x)</div>
+  <div class="callout c-criollo"><span class="tag">En criollo · la cebolla</span>
+    <p>Pensala como una <strong>cebolla</strong>: derivás la capa de afuera <strong>sin tocar lo de adentro</strong>, y después multiplicás por la derivada de lo de adentro. Si hay más capas, seguís pelando y multiplicando.</p>
+    <p>(sen(x²))′: afuera está el seno → cos(<em>lo mismo de adentro</em>) = cos(x²). Adentro está x² → 2x. Resultado: <strong>cos(x²)·2x</strong>.</p>
+  </div>
+  <table class="data">
+    <tr><th>Forma</th><th>Derivada</th><th>Ejemplo</th></tr>
+    <tr><td class="mono">[u(x)]ⁿ</td><td class="mono">n·uⁿ⁻¹·u′</td><td class="mono">(3x² + 1)⁵ → 5(3x² + 1)⁴·6x = 30x(3x² + 1)⁴</td></tr>
+    <tr><td class="mono">√u</td><td class="mono">u′/(2√u)</td><td class="mono">√(1 − x²) → −2x/(2√(1 − x²)) = −x/√(1 − x²)</td></tr>
+    <tr><td class="mono">e^u</td><td class="mono">e^u·u′</td><td class="mono">e^(−2x) → −2e^(−2x)</td></tr>
+    <tr><td class="mono">ln u</td><td class="mono">u′/u</td><td class="mono">ln(x² + 1) → 2x/(x² + 1)</td></tr>
+    <tr><td class="mono">sen u</td><td class="mono">cos u · u′</td><td class="mono">sen(5x) → 5cos(5x)</td></tr>
+    <tr><td class="mono">cos u</td><td class="mono">−sen u · u′</td><td class="mono">cos(x³) → −3x²·sen(x³)</td></tr>
+  </table>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">f(x) = sen³(2x) &nbsp;(tres capas)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">sen³(2x) = [sen(2x)]³ ⇒ f′ = 3[sen(2x)]²·cos(2x)·2 = <strong>6 sen²(2x)·cos(2x)</strong></div><p class="why">Capa 1: el cubo → 3(…)². Capa 2: el seno → cos(2x). Capa 3: el 2x → 2. Se multiplican las tres.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">f(x) = ln(√(x² + 4))</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Tip: primero simplificá con propiedades del logaritmo: ln(√u) = ½ ln u<br>f(x) = ½ ln(x² + 4) ⇒ f′(x) = ½ · 2x/(x² + 4) = <strong>x/(x² + 4)</strong></div><p class="why">Usar las propiedades de ln antes de derivar ahorra muchos errores.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">f(x) = x²·e^(3x) &nbsp;(producto + cadena) <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = 2x·e^(3x) + x²·3e^(3x) = <strong>x·e^(3x)·(2 + 3x)</strong></div><p class="why">Primero ves que es un producto. Dentro del segundo factor aparece la cadena: (e^(3x))′ = 3e^(3x). Sacar factor común deja el resultado listo para buscar ceros.</p></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">Autoevaluación · La derivada de e^(x²) es…</div>
+    <button class="opt" data-k="a">2x·e^(x²)</button>
+    <button class="opt" data-k="b">e^(x²)</button>
+    <button class="opt" data-k="c">x²·e^(x² − 1)</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 09 ESPECIALES ============ -->
+<section class="section" id="especiales">
+  <div class="section-head"><span class="section-num">09</span><h2>Derivación implícita, logarítmica y derivadas sucesivas</h2></div>
+  <h3>Derivación implícita</h3>
+  <p>Cuando y no está despejada, por ejemplo x² + y² = 25, <strong>derivás los dos miembros respecto de x</strong>, tratando a y como una función de x. Cada vez que derivás algo con y, aparece un y′ por la regla de la cadena.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo · circunferencia</span>
+    <p class="mono">x² + y² = 25 ⇒ 2x + 2y·y′ = 0 ⇒ y′ = −x/y</p>
+    <p class="mono">En el punto (3, 4): y′ = −3/4 ⇒ tangente: y − 4 = −¾(x − 3)</p>
+  </div>
+  <h3>Derivación logarítmica</h3>
+  <p>Para funciones del tipo <span class="mono">f(x)^g(x)</span> (la variable está en la base y en el exponente) se aplica ln de los dos lados y se deriva en forma implícita.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplo · y = xˣ</span>
+    <p class="mono">ln y = x·ln x ⇒ y′/y = ln x + x·(1/x) = ln x + 1 ⇒ y′ = xˣ·(ln x + 1)</p>
+  </div>
+  <div class="callout c-warn"><span class="tag">Error típico</span><p>(xˣ)′ NO es x·xˣ⁻¹ (eso sería tratarla como potencia) ni xˣ·ln x (eso sería tratarla como exponencial). Hay que usar la logarítmica.</p></div>
+  <h3>Derivadas sucesivas</h3>
+  <p>La <span class="term" data-def="segunda" tabindex="0">derivada segunda</span> f″ es la derivada de f′; la tercera es la derivada de f″, y así. Ejemplo: f(x) = x⁴ − 2x³ ⇒ f′ = 4x³ − 6x² ⇒ f″ = 12x² − 12x ⇒ f‴ = 24x − 12.</p>
+  <div class="callout c-tip"><span class="tag">Patrones que conviene notar</span><p>(sen x)⁽⁴⁾ = sen x (el ciclo sen → cos → −sen → −cos se repite cada 4). (eˣ)⁽ⁿ⁾ = eˣ. Un polinomio de grado n se anula al derivarlo n + 1 veces.</p></div>
+</section>
+
+<!-- ============ 10 TANGENTE ============ -->
+<section class="section" id="tangente">
+  <div class="section-head"><span class="section-num">10</span><h2>Recta tangente y recta normal</h2></div>
+  <p>La tangente a f en x₀ pasa por (x₀, f(x₀)) y tiene pendiente f′(x₀). La <span class="term" data-def="normal" tabindex="0">normal</span> es perpendicular a la tangente: su pendiente es −1/f′(x₀).</p>
+  <div class="fbox">Tangente: y − f(x₀) = f′(x₀)·(x − x₀)</div><br>
+  <div class="fbox">Normal: y − f(x₀) = −1/f′(x₀) · (x − x₀)</div>
+  <div class="callout c-calc"><span class="tag">Receta en 3 pasos</span>
+    <p><strong>1.</strong> Calculá el punto: y₀ = f(x₀). <strong>2.</strong> Calculá la pendiente: m = f′(x₀). <strong>3.</strong> Reemplazá en y − y₀ = m(x − x₀) y despejá.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Tangente y normal a f(x) = x³ − 2x en x₀ = 1.</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f(1) = −1 · f′(x) = 3x² − 2 ⇒ f′(1) = 1<br>Tangente: y + 1 = 1·(x − 1) ⇒ <strong>y = x − 2</strong> · Normal: y + 1 = −1·(x − 1) ⇒ <strong>y = −x</strong></div><div class="fig" data-fig="tang" style="margin-top:10px"></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">¿En qué puntos la tangente a f(x) = x³ − 3x es horizontal? <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Tangente horizontal ⇔ f′(x) = 0: 3x² − 3 = 0 ⇒ x = ±1 ⇒ puntos <strong>(−1, 2) y (1, −2)</strong></div><p class="why">"Tangente paralela a la recta y = 5x + 1" se resuelve igual, planteando f′(x) = 5.</p></div>
+  </div>
+</section>
+
+<!-- ============ 11 ANÁLISIS ============ -->
+<section class="section" id="analisis">
+  <div class="section-head"><span class="section-num">11</span><h2>Cómo se analiza una función con derivadas</h2></div>
+  <h3>1 · Crecimiento y decrecimiento (signo de f′)</h3>
+  <ul class="clean">
+    <li>f′(x) &gt; 0 en un intervalo ⇒ f es <span class="term" data-def="creciente" tabindex="0">creciente</span> ahí.</li>
+    <li>f′(x) &lt; 0 ⇒ f es decreciente.</li>
+    <li>Los <span class="term" data-def="critico" tabindex="0">puntos críticos</span> son los x del dominio donde f′(x) = 0 o f′ no existe. Son los <strong>candidatos</strong> a máximo o mínimo.</li>
+  </ul>
+  <div class="fig" data-fig="fyfp" data-cap="f(x) = x³ − 3x (rojo) y su derivada f′(x) = 3x² − 3 (azul punteado). Donde f′ está por encima del eje, f sube; donde está por debajo, f baja. Los ceros de f′ (x = ±1) son el máximo y el mínimo de f."></div>
+  <h3>2 · Máximos y mínimos relativos</h3>
+  <div class="callout c-calc"><span class="tag">Criterio de la derivada primera</span>
+    <p>En un punto crítico c: si f′ pasa de <strong>+ a −</strong> hay <strong>máximo</strong>; si pasa de <strong>− a +</strong> hay <strong>mínimo</strong>; si no cambia de signo, no hay extremo.</p>
+  </div>
+  <div class="callout c-calc"><span class="tag">Criterio de la derivada segunda</span>
+    <p>Si f′(c) = 0 y <strong>f″(c) &lt; 0 ⇒ máximo</strong>; si <strong>f″(c) &gt; 0 ⇒ mínimo</strong>; si f″(c) = 0, el criterio no decide (volvés al de la primera).</p>
+  </div>
+  <h3>3 · Concavidad y puntos de inflexión (signo de f″)</h3>
+  <ul class="clean">
+    <li>f″(x) &gt; 0 ⇒ <span class="term" data-def="concavidad" tabindex="0">cóncava hacia arriba</span> (forma de ∪, "sonrisa").</li>
+    <li>f″(x) &lt; 0 ⇒ cóncava hacia abajo (forma de ∩).</li>
+    <li>Donde f″ cambia de signo hay un <span class="term" data-def="inflexion" tabindex="0">punto de inflexión</span>.</li>
+  </ul>
+  <div class="callout c-warn"><span class="tag">Ojo con la nomenclatura</span><p>Algunos libros dicen "cóncava" para ∩ y "convexa" para ∪, y otros al revés. En el parcial escribí <strong>"cóncava hacia arriba / hacia abajo"</strong> y no hay confusión posible.</p></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p><strong>f′</strong> te dice <em>si la ruta sube o baja</em>. <strong>f″</strong> te dice <em>si la subida se está empinando o aflojando</em>, es decir, si la curva "dobla" hacia arriba o hacia abajo. Un máximo es la cima de una loma (venías subiendo y empezás a bajar), un mínimo es el fondo de un pozo, y un punto de inflexión es donde el volante cambia de lado.</p>
+  </div>
+  <h3>Máximos y mínimos absolutos en un intervalo cerrado</h3>
+  <p>Para f continua en [a, b]: evaluás f en los <strong>puntos críticos de adentro</strong> y en los <strong>extremos a y b</strong>. El mayor valor es el máximo absoluto y el menor, el mínimo absoluto.</p>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Extremos absolutos de f(x) = x³ − 3x en [0, 3].</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Críticos adentro: x = 1 (x = −1 queda afuera). f(0) = 0, f(1) = −2, f(3) = 18<br><strong>Máximo absoluto 18 en x = 3 · Mínimo absoluto −2 en x = 1</strong></div></div>
+  </div>
+</section>
+
+<!-- ============ 12 ESTUDIO COMPLETO ============ -->
+<section class="section" id="estudio">
+  <div class="section-head"><span class="section-num">12</span><h2>Estudio completo de una función (paso a paso)</h2></div>
+  <div class="callout c-calc"><span class="tag">La lista que hay que seguir</span>
+    <p><strong>1.</strong> Dominio. <strong>2.</strong> Cortes con los ejes. <strong>3.</strong> Asíntotas: verticales (donde se anula el denominador), horizontales (lim en ±∞) u oblicuas. <strong>4.</strong> f′: puntos críticos, intervalos de crecimiento y extremos. <strong>5.</strong> f″: concavidad e inflexión. <strong>6.</strong> Tabla de signos y gráfico.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Estudiá f(x) = x²/(x − 1). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans" style="line-height:1.9">
+      <b>Dominio:</b> ℝ − {1}<br>
+      <b>Cortes:</b> (0, 0)<br>
+      <b>Asíntotas:</b> vertical x = 1 · oblicua y = x + 1 (porque x²/(x − 1) = x + 1 + 1/(x − 1))<br>
+      <b>f′(x)</b> = [2x(x − 1) − x²]/(x − 1)² = x(x − 2)/(x − 1)² ⇒ críticos x = 0 y x = 2<br>
+      Crece en (−∞, 0) ∪ (2, +∞) · decrece en (0, 1) ∪ (1, 2)<br>
+      <b>Máximo relativo</b> (0, 0) · <b>mínimo relativo</b> (2, 4)<br>
+      <b>f″(x)</b> = 2/(x − 1)³ ⇒ cóncava hacia abajo en (−∞, 1) y hacia arriba en (1, +∞). No hay inflexión (x = 1 no está en el dominio).</div>
+      <div class="fig" data-fig="racional" style="margin-top:10px"></div>
+      <p class="why">El máximo relativo (0) es más bajo que el mínimo relativo (4). No hay contradicción: "relativo" significa que es el más alto (o más bajo) <em>de su zona</em>.</p></div>
+  </div>
+  <table class="data">
+    <tr><th>Intervalo</th><td class="mono">(−∞, 0)</td><td class="mono">0</td><td class="mono">(0, 1)</td><td class="mono">1</td><td class="mono">(1, 2)</td><td class="mono">2</td><td class="mono">(2, +∞)</td></tr>
+    <tr><th>signo f′</th><td>+</td><td>0</td><td>−</td><td>∄</td><td>−</td><td>0</td><td>+</td></tr>
+    <tr><th>f</th><td>↗</td><td>máx</td><td>↘</td><td>AV</td><td>↘</td><td>mín</td><td>↗</td></tr>
+  </table>
+</section>
+
+<!-- ============ 13 OPTIMIZACIÓN ============ -->
+<section class="section" id="optimizacion">
+  <div class="section-head"><span class="section-num">13</span><h2>Problemas de optimización</h2></div>
+  <p>Es el uso más "real" de la derivada: encontrar el <strong>mejor</strong> valor (máxima ganancia, mínimo costo, máxima área, mínimo material).</p>
+  <div class="callout c-calc"><span class="tag">Método en 5 pasos</span>
+    <p><strong>1.</strong> Dibujá y nombrá las variables. <strong>2.</strong> Escribí la función a optimizar. <strong>3.</strong> Si tiene más de una variable, usá el dato (la "restricción") para dejarla en una sola. <strong>4.</strong> Derivá, igualá a 0 y resolvé. <strong>5.</strong> Verificá que es máximo o mínimo (f″ o tabla de signos) y respondé lo que pide el enunciado, con unidades.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Con 100 m de alambre se quiere cercar un terreno rectangular junto a un río (el lado del río no se cerca). ¿Qué dimensiones dan el área máxima?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Lados x (perpendiculares al río) e y (paralelo). Restricción: 2x + y = 100 ⇒ y = 100 − 2x<br>A(x) = x(100 − 2x) = 100x − 2x² ⇒ A′(x) = 100 − 4x = 0 ⇒ x = 25 · A″ = −4 &lt; 0 ⇒ máximo<br><strong>x = 25 m, y = 50 m, área 1250 m²</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">De una lámina cuadrada de 12 cm de lado se cortan cuadrados de lado x en las esquinas y se doblan para armar una caja sin tapa. ¿Qué x da el volumen máximo? <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">V(x) = x·(12 − 2x)², con 0 &lt; x &lt; 6<br>V′(x) = (12 − 2x)² − 4x(12 − 2x) = (12 − 2x)(12 − 6x) = 0 ⇒ x = 2 (x = 6 no sirve: no hay caja)<br><strong>x = 2 cm · V = 2·8² = 128 cm³</strong></div><p class="why">Se verifica con la tabla de signos: V′ &gt; 0 en (0, 2) y V′ &lt; 0 en (2, 6). Siempre descartá las soluciones que no tienen sentido físico.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">Ingreso I(x) = 100x − x² y costo C(x) = 20x + 300. ¿Cuántas unidades maximizan la ganancia y cuál es esa ganancia?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">G(x) = I − C = −x² + 80x − 300 ⇒ G′ = −2x + 80 = 0 ⇒ <strong>x = 40</strong> · G(40) = <strong>1300</strong></div><p class="why">Dato de economía: en el óptimo, ingreso marginal = costo marginal (I′ = C′ ⇒ 100 − 2x = 20).</p></div>
+  </div>
+</section>
+
+<!-- ============ 14 L'HÔPITAL ============ -->
+<section class="section" id="lhopital">
+  <div class="section-head"><span class="section-num">14</span><h2>Regla de L'Hôpital</h2></div>
+  <p>Si al reemplazar un límite da <strong>0/0 o ∞/∞</strong>, podés derivar numerador y denominador <strong>por separado</strong> (¡no es la regla del cociente!) y volver a calcular el límite:</p>
+  <div class="fbox">lim f(x)/g(x) = lim f′(x)/g′(x) &nbsp;(si da 0/0 o ∞/∞)</div>
+  <table class="data">
+    <tr><th>Límite</th><th>Tipo</th><th>Resolución</th></tr>
+    <tr><td class="mono">lim<sub>x→0</sub> (eˣ − 1)/x</td><td>0/0</td><td class="mono">= lim eˣ/1 = 1</td></tr>
+    <tr><td class="mono">lim<sub>x→0</sub> (1 − cos x)/x²</td><td>0/0 (dos veces)</td><td class="mono">= lim sen x/(2x) = lim cos x/2 = 1/2</td></tr>
+    <tr><td class="mono">lim<sub>x→∞</sub> ln x / x</td><td>∞/∞</td><td class="mono">= lim (1/x)/1 = 0</td></tr>
+    <tr><td class="mono">lim<sub>x→0⁺</sub> x·ln x</td><td>0·∞</td><td class="mono">= lim ln x/(1/x) = lim (1/x)/(−1/x²) = lim (−x) = 0</td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">Cuidado</span><p>Solo se aplica con 0/0 o ∞/∞. Las otras indeterminaciones (0·∞, ∞ − ∞, 1^∞…) primero hay que llevarlas a un cociente, como en la última fila. Y <strong>nunca</strong> uses la regla del cociente acá.</p></div>
+</section>
+
+<!-- ============ 15 TEOREMAS ============ -->
+<section class="section" id="teoremas">
+  <div class="section-head"><span class="section-num">15</span><h2>Teoremas de Rolle y del valor medio (Lagrange)</h2></div>
+  <ul class="clean">
+    <li><strong>Rolle:</strong> si f es continua en [a, b], derivable en (a, b) y f(a) = f(b), existe c en (a, b) con <span class="mono">f′(c) = 0</span>.</li>
+    <li><strong>Valor medio (Lagrange):</strong> si f es continua en [a, b] y derivable en (a, b), existe c en (a, b) con <span class="mono">f′(c) = [f(b) − f(a)]/(b − a)</span>. Es decir: en algún punto, la tangente es paralela a la secante.</li>
+  </ul>
+  <div class="fig" data-fig="lagrange" data-cap="f(x) = x² en [0, 2]: la secante tiene pendiente (4 − 0)/2 = 2. En c = 1 la tangente (punteada) es paralela: f′(1) = 2."></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Si hiciste 120 km en 2 horas (velocidad media 60 km/h), <strong>en algún momento el velocímetro marcó exactamente 60</strong>. No hay forma de promediar 60 sin pasar alguna vez por 60.</p></div>
+</section>
+
+<!-- ============ 16 TIPS ============ -->
+<section class="section" id="tips">
+  <div class="section-head"><span class="section-num">16</span><h2>Tips de examen y errores típicos</h2></div>
+  <ul class="clean tick">
+    <li><strong>Antes de derivar, simplificá:</strong> potencias negativas o fraccionarias, propiedades del ln, distribuir.</li>
+    <li><strong>Identificá la estructura</strong> antes de empezar: ¿es suma, producto, cociente o composición? La operación "de más afuera" decide qué regla va primero.</li>
+    <li><strong>Después de derivar, factorizá:</strong> si después tenés que igualar a 0, el factor común te da las raíces directo.</li>
+    <li><strong>Un cociente es 0 cuando el numerador es 0</strong> (y el denominador no).</li>
+    <li><strong>eˣ nunca es 0</strong> y siempre es positivo: en x·e^(3x)·(2 + 3x) = 0 los únicos ceros salen de x = 0 y 2 + 3x = 0.</li>
+    <li><strong>Verificá con el gráfico</strong> o con valores: si dijiste que en x = 2 hay un mínimo, f(2) tiene que ser más chico que f(1,9) y que f(2,1).</li>
+  </ul>
+  <table class="data">
+    <tr><th>Error</th><th>Lo correcto</th></tr>
+    <tr><td class="mono">(x²·sen x)′ = 2x·cos x</td><td class="mono">2x·sen x + x²·cos x</td></tr>
+    <tr><td class="mono">(sen 3x)′ = cos 3x</td><td class="mono">3·cos 3x (falta la cadena)</td></tr>
+    <tr><td class="mono">(eˣ²)′ = eˣ²</td><td class="mono">2x·eˣ²</td></tr>
+    <tr><td class="mono">(ln 5)′ = 1/5</td><td class="mono">0 (es una constante)</td></tr>
+    <tr><td class="mono">(1/x²)′ = 1/(2x)</td><td class="mono">(x⁻²)′ = −2x⁻³ = −2/x³</td></tr>
+    <tr><td>"f′(c) = 0 ⇒ hay extremo"</td><td>Hay que verificar el cambio de signo: x³ tiene f′(0) = 0 y no tiene extremo</td></tr>
+  </table>
+</section>
+
+<!-- ============ 17 EJERCICIOS ============ -->
+<section class="section" id="ejercicios">
+  <div class="section-head"><span class="section-num">17</span><h2>Ejercicios resueltos · de menor a mayor</h2></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">f(x) = 3√x − 2/x² + 5 <span class="dtag acc">Accesible</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f(x) = 3x^(1/2) − 2x⁻² + 5 ⇒ f′(x) = (3/2)x^(−1/2) + 4x⁻³ = <strong>3/(2√x) + 4/x³</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">f(x) = (2x − 1)/(x² + 1)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = [2(x² + 1) − (2x − 1)·2x]/(x² + 1)² = <strong>(−2x² + 2x + 2)/(x² + 1)²</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">f(x) = ln(sen x) &nbsp;y&nbsp; g(x) = cos(e^(2x))</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = cos x / sen x = <strong>cotg x</strong> · g′(x) = −sen(e^(2x))·e^(2x)·2 = <strong>−2e^(2x)·sen(e^(2x))</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">Hallá a y b para que f(x) = ax² + bx tenga un extremo en (1, 3). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f(1) = a + b = 3 · f′(1) = 2a + b = 0 ⇒ a = −3, b = 6 ⇒ <strong>f(x) = −3x² + 6x</strong> (máximo, porque a &lt; 0)</div><p class="why">Dos datos ("pasa por el punto" y "ahí hay extremo") dan dos ecuaciones.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">5</span><span class="consigna">Estudiá crecimiento, extremos y concavidad de f(x) = x⁴ − 4x³. <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f′(x) = 4x³ − 12x² = 4x²(x − 3) ⇒ críticos 0 y 3<br>f′ &lt; 0 en (−∞, 0) y (0, 3); f′ &gt; 0 en (3, +∞) ⇒ <strong>mínimo en (3, −27)</strong>; en x = 0 <strong>no hay extremo</strong> (f′ no cambia de signo)<br>f″(x) = 12x² − 24x = 12x(x − 2) ⇒ <strong>inflexiones en (0, 0) y (2, −16)</strong>; cóncava hacia arriba en (−∞, 0) ∪ (2, +∞), hacia abajo en (0, 2)</div><p class="why">x = 0 es crítico (f′ = 0) pero no es extremo: es un punto de inflexión con tangente horizontal. Es la trampa típica.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">6</span><span class="consigna">Calculá lim<sub>x→0</sub> (sen x − x)/x³. <span class="dtag libro">Nivel libro</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">0/0 ⇒ L'H: (cos x − 1)/(3x²) → 0/0 ⇒ L'H: −sen x/(6x) → 0/0 ⇒ L'H: −cos x/6 → <strong>−1/6</strong></div><p class="why">Se puede aplicar L'Hôpital varias veces, mientras siga dando 0/0 o ∞/∞.</p></div>
+  </div>
+  <h3>Autoevaluación final</h3>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">1. Si f′(x) &gt; 0 en (2, 5), entonces en ese intervalo f es…</div>
+    <button class="opt" data-k="a">cóncava hacia arriba</button>
+    <button class="opt" data-k="b">creciente</button>
+    <button class="opt" data-k="c">positiva</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">2. Si f′(3) = 0 y f″(3) = −2, en x = 3 hay…</div>
+    <button class="opt" data-k="a">un máximo relativo</button>
+    <button class="opt" data-k="b">un mínimo relativo</button>
+    <button class="opt" data-k="c">un punto de inflexión</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">3. f(x) = |x − 2| en x = 2 es…</div>
+    <button class="opt" data-k="a">derivable y continua</button>
+    <button class="opt" data-k="b">derivable pero no continua</button>
+    <button class="opt" data-k="c">continua pero no derivable</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">4. La pendiente de la tangente a y = ln x en x = 2 es…</div>
+    <button class="opt" data-k="a">ln 2</button>
+    <button class="opt" data-k="b">1/2</button>
+    <button class="opt" data-k="c">2</button>
+    <div class="fb"></div>
+  </div>
+  <p>¿Querés más? <a href="simulador-examenes.html">Simulador</a>: temas 21 a 27 (4 niveles cada uno) y el parcial modelo de Derivadas.</p>
+</section>
+
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">19</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Elementos de Análisis Matemático — Derivadas.</b> Guía de estudio interactiva.</p>
+  <p style="font-size:13px;margin-top:6px;">Sigue en la <a href="guia-integrales.html">guía de Integrales</a>. Para practicar: <a href="simulador-examenes.html">simulador de exámenes</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+pendiente:{t:"Pendiente",sym:"m",def:"Cuánto sube (o baja) una recta por cada unidad que se avanza en x.",calc:"m = (y₂ − y₁)/(x₂ − x₁).",ej:"y = 2x + 1 tiene pendiente 2.",rel:["secante","tangente"]},
+  secante:{t:"Recta secante",def:"Recta que corta a una curva en dos puntos. Su pendiente es la tasa de variación media.",calc:"m = [f(b) − f(a)]/(b − a).",ej:"Secante a x² entre x = 1 y x = 3: m = (9 − 1)/2 = 4.",rel:["tangente","pendiente"]},
+  limite:{t:"Límite",sym:"lim x→a f(x)",def:"Valor al que se acerca f(x) cuando x se acerca a a (sin necesidad de llegar).",calc:"Reemplazar; si da 0/0, factorear o racionalizar y simplificar; si da k/0, hay asíntota vertical.",ej:"lim x→2 (x² − 4)/(x − 2) = 4.",rel:["continua","asintota"]},
+  continua:{t:"Función continua",def:"f es continua en a si f(a) existe, el límite en a existe y ambos coinciden. Se dibuja sin levantar el lápiz.",ej:"Polinomios, sen, cos y eˣ son continuas en todo ℝ.",rel:["limite","derivable"]},
+  asintota:{t:"Asíntota",def:"Recta a la que la gráfica se acerca indefinidamente. Vertical: x = a con límite infinito. Horizontal: y = L con lim en ±∞ igual a L. Oblicua: y = mx + b.",ej:"x²/(x − 1): vertical x = 1, oblicua y = x + 1.",rel:["limite"]},
+  tangente:{t:"Recta tangente",def:"Recta que \"toca\" a la curva en un punto con la misma inclinación que la curva ahí. Su pendiente es la derivada.",calc:"y − f(x₀) = f′(x₀)·(x − x₀).",ej:"A x² en x = 1: y = 2x − 1.",rel:["derivada","normal","secante"]},
+  normal:{t:"Recta normal",def:"Recta perpendicular a la tangente en el punto de tangencia.",calc:"Pendiente −1/f′(x₀) (si f′(x₀) ≠ 0).",ej:"Si la tangente tiene pendiente 2, la normal tiene pendiente −1/2.",rel:["tangente"]},
+  cociente:{t:"Cociente incremental",def:"Pendiente de la secante entre x y x + h.",calc:"[f(x + h) − f(x)]/h.",ej:"Para x²: 2x + h.",rel:["derivada"]},
+  derivada:{t:"Derivada",sym:"f′(x) = dy/dx",def:"Tasa de cambio instantánea de f. Geométricamente, la pendiente de la recta tangente.",calc:"f′(x) = lim h→0 [f(x + h) − f(x)]/h. En la práctica, con la tabla y las reglas.",ej:"(x²)′ = 2x; (sen x)′ = cos x.",rel:["cociente","tangente","derivable","segunda"]},
+  derivable:{t:"Función derivable",def:"f es derivable en a si existe el límite del cociente incremental (la derivada). Derivable implica continua, pero no al revés.",ej:"|x| es continua pero no derivable en 0 (tiene un pico).",rel:["continua","derivada"]},
+  compuesta:{t:"Función compuesta",sym:"f(g(x))",def:"Función que se obtiene aplicando g y después f. Se deriva con la regla de la cadena.",calc:"[f(g(x))]′ = f′(g(x))·g′(x).",ej:"sen(x²) ⇒ cos(x²)·2x.",rel:["derivada"]},
+  segunda:{t:"Derivada segunda",sym:"f″(x)",def:"La derivada de la derivada. Mide cómo cambia la pendiente: indica la concavidad. En física es la aceleración.",ej:"f = x³ ⇒ f′ = 3x² ⇒ f″ = 6x.",rel:["concavidad","inflexion"]},
+  creciente:{t:"Función creciente / decreciente",def:"Creciente: al aumentar x aumenta f(x). Decreciente: al aumentar x disminuye f(x).",calc:"f′ > 0 ⇒ creciente; f′ < 0 ⇒ decreciente.",ej:"x² decrece en (−∞, 0) y crece en (0, +∞).",rel:["critico","derivada"]},
+  critico:{t:"Punto crítico",def:"Punto del dominio donde f′ = 0 o f′ no existe. Es candidato a máximo o mínimo, pero no siempre lo es.",ej:"x³ tiene un crítico en 0 que no es extremo.",rel:["creciente","extremo"]},
+  extremo:{t:"Máximo y mínimo relativos",def:"Máximo relativo: el valor más alto en un entorno del punto. Mínimo relativo: el más bajo.",calc:"Criterio 1: f′ pasa de + a − (máx) o de − a + (mín). Criterio 2: f′ = 0 y f″ < 0 (máx) o f″ > 0 (mín).",ej:"x³ − 3x: máx (−1, 2), mín (1, −2).",rel:["critico","segunda"]},
+  concavidad:{t:"Concavidad",def:"Cóncava hacia arriba (∪) si f″ > 0; cóncava hacia abajo (∩) si f″ < 0.",ej:"x² es cóncava hacia arriba en todo ℝ.",rel:["segunda","inflexion"]},
+  inflexion:{t:"Punto de inflexión",def:"Punto donde la función cambia de concavidad (f″ cambia de signo).",ej:"x³ tiene inflexión en (0, 0).",rel:["concavidad","segunda"]},
+  lhopital:{t:"Regla de L'Hôpital",def:"Para límites 0/0 o ∞/∞: lim f/g = lim f′/g′ (derivando arriba y abajo por separado).",ej:"lim x→0 (eˣ − 1)/x = lim eˣ/1 = 1.",rel:["limite"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+recta: G.plot({x:[-2,3],y:[-2,6],fns:[{f:function(x){return 2*x+1;},label:'y = 2x + 1',lx:1.6,ldx:-90,c:G.C.red}],segs:[[0,1,1,1,G.C.navy,true,2],[1,1,1,3,G.C.navy,true,2]],texts:[{x:.5,y:.55,s:'Δx = 1',a:'middle',c:G.C.navy},{x:1.1,y:2,s:'Δy = 2',c:G.C.navy}],pts:[{x:0,y:1},{x:1,y:3}]}),
+  hueco: G.plot({x:[-1,4],y:[-1,6],fns:[{f:function(x){return x+2;},c:G.C.red,label:'f',lx:3.4}],pts:[{x:2,y:4,open:true,c:G.C.red,label:'(2, 4)',dx:8,dy:14}],segs:[[2,0,2,4,'#9AA5AD',true],[0,4,2,4,'#9AA5AD',true]]}),
+  secantes: G.plot({x:[-1,3.5],y:[-2,9],fns:[{f:function(x){return x*x;},label:'y = x²',lx:-0.9,ldx:4,ldy:-4,c:G.C.red},{f:function(x){return 4*x-3;},c:G.C.gold,wd:1.6,label:'m = 4',lx:3.2,ldx:-46},{f:function(x){return 3*x-2;},c:G.C.purple,wd:1.6,label:'m = 3',lx:3.3,ldy:16},{f:function(x){return 2*x-1;},c:G.C.navy,wd:2.6,label:'tangente m = 2',lx:3.2,ldx:-96,ldy:22}],pts:[{x:1,y:1,label:'P'},{x:2,y:4,c:G.C.purple},{x:3,y:9,c:G.C.gold}]}),
+  abs: G.plot({w:280,h:230,x:[-3,3],y:[-1,3],fns:[{f:function(x){return Math.abs(x);},c:G.C.red}],pts:[{x:0,y:0,c:G.C.red}]}),
+  raizcub: G.plot({w:280,h:230,x:[-3,3],y:[-2,2],fns:[{f:function(x){return Math.cbrt(x);},c:G.C.red,n:800}],vlines:[{x:0,c:G.C.navy,dash:true,wd:1.4}]}),
+  tang: G.plot({x:[-2.5,2.5],y:[-4,3],fns:[{f:function(x){return x*x*x-2*x;},label:'f',lx:1.9,c:G.C.red},{f:function(x){return x-2;},label:'tangente',lx:2.1,ldx:-62,ldy:20,c:G.C.navy},{f:function(x){return -x;},label:'normal',lx:-2.3,ldy:-6,c:G.C.teal,dash:true}],pts:[{x:1,y:-1,label:'(1, −1)',dx:8,dy:-6}]}),
+  fyfp: G.plot({x:[-2.5,2.5],y:[-4,5],fns:[{f:function(x){return x*x*x-3*x;},label:'f',lx:2.2,c:G.C.red},{f:function(x){return 3*x*x-3;},label:'f′',lx:1.6,ldx:8,c:G.C.navy,dash:true}],pts:[{x:-1,y:2,label:'máx (−1, 2)',dx:-30,dy:-12},{x:1,y:-2,label:'mín (1, −2)',dx:8,dy:16},{x:-1,y:0,c:G.C.navy,r:3},{x:1,y:0,c:G.C.navy,r:3}]}),
+  racional: G.plot({x:[-4,6],y:[-6,10],tickStep:2,fns:[{f:function(x){return x*x/(x-1);},c:G.C.red,n:800},{f:function(x){return x+1;},c:'#9AA5AD',dash:true,wd:1.3,label:'y = x + 1',lx:4.2,ldx:-70,ldy:-4}],vlines:[{x:1,c:'#9AA5AD',dash:true,wd:1.3,label:'x = 1'}],pts:[{x:0,y:0,label:'máx',dx:-28},{x:2,y:4,label:'mín',dy:18}]}),
+  lagrange: G.plot({x:[-.5,2.5],y:[-1,5],fns:[{f:function(x){return x*x;},label:'f',lx:2.2,c:G.C.red},{f:function(x){return 2*x;},c:G.C.navy,label:'secante',lx:.4,ldx:-60},{f:function(x){return 2*x-1;},c:G.C.teal,dash:true,label:'tangente en c',lx:2.3,ldx:-88,ldy:18}],pts:[{x:0,y:0},{x:2,y:4},{x:1,y:1,label:'c = 1',c:G.C.teal}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+</script>
+</body>
+</html>

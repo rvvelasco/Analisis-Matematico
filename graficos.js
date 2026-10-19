@@ -210,5 +210,15 @@
     return s+'<defs>'+defs+'</defs>'+body+'</svg>';
   }
 
-  window.G={plot:plot,venn:venn,sagital:sagital,digraph:digraph,reloj:reloj,C:C};
+  /* ---------------- AYUDAS PARA CÁLCULO ---------------- */
+  // puntos del polígono entre f y el eje x, de a hasta b (para sombrear áreas)
+  function area(f,a,b,n){n=n||120;var p=[[a,0]];for(var k=0;k<=n;k++){var x=a+(b-a)*k/n;p.push([x,f(x)]);}p.push([b,0]);return p;}
+  // polígono entre dos curvas f (arriba) y g (abajo)
+  function between(f,g,a,b,n){n=n||120;var p=[],k,x;for(k=0;k<=n;k++){x=a+(b-a)*k/n;p.push([x,f(x)]);}for(k=n;k>=0;k--){x=a+(b-a)*k/n;p.push([x,g(x)]);}return p;}
+  // rectángulos de una suma de Riemann: modo 'izq', 'der' o 'medio'
+  function riemann(f,a,b,n,modo,col){var r=[],dx=(b-a)/n;for(var i=0;i<n;i++){var x0=a+i*dx,x1=x0+dx,xs=modo==='der'?x1:modo==='medio'?(x0+x1)/2:x0,h=f(xs);r.push({pts:[[x0,0],[x1,0],[x1,h],[x0,h]],c:col||C.gold,op:.28,stroke:col||C.gold});}return r;}
+  // recta tangente a f en x0 (usa derivada numérica si no se pasa df)
+  function tangente(f,x0,df){var m=df?df(x0):(f(x0+1e-5)-f(x0-1e-5))/2e-5,y0=f(x0);return function(x){return y0+m*(x-x0);};}
+
+  window.G={plot:plot,venn:venn,sagital:sagital,digraph:digraph,reloj:reloj,area:area,between:between,riemann:riemann,tangente:tangente,C:C};
 })();

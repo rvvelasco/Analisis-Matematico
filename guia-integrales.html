@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementos de Análisis · Integrales desde cero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Análisis · <b>Integrales</b></span>
+    <nav class="topnav">
+      <a href="#idea">La idea</a>
+      <a href="#indefinida">Indefinida</a>
+      <a href="#tabla">Tabla</a>
+      <a href="#sustitucion">Sustitución</a>
+      <a href="#partes">Por partes</a>
+      <a href="#fracciones">Fracciones simples</a>
+      <a href="#trigo">Trigonométricas</a>
+      <a href="#elegir">Qué método uso</a>
+      <a href="#riemann">Riemann</a>
+      <a href="#tfc">Teorema fundamental</a>
+      <a href="#propdef">Propiedades</a>
+      <a href="#areas">Áreas</a>
+      <a href="#aplicaciones">Aplicaciones</a>
+      <a href="#impropias">Impropias</a>
+      <a href="#ejercicios">Ejercicios</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="eyebrow">Elementos de Análisis Matemático · Cálculo integral</div>
+  <h1>Integrales, <span class="u">desde cero</span></h1>
+  <p class="lead">Qué es integrar (deshacer una derivada y calcular áreas), la tabla de integrales inmediatas, los métodos (sustitución, por partes, fracciones simples), la integral definida con Riemann y la regla de Barrow, el área entre curvas y las aplicaciones. Necesitás saber derivar: si no, empezá por la <a href="guia-derivadas.html">guía de Derivadas</a>.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Las palabras <span class="term term-demo" data-def="primitiva" tabindex="0">como esta</span> abren su definición. Cada método tiene ejemplos que van de fácil a nivel parcial y una autoevaluación. Hay una sección "<a href="#elegir">¿qué método uso?</a>" para cuando no sabés por dónde arrancar. Para practicar: <a href="simulador-examenes.html">simulador</a>, temas 28 a 32 y el parcial modelo de Integrales.</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 01 LA IDEA ============ -->
+<section class="section" id="idea">
+  <div class="section-head"><span class="section-num">01</span><h2>La idea: dos problemas que resultan ser el mismo</h2></div>
+  <p>La integral nace de dos preguntas que parecen no tener nada que ver:</p>
+  <ul class="clean">
+    <li><strong>Problema 1 · "Deshacer" una derivada.</strong> Si sé que la velocidad es v(t) = 2t, ¿cuál es la posición? Busco una función cuya derivada sea 2t: t² (más una constante). Esa es una <span class="term" data-def="primitiva" tabindex="0">primitiva</span>.</li>
+    <li><strong>Problema 2 · Calcular un área.</strong> ¿Cuánto mide el área bajo la curva y = 2t entre 0 y 3? Es un triángulo de base 3 y altura 6: área 9. Y fijate: t² evaluado en 3 menos t² en 0 da 9 − 0 = 9.</li>
+  </ul>
+  <div class="fig" data-fig="idea" data-cap="El área bajo v(t) = 2t entre 0 y 3 es 9, y coincide con t² evaluada en 3 menos t² evaluada en 0. No es casualidad: es el Teorema Fundamental del Cálculo."></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span>
+    <p>Derivar es pasar de la <strong>posición a la velocidad</strong> ("¿qué tan rápido cambia?"). Integrar es lo contrario: de la <strong>velocidad a la distancia recorrida</strong> ("si voy a tal velocidad, ¿cuánto acumulo?"). Integrar es <strong>sumar acumulados</strong>, y por eso aparece el área.</p>
+  </div>
+</section>
+
+<!-- ============ 02 INDEFINIDA ============ -->
+<section class="section" id="indefinida">
+  <div class="section-head"><span class="section-num">02</span><h2>Primitiva e integral indefinida</h2></div>
+  <p>F es una <span class="term" data-def="primitiva" tabindex="0">primitiva</span> de f si <span class="mono">F′(x) = f(x)</span>. La <span class="term" data-def="indefinida" tabindex="0">integral indefinida</span> es el conjunto de todas las primitivas:</p>
+  <div class="fbox">∫ f(x) dx = F(x) + C &nbsp;⇔&nbsp; F′(x) = f(x)</div>
+  <ul class="clean">
+    <li>El símbolo ∫ es una "S" alargada (de "suma"). El <strong>dx</strong> indica cuál es la variable: no es decoración, y en sustitución se usa.</li>
+    <li>La <span class="term" data-def="constante" tabindex="0">constante C</span> está porque la derivada de una constante es 0: x², x² + 5 y x² − 3 tienen la misma derivada, 2x.</li>
+    <li><strong>Siempre podés verificar derivando</strong> el resultado: si te da la función de adentro, está bien.</li>
+  </ul>
+  <div class="fig" data-fig="familia" data-cap="Algunas primitivas de f(x) = 2x: x² + C para distintos C. Son la misma curva desplazada hacia arriba o hacia abajo; en cada x tienen la misma pendiente."></div>
+  <h3>Propiedades (linealidad)</h3>
+  <div class="fbox">∫ [f(x) ± g(x)] dx = ∫ f dx ± ∫ g dx &nbsp;&nbsp;·&nbsp;&nbsp; ∫ k·f(x) dx = k·∫ f(x) dx</div>
+  <div class="callout c-warn"><span class="tag">Lo que NO se puede</span>
+    <p><strong>∫ f·g dx ≠ (∫ f dx)·(∫ g dx).</strong> No hay "regla del producto" directa: para eso existen la sustitución y las partes. Tampoco hay regla del cociente.</p>
+  </div>
+</section>
+
+<!-- ============ 03 TABLA ============ -->
+<section class="section" id="tabla">
+  <div class="section-head"><span class="section-num">03</span><h2>Tabla de integrales inmediatas</h2></div>
+  <p>Es la tabla de derivadas <strong>leída al revés</strong>. Todo método termina en alguna de estas, así que hay que saberlas de memoria.</p>
+  <table class="data">
+    <tr><th>∫ f(x) dx</th><th>= F(x) + C</th><th>∫ f(x) dx</th><th>= F(x) + C</th></tr>
+    <tr><td class="mono">∫ k dx</td><td class="mono">k·x</td><td class="mono">∫ eˣ dx</td><td class="mono">eˣ</td></tr>
+    <tr><td class="mono">∫ xⁿ dx &nbsp;(n ≠ −1)</td><td class="mono">xⁿ⁺¹/(n + 1)</td><td class="mono">∫ aˣ dx</td><td class="mono">aˣ/ln a</td></tr>
+    <tr><td class="mono">∫ 1/x dx</td><td class="mono">ln|x|</td><td class="mono">∫ sen x dx</td><td class="mono">−cos x</td></tr>
+    <tr><td class="mono">∫ √x dx</td><td class="mono">(2/3)·x^(3/2)</td><td class="mono">∫ cos x dx</td><td class="mono">sen x</td></tr>
+    <tr><td class="mono">∫ 1/x² dx</td><td class="mono">−1/x</td><td class="mono">∫ 1/cos² x dx</td><td class="mono">tg x</td></tr>
+    <tr><td class="mono">∫ 1/(1 + x²) dx</td><td class="mono">arctg x</td><td class="mono">∫ 1/√(1 − x²) dx</td><td class="mono">arcsen x</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo · la regla de la potencia</span><p>Para integrar xⁿ: <strong>"le sumo 1 al exponente y divido por el exponente nuevo"</strong>. Es exactamente lo contrario de derivar ("bajo el exponente y le resto 1"). La única excepción es x⁻¹ = 1/x, porque daría dividir por 0: esa da ln|x|.</p></div>
+  <div class="callout c-warn"><span class="tag">Errores típicos</span>
+    <p><strong>∫ sen x dx = −cos x</strong> (con menos), porque (cos x)′ = −sen x. Es el error de signo más común.</p>
+    <p><strong>∫ 1/x dx = ln|x|</strong>, con valor absoluto: ln solo existe para positivos.</p>
+    <p><strong>∫ 1/x² dx ≠ ln(x²).</strong> Es una potencia: x⁻² ⇒ x⁻¹/(−1) = −1/x.</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">∫ (3x² − 4x + 5) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">= 3·x³/3 − 4·x²/2 + 5x + C = <strong>x³ − 2x² + 5x + C</strong></div><p class="why">Verificación: (x³ − 2x² + 5x)′ = 3x² − 4x + 5 ✓.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">∫ (2/x + eˣ − 3 sen x) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans"><strong>2 ln|x| + eˣ + 3 cos x + C</strong></div><p class="why">∫ −3 sen x = −3·(−cos x) = +3 cos x.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">∫ (x² + 1)²/x² dx &nbsp;(primero hay que operar)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">(x⁴ + 2x² + 1)/x² = x² + 2 + x⁻² ⇒ ∫ = <strong>x³/3 + 2x − 1/x + C</strong></div><p class="why">Tip: si ves una suma dividida por un monomio, separá en varios términos. Si ves un cuadrado, desarrollalo.</p></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">Autoevaluación · ∫ cos x dx es…</div>
+    <button class="opt" data-k="a">−sen x + C</button>
+    <button class="opt" data-k="b">−cos x + C</button>
+    <button class="opt" data-k="c">sen x + C</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 04 SUSTITUCIÓN ============ -->
+<section class="section" id="sustitucion">
+  <div class="section-head"><span class="section-num">04</span><h2>Método de sustitución (cambio de variable)</h2></div>
+  <p>Es la regla de la cadena al revés. Sirve cuando dentro de la integral aparecen <strong>una función y (casi) su derivada</strong>.</p>
+  <div class="callout c-calc"><span class="tag">Receta</span>
+    <p><strong>1.</strong> Elegí u = "lo de adentro" (lo que está dentro de una potencia, raíz, exponente, seno, ln…).</p>
+    <p><strong>2.</strong> Calculá du = u′(x)·dx.</p>
+    <p><strong>3.</strong> Reemplazá todo para que quede <strong>solo u</strong> (sin ninguna x). Si sobra una x, la sustitución elegida no sirve.</p>
+    <p><strong>4.</strong> Integrá en u y <strong>volvé a x</strong>.</p>
+  </div>
+  <div class="callout c-calc"><span class="tag">Ejemplo · ∫ 2x·(x² + 1)⁵ dx</span>
+    <p class="mono">u = x² + 1 ⇒ du = 2x dx</p>
+    <p class="mono">∫ u⁵ du = u⁶/6 + C = (x² + 1)⁶/6 + C</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es <strong>ponerle un apodo</strong> a la parte complicada. Si la derivada de esa parte ya está multiplicando afuera (o está salvo un número), la integral se vuelve una de tabla. Si falta un número, lo arreglás: "si necesito un 3 y no está, multiplico por 3 adentro y por 1/3 afuera".</p></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">∫ cos(3x) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = 3x, du = 3 dx ⇒ dx = du/3 ⇒ ∫ cos u · du/3 = <strong>sen(3x)/3 + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">∫ x·e^(x²) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x², du = 2x dx ⇒ x dx = du/2 ⇒ ½ ∫ eᵘ du = <strong>e^(x²)/2 + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">∫ x/(x² + 4) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x² + 4, du = 2x dx ⇒ ½ ∫ du/u = <strong>½ ln(x² + 4) + C</strong></div><p class="why">Patrón muy útil: <strong>∫ u′/u = ln|u|</strong>. Si arriba está la derivada de abajo (salvo un número), da un logaritmo.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">∫ (ln x)/x dx &nbsp;y&nbsp; ∫ tg x dx <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = ln x, du = dx/x ⇒ ∫ u du = <strong>(ln x)²/2 + C</strong><br>tg x = sen x/cos x; u = cos x, du = −sen x dx ⇒ −∫ du/u = <strong>−ln|cos x| + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">5</span><span class="consigna">∫ x·√(x − 1) dx &nbsp;(sustitución "de despeje") <span class="dtag libro">Nivel libro</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x − 1 ⇒ x = u + 1, dx = du<br>∫ (u + 1)·u^(1/2) du = ∫ (u^(3/2) + u^(1/2)) du = (2/5)u^(5/2) + (2/3)u^(3/2)<br>= <strong>(2/5)(x − 1)^(5/2) + (2/3)(x − 1)^(3/2) + C</strong></div><p class="why">Cuando sobra una x, despejala de la sustitución (x = u + 1) y reemplazala.</p></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">Autoevaluación · Para ∫ 3x²·sen(x³) dx conviene tomar…</div>
+    <button class="opt" data-k="a">u = x³</button>
+    <button class="opt" data-k="b">u = sen(x³)</button>
+    <button class="opt" data-k="c">u = 3x²</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<!-- ============ 05 PARTES ============ -->
+<section class="section" id="partes">
+  <div class="section-head"><span class="section-num">05</span><h2>Integración por partes</h2></div>
+  <p>Sale de la regla del producto. Sirve para <strong>productos de funciones de distinto tipo</strong> (un polinomio por una exponencial, x por un seno, ln x solo…).</p>
+  <div class="fbox">∫ u dv = u·v − ∫ v du</div>
+  <div class="callout c-calc"><span class="tag">¿Quién es u? · regla LIATE</span>
+    <p>Elegí como <strong>u</strong> la que aparezca primero en esta lista (la otra, con el dx, es dv):</p>
+    <p class="mono">L ogarítmicas → I nversas trig. → A lgebraicas (polinomios) → T rigonométricas → E xponenciales</p>
+    <p>La idea: u tiene que simplificarse al derivarla, y dv tiene que ser fácil de integrar.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Partes es <strong>cambiar una integral difícil por otra más fácil</strong>. Derivás la parte que se "achica" al derivar (el polinomio va perdiendo grado, el ln se vuelve 1/x) e integrás la que no se complica (eˣ sigue siendo eˣ). Un clásico para memorizarla: <em>"un día vi una vaca vestida de uniforme"</em> (∫u dv = uv − ∫v du).</p></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">∫ x·eˣ dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x ⇒ du = dx · dv = eˣ dx ⇒ v = eˣ<br>= x·eˣ − ∫ eˣ dx = x·eˣ − eˣ + C = <strong>eˣ(x − 1) + C</strong></div><p class="why">Verificación: [eˣ(x − 1)]′ = eˣ(x − 1) + eˣ = x·eˣ ✓.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">∫ x·cos x dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x, dv = cos x dx ⇒ v = sen x<br>= x·sen x − ∫ sen x dx = <strong>x·sen x + cos x + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">∫ ln x dx &nbsp;(el truco del "dv = dx")</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = ln x ⇒ du = dx/x · dv = dx ⇒ v = x<br>= x·ln x − ∫ x·(1/x) dx = <strong>x·ln x − x + C</strong></div><p class="why">Cuando hay una sola función que no sabés integrar (ln x, arctg x), tomá dv = dx.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">∫ x²·eˣ dx &nbsp;(partes dos veces) <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = x², dv = eˣ dx ⇒ = x²eˣ − ∫ 2x·eˣ dx = x²eˣ − 2·[eˣ(x − 1)]<br>= <strong>eˣ(x² − 2x + 2) + C</strong></div><p class="why">Un polinomio de grado n necesita n veces partes. Cada vez baja un grado.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">5</span><span class="consigna">∫ eˣ·sen x dx &nbsp;(integral "cíclica") <span class="dtag libro">Nivel libro</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Llamo I a la integral. Partes con u = sen x, dv = eˣ dx: I = eˣ sen x − ∫ eˣ cos x dx<br>Otra vez partes (u = cos x): ∫ eˣ cos x dx = eˣ cos x + ∫ eˣ sen x dx = eˣ cos x + I<br>I = eˣ sen x − eˣ cos x − I ⇒ 2I = eˣ(sen x − cos x) ⇒ <strong>I = eˣ(sen x − cos x)/2 + C</strong></div><p class="why">Después de dos partes vuelve a aparecer la integral original: se despeja como en una ecuación.</p></div>
+  </div>
+</section>
+
+<!-- ============ 06 FRACCIONES SIMPLES ============ -->
+<section class="section" id="fracciones">
+  <div class="section-head"><span class="section-num">06</span><h2>Fracciones simples (funciones racionales)</h2></div>
+  <p>Para integrar P(x)/Q(x) (cociente de polinomios) cuando no sirve la sustitución:</p>
+  <div class="callout c-calc"><span class="tag">Receta</span>
+    <p><strong>0.</strong> Si el grado de P es <strong>mayor o igual</strong> que el de Q, primero dividí los polinomios.</p>
+    <p><strong>1.</strong> Factorizá el denominador Q(x).</p>
+    <p><strong>2.</strong> Escribí la descomposición: cada factor (x − a) aporta A/(x − a); un factor repetido (x − a)² aporta A/(x − a) + B/(x − a)².</p>
+    <p><strong>3.</strong> Hallá A, B, … (dando valores a x convenientes, como las raíces).</p>
+    <p><strong>4.</strong> Integrá: ∫ A/(x − a) dx = A·ln|x − a| y ∫ B/(x − a)² dx = −B/(x − a).</p>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">∫ (3x + 1)/[(x − 1)(x + 2)] dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">(3x + 1)/[(x − 1)(x + 2)] = A/(x − 1) + B/(x + 2) ⇒ 3x + 1 = A(x + 2) + B(x − 1)<br>x = 1: 4 = 3A ⇒ A = 4/3 · x = −2: −5 = −3B ⇒ B = 5/3<br>∫ = <strong>(4/3) ln|x − 1| + (5/3) ln|x + 2| + C</strong></div><p class="why">El truco de reemplazar x por las raíces anula todos los términos menos uno.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">∫ 1/(x² − 1) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">1/[(x − 1)(x + 1)] = ½/(x − 1) − ½/(x + 1) ⇒ ∫ = <strong>½ ln|x − 1| − ½ ln|x + 1| + C = ½ ln|(x − 1)/(x + 1)| + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">∫ (x + 3)/(x − 1)² dx &nbsp;(raíz doble) <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">(x + 3)/(x − 1)² = A/(x − 1) + B/(x − 1)² ⇒ x + 3 = A(x − 1) + B ⇒ A = 1, B = 4<br>∫ = <strong>ln|x − 1| − 4/(x − 1) + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">∫ (x² + 1)/(x − 1) dx &nbsp;(grado de arriba ≥ grado de abajo)</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Divido: x² + 1 = (x − 1)(x + 1) + 2 ⇒ (x² + 1)/(x − 1) = x + 1 + 2/(x − 1)<br>∫ = <strong>x²/2 + x + 2 ln|x − 1| + C</strong></div></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es "desarmar" una fracción complicada en <strong>varias fracciones simples</strong> que cada una da un logaritmo. Como cuando sumás 1/2 + 1/3 = 5/6, pero al revés: te dan el 5/6 y tenés que encontrar el 1/2 y el 1/3.</p></div>
+</section>
+
+<!-- ============ 07 TRIGONOMÉTRICAS ============ -->
+<section class="section" id="trigo">
+  <div class="section-head"><span class="section-num">07</span><h2>Integrales trigonométricas básicas</h2></div>
+  <ul class="clean">
+    <li><strong>sen²x y cos²x:</strong> se usan las fórmulas del ángulo doble: <span class="mono">sen²x = (1 − cos 2x)/2</span> y <span class="mono">cos²x = (1 + cos 2x)/2</span>. Así, ∫ sen²x dx = x/2 − sen(2x)/4 + C.</li>
+    <li><strong>senⁿx·cos x</strong> (o al revés): sustitución u = sen x. Ej.: ∫ sen³x·cos x dx = sen⁴x/4 + C.</li>
+    <li><strong>Potencia impar de seno:</strong> separás un sen x y usás sen²x = 1 − cos²x. Ej.: ∫ sen³x dx = ∫ (1 − cos²x)·sen x dx = −cos x + cos³x/3 + C.</li>
+    <li><strong>Sustitución trigonométrica</strong> (para √(a² − x²)): x = a·sen t. Ej.: ∫ dx/√(4 − x²) = arcsen(x/2) + C.</li>
+  </ul>
+</section>
+
+<!-- ============ 08 QUÉ MÉTODO ============ -->
+<section class="section" id="elegir">
+  <div class="section-head"><span class="section-num">08</span><h2>¿Qué método uso? (la pregunta del millón)</h2></div>
+  <table class="data">
+    <tr><th style="width:45%">Si ves…</th><th>Probá…</th><th>Ejemplo</th></tr>
+    <tr><td>Sumas de potencias, eˣ, sen, cos, 1/x sueltos</td><td><strong>Tabla</strong> (con linealidad)</td><td class="mono">∫ (x³ − 2/x) dx</td></tr>
+    <tr><td>Productos o cocientes que se pueden <strong>operar</strong> (distribuir, separar)</td><td><strong>Álgebra primero</strong>, después tabla</td><td class="mono">∫ (x + 1)²/x dx</td></tr>
+    <tr><td>Una función "adentro" de otra y <strong>su derivada multiplicando</strong></td><td><strong>Sustitución</strong></td><td class="mono">∫ x·cos(x²) dx</td></tr>
+    <tr><td>Arriba la derivada de lo de abajo</td><td><strong>Sustitución → ln|u|</strong></td><td class="mono">∫ 2x/(x² + 5) dx</td></tr>
+    <tr><td>Producto de tipos distintos (polinomio × exp/trig), o ln x / arctg x solos</td><td><strong>Partes</strong> (LIATE)</td><td class="mono">∫ x·e^(2x) dx · ∫ ln x dx</td></tr>
+    <tr><td>Cociente de polinomios sin la derivada arriba</td><td><strong>Fracciones simples</strong> (dividir antes si hace falta)</td><td class="mono">∫ 1/(x² − 4) dx</td></tr>
+    <tr><td>sen², cos², potencias de trigonométricas</td><td><strong>Identidades</strong> trigonométricas</td><td class="mono">∫ cos²x dx</td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">La regla de oro</span><p><strong>Siempre verificá derivando.</strong> Es la única operación de la materia en la que podés comprobar al 100% si está bien, en un minuto, durante el examen.</p></div>
+</section>
+
+<!-- ============ 09 RIEMANN ============ -->
+<section class="section" id="riemann">
+  <div class="section-head"><span class="section-num">09</span><h2>Integral definida: sumas de Riemann</h2></div>
+  <p>¿Cómo se mide el área bajo una curva? Se aproxima con <strong>rectángulos</strong>: se divide [a, b] en n partes de ancho Δx = (b − a)/n, se arma un rectángulo en cada una (con la altura de la función en un punto) y se suman las áreas. Eso es una <span class="term" data-def="riemann" tabindex="0">suma de Riemann</span>.</p>
+  <div class="figrow">
+    <div class="fig" data-fig="riem4" data-cap="f(x) = x² en [0, 2] con 4 rectángulos (extremo derecho): 3,75. Se pasa del valor real."></div>
+    <div class="fig" data-fig="riem16" data-cap="Con 16 rectángulos: ≈ 2,92. Cuantos más rectángulos, más se acerca a 8/3 ≈ 2,667."></div>
+  </div>
+  <p>La <span class="term" data-def="definida" tabindex="0">integral definida</span> es el límite de esas sumas cuando los rectángulos se hacen infinitamente finos:</p>
+  <div class="fbox">∫ₐᵇ f(x) dx = lim<sub>n→∞</sub> Σ f(xᵢ)·Δx</div>
+  <div class="callout c-calc"><span class="tag">Cuenta a mano · n = 4, extremo derecho</span>
+    <p class="mono">Δx = (2 − 0)/4 = 0,5 · puntos: 0,5 ; 1 ; 1,5 ; 2</p>
+    <p class="mono">S = 0,5·(0,25 + 1 + 2,25 + 4) = 0,5·7,5 = 3,75</p>
+    <p class="mono">Con el extremo izquierdo (0 ; 0,5 ; 1 ; 1,5): S = 0,5·(0 + 0,25 + 1 + 2,25) = 1,75</p>
+    <p style="font-family:var(--body)">El valor exacto, 8/3 ≈ 2,667, queda entre las dos aproximaciones.</p>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es como calcular la superficie de un terreno con forma rara <strong>cubriéndolo con baldosas rectangulares</strong>. Con baldosas grandes, la cuenta es aproximada; con baldosas cada vez más chicas, cada vez más exacta. La integral es "baldosas infinitamente finas".</p></div>
+  <div class="callout c-warn"><span class="tag">Importante: área con signo</span><p>Si la función está <strong>por debajo del eje x</strong>, los rectángulos tienen altura negativa: la integral definida <strong>resta</strong> esa parte. Por eso integral definida y área no siempre son lo mismo (ver sección 12).</p></div>
+</section>
+
+<!-- ============ 10 TFC ============ -->
+<section class="section" id="tfc">
+  <div class="section-head"><span class="section-num">10</span><h2>Teorema fundamental del cálculo y regla de Barrow</h2></div>
+  <p>Hacer sumas de Riemann con n → ∞ sería eterno. El <span class="term" data-def="tfc" tabindex="0">Teorema Fundamental del Cálculo</span> conecta todo:</p>
+  <div class="fbox">Parte 1: si F(x) = ∫ₐˣ f(t) dt, entonces F′(x) = f(x)</div><br>
+  <div class="fbox">Parte 2 (Barrow): ∫ₐᵇ f(x) dx = F(b) − F(a), con F primitiva de f</div>
+  <p>En criollo: para calcular una integral definida <strong>buscás una primitiva, la evaluás arriba, la evaluás abajo y restás</strong>. La constante C no hace falta (se cancela). Se anota <span class="mono">[F(x)]ₐᵇ</span>.</p>
+  <div class="callout c-calc"><span class="tag">Ejemplos</span>
+    <p class="mono">∫₀² x² dx = [x³/3]₀² = 8/3 − 0 = 8/3</p>
+    <p class="mono">∫₀^π sen x dx = [−cos x]₀^π = −cos π − (−cos 0) = 1 + 1 = 2</p>
+    <p class="mono">∫₁^e (1/x) dx = [ln x]₁^e = 1 − 0 = 1</p>
+  </div>
+  <div class="callout c-tip"><span class="tag">Sustitución en definidas</span><p>Si hacés un cambio de variable, <strong>cambiá también los límites</strong>: ∫₀¹ 2x(x² + 1)³ dx, con u = x² + 1: x = 0 ⇒ u = 1 y x = 1 ⇒ u = 2. Queda ∫₁² u³ du = [u⁴/4]₁² = 4 − 1/4 = 15/4. Así no tenés que volver a x.</p></div>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Derivá F(x) = ∫₁^(x²) ln t dt (sin calcular la integral). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">TFC + cadena: F′(x) = ln(x²)·(x²)′ = <strong>2x·ln(x²) = 4x·ln x</strong> (para x &gt; 0)</div><p class="why">Si el límite superior es g(x) en vez de x, se multiplica por g′(x).</p></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Para saber cuánta agua entró a un tanque entre las 2 y las 5, no hace falta sumar segundo a segundo: <strong>mirás cuánto marcaba el medidor a las 5 y le restás lo que marcaba a las 2</strong>. La primitiva es ese "medidor acumulado".</p></div>
+</section>
+
+<!-- ============ 11 PROPIEDADES DEFINIDA ============ -->
+<section class="section" id="propdef">
+  <div class="section-head"><span class="section-num">11</span><h2>Propiedades de la integral definida</h2></div>
+  <table class="data">
+    <tr><th>Propiedad</th><th>Fórmula</th></tr>
+    <tr><td>Linealidad</td><td class="mono">∫ₐᵇ (k·f ± g) = k∫ₐᵇ f ± ∫ₐᵇ g</td></tr>
+    <tr><td>Límites iguales</td><td class="mono">∫ₐᵃ f = 0</td></tr>
+    <tr><td>Invertir los límites</td><td class="mono">∫ᵇₐ f = −∫ₐᵇ f</td></tr>
+    <tr><td>Aditividad</td><td class="mono">∫ₐᵇ f = ∫ₐᶜ f + ∫ᶜᵇ f</td></tr>
+    <tr><td>Función impar en [−a, a]</td><td class="mono">∫₋ₐᵃ f = 0 &nbsp;(ej.: ∫₋₁¹ x³ dx = 0)</td></tr>
+    <tr><td>Función par en [−a, a]</td><td class="mono">∫₋ₐᵃ f = 2∫₀ᵃ f</td></tr>
+    <tr><td>Signo</td><td>Si f ≥ 0 en [a, b], entonces ∫ₐᵇ f ≥ 0</td></tr>
+  </table>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Si ∫₀³ f = 5 y ∫₀⁷ f = 12, ¿cuánto vale ∫₃⁷ 2f(x) dx y ∫₇³ f(x) dx?</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">∫₃⁷ f = 12 − 5 = 7 ⇒ ∫₃⁷ 2f = <strong>14</strong> · ∫₇³ f = <strong>−7</strong></div></div>
+  </div>
+</section>
+
+<!-- ============ 12 ÁREAS ============ -->
+<section class="section" id="areas">
+  <div class="section-head"><span class="section-num">12</span><h2>Cálculo de áreas</h2></div>
+  <h3>Área entre una curva y el eje x</h3>
+  <p>Si f cambia de signo, <strong>hay que partir la integral en los ceros</strong> y sumar los valores absolutos. Si integrás de corrido, las partes negativas restan.</p>
+  <div class="fig" data-fig="signo" data-cap="f(x) = x² − 1 en [0, 2]. Debajo del eje (de 0 a 1) el área es 2/3; arriba (de 1 a 2), 4/3. Área total = 2. Pero ∫₀² f = −2/3 + 4/3 = 2/3."></div>
+  <div class="callout c-calc"><span class="tag">Receta para áreas con el eje x</span>
+    <p><strong>1.</strong> Buscá los ceros de f dentro del intervalo. <strong>2.</strong> Integrá en cada tramo por separado. <strong>3.</strong> Sumá los valores absolutos.</p>
+  </div>
+  <h3>Área entre dos curvas</h3>
+  <div class="fbox">Área = ∫ₐᵇ [ f(x) − g(x) ] dx &nbsp;&nbsp;(f = la de arriba, g = la de abajo)</div>
+  <div class="callout c-calc"><span class="tag">Receta</span>
+    <p><strong>1.</strong> Igualá f(x) = g(x) para hallar los cortes (son los límites de integración). <strong>2.</strong> Decidí cuál está arriba (probá un punto del medio). <strong>3.</strong> Integrá "arriba menos abajo".</p>
+  </div>
+  <div class="fig" data-fig="entre" data-cap="Área entre f(x) = 4 − x² y g(x) = x + 2. Se cortan en x = −2 y x = 1. Área = ∫₋₂¹ (2 − x − x²) dx = 9/2."></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">Área entre y = x e y = x² <span class="dtag acc">Accesible</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">Cortes: x = x² ⇒ x = 0 y x = 1. En x = 0,5: x = 0,5 &gt; x² = 0,25 ⇒ arriba está y = x<br>A = ∫₀¹ (x − x²) dx = [x²/2 − x³/3]₀¹ = 1/2 − 1/3 = <strong>1/6</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">Área entre f(x) = 4 − x² y g(x) = x + 2 <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">4 − x² = x + 2 ⇒ x² + x − 2 = 0 ⇒ x = −2, x = 1 · En x = 0: f = 4 &gt; g = 2<br>A = ∫₋₂¹ (2 − x − x²) dx = [2x − x²/2 − x³/3]₋₂¹ = (7/6) − (−10/3) = <strong>9/2</strong></div></div>
+  </div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>El área entre dos curvas es "<strong>el techo menos el piso</strong>", sumado de un corte al otro. Si en algún tramo se cruzan y el techo pasa a ser piso, hay que partir ahí.</p></div>
+</section>
+
+<!-- ============ 13 APLICACIONES ============ -->
+<section class="section" id="aplicaciones">
+  <div class="section-head"><span class="section-num">13</span><h2>Aplicaciones</h2></div>
+  <table class="data">
+    <tr><th style="width:26%">Aplicación</th><th>Fórmula</th><th>Ejemplo</th></tr>
+    <tr><td><strong>Valor medio</strong> de f en [a, b]</td><td class="mono">f̄ = (1/(b − a))·∫ₐᵇ f</td><td class="mono">x² en [0, 3]: (1/3)·9 = 3</td></tr>
+    <tr><td><strong>Posición</strong> a partir de la velocidad</td><td class="mono">s(t) = ∫ v(t) dt (C sale de s(0))</td><td class="mono">v = 3t² + 2, s(0) = 5 ⇒ s = t³ + 2t + 5</td></tr>
+    <tr><td><strong>Distancia</strong> recorrida entre t₁ y t₂</td><td class="mono">∫ |v(t)| dt</td><td class="mono">v = 2t en [0, 3]: 9 m</td></tr>
+    <tr><td><strong>Costo total</strong> desde el marginal</td><td class="mono">C(x) = ∫ C′(x) dx (C sale del costo fijo)</td><td class="mono">C′ = 2x + 10, fijo 500 ⇒ C = x² + 10x + 500</td></tr>
+    <tr><td><strong>Volumen de revolución</strong> (alrededor del eje x)</td><td class="mono">V = π·∫ₐᵇ [f(x)]² dx</td><td class="mono">y = √x en [0, 4]: π∫₀⁴ x dx = 8π</td></tr>
+  </table>
+  <div class="ex">
+    <div class="q"><span class="badge">Ej</span><span class="consigna">Un tanque recibe agua a razón de r(t) = 6t − t² litros/min (0 ≤ t ≤ 6). ¿Cuántos litros entran en total? ¿Cuál es el caudal medio? <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">∫₀⁶ (6t − t²) dt = [3t² − t³/3]₀⁶ = 108 − 72 = <strong>36 litros</strong> · Caudal medio = 36/6 = <strong>6 L/min</strong></div><p class="why">Integrar una tasa (litros por minuto) da el total acumulado (litros).</p></div>
+  </div>
+</section>
+
+<!-- ============ 14 IMPROPIAS ============ -->
+<section class="section" id="impropias">
+  <div class="section-head"><span class="section-num">14</span><h2>Integrales impropias</h2></div>
+  <p>Son integrales con un límite infinito, o con una función que se va a infinito dentro del intervalo. Se calculan con un límite:</p>
+  <div class="fbox">∫ₐ^∞ f(x) dx = lim<sub>b→∞</sub> ∫ₐᵇ f(x) dx</div>
+  <p>Si el límite da un número, la integral <span class="term" data-def="impropia" tabindex="0">converge</span>; si da ∞ o no existe, diverge.</p>
+  <table class="data">
+    <tr><th>Integral</th><th>Cálculo</th><th>Resultado</th></tr>
+    <tr><td class="mono">∫₁^∞ 1/x² dx</td><td class="mono">lim [−1/x]₁ᵇ = lim (1 − 1/b)</td><td><strong>1</strong> (converge)</td></tr>
+    <tr><td class="mono">∫₁^∞ 1/x dx</td><td class="mono">lim [ln x]₁ᵇ = lim ln b</td><td><strong>∞</strong> (diverge)</td></tr>
+    <tr><td class="mono">∫₀^∞ e^(−x) dx</td><td class="mono">lim [−e^(−x)]₀ᵇ = lim (1 − e^(−b))</td><td><strong>1</strong> (converge)</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Una región infinitamente larga puede tener <strong>área finita</strong>, si la curva baja lo bastante rápido (como 1/x²). Con 1/x no alcanza: baja, pero tan despacio que el área sigue creciendo para siempre.</p></div>
+</section>
+
+<!-- ============ 15 EJERCICIOS ============ -->
+<section class="section" id="ejercicios">
+  <div class="section-head"><span class="section-num">15</span><h2>Ejercicios resueltos y autoevaluación</h2></div>
+  <div class="ex">
+    <div class="q"><span class="badge">1</span><span class="consigna">∫ (√x + 1/√x) dx <span class="dtag acc">Accesible</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">∫ (x^(1/2) + x^(−1/2)) dx = <strong>(2/3)x^(3/2) + 2x^(1/2) + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">2</span><span class="consigna">∫ x·ln x dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">u = ln x, dv = x dx ⇒ v = x²/2 ⇒ (x²/2) ln x − ∫ (x²/2)(1/x) dx = <strong>(x²/2)·ln x − x²/4 + C</strong></div><p class="why">LIATE: el logaritmo va primero, así que es u aunque el x "parezca" más simple.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">3</span><span class="consigna">∫₀¹ x·eˣ dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">[eˣ(x − 1)]₀¹ = 0 − (−1) = <strong>1</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">4</span><span class="consigna">∫ 1/(x(x + 1)) dx</span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">1/x − 1/(x + 1) ⇒ <strong>ln|x| − ln|x + 1| + C = ln|x/(x + 1)| + C</strong></div></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">5</span><span class="consigna">Hallá f sabiendo que f′(x) = 6x² − 2x y que la gráfica de f pasa por (1, 4). <span class="dtag libro">Nivel parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">f(x) = 2x³ − x² + C · f(1) = 2 − 1 + C = 4 ⇒ C = 3 ⇒ <strong>f(x) = 2x³ − x² + 3</strong></div><p class="why">Es un "problema de valor inicial": el dato del punto fija la constante.</p></div>
+  </div>
+  <div class="ex">
+    <div class="q"><span class="badge">6</span><span class="consigna">Área de la región entre y = x³ y el eje x en [−1, 2]. <span class="dtag libro">Trampa de parcial</span></span></div>
+    <button class="reveal-btn"><span class="ic">↓</span> Ver solución</button>
+    <div class="sol"><div class="ans">x³ cambia de signo en 0. Área = |∫₋₁⁰ x³ dx| + ∫₀² x³ dx = |−1/4| + 4 = <strong>17/4</strong></div><p class="why">Si integrás de corrido da ∫₋₁² x³ dx = 4 − 1/4 = 15/4, que NO es el área.</p></div>
+  </div>
+  <h3>Autoevaluación final</h3>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">1. ∫ e^(2x) dx es…</div>
+    <button class="opt" data-k="a">e^(2x) + C</button>
+    <button class="opt" data-k="b">e^(2x)/2 + C</button>
+    <button class="opt" data-k="c">2e^(2x) + C</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="c">
+    <div class="qz-q">2. Para ∫ x·sen x dx conviene…</div>
+    <button class="opt" data-k="a">sustitución u = sen x</button>
+    <button class="opt" data-k="b">fracciones simples</button>
+    <button class="opt" data-k="c">partes con u = x</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="a">
+    <div class="qz-q">3. ∫₋₂² x⁵ dx vale…</div>
+    <button class="opt" data-k="a">0</button>
+    <button class="opt" data-k="b">64/3</button>
+    <button class="opt" data-k="c">32</button>
+    <div class="fb"></div>
+  </div>
+  <div class="quiz" data-correct="b">
+    <div class="qz-q">4. Si F(x) = ∫₀ˣ cos(t²) dt, entonces F′(x) es…</div>
+    <button class="opt" data-k="a">sen(x²)</button>
+    <button class="opt" data-k="b">cos(x²)</button>
+    <button class="opt" data-k="c">−2x·sen(x²)</button>
+    <div class="fb"></div>
+  </div>
+  <p>¿Querés más? <a href="simulador-examenes.html">Simulador</a>: temas 28 a 32 (4 niveles cada uno) y el parcial modelo de Integrales.</p>
+</section>
+
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">16</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Elementos de Análisis Matemático — Integrales.</b> Guía de estudio interactiva.</p>
+  <p style="font-size:13px;margin-top:6px;">Viene de la <a href="guia-derivadas.html">guía de Derivadas</a>. Para practicar: <a href="simulador-examenes.html">simulador de exámenes</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+primitiva:{t:"Primitiva (antiderivada)",def:"F es primitiva de f si F′(x) = f(x). Una función tiene infinitas primitivas, que difieren en una constante.",ej:"x², x² + 5 y x² − 1 son primitivas de 2x.",rel:["indefinida","constante"]},
+  indefinida:{t:"Integral indefinida",sym:"∫ f(x) dx",def:"El conjunto de todas las primitivas de f: F(x) + C.",calc:"Con la tabla, sustitución, partes o fracciones simples. Se verifica derivando.",ej:"∫ 3x² dx = x³ + C.",rel:["primitiva","definida"]},
+  constante:{t:"Constante de integración",sym:"C",def:"Número arbitrario que se suma a la primitiva, porque la derivada de una constante es 0. Se determina con un dato extra (condición inicial).",ej:"f′ = 2x y f(1) = 4 ⇒ f = x² + 3.",rel:["primitiva"]},
+  riemann:{t:"Suma de Riemann",sym:"Σ f(xᵢ)·Δx",def:"Aproximación del área bajo una curva con rectángulos de ancho Δx.",calc:"Δx = (b − a)/n; se suma la altura f(xᵢ) de cada rectángulo por Δx.",ej:"x² en [0, 2], n = 4, extremo derecho: 3,75.",rel:["definida"]},
+  definida:{t:"Integral definida",sym:"∫ₐᵇ f(x) dx",def:"Límite de las sumas de Riemann. Es un NÚMERO: el área con signo entre la curva y el eje x, de a hasta b.",calc:"Regla de Barrow: F(b) − F(a).",ej:"∫₀² x² dx = 8/3.",rel:["riemann","tfc","indefinida"]},
+  tfc:{t:"Teorema Fundamental del Cálculo",def:"Relaciona derivadas e integrales. Parte 1: la derivada de ∫ₐˣ f(t) dt es f(x). Parte 2 (Barrow): ∫ₐᵇ f = F(b) − F(a).",ej:"d/dx ∫₀ˣ sen(t²) dt = sen(x²).",rel:["definida","primitiva"]},
+  impropia:{t:"Integral impropia",def:"Integral con un límite infinito o con la función no acotada en el intervalo. Converge si el límite que la define es finito.",ej:"∫₁^∞ 1/x² dx = 1 (converge); ∫₁^∞ 1/x dx diverge.",rel:["definida"]},
+  sustitucion:{t:"Sustitución (cambio de variable)",def:"Método que invierte la regla de la cadena: u = lo de adentro, du = u′ dx.",ej:"∫ 2x(x² + 1)⁵ dx = (x² + 1)⁶/6 + C.",rel:["partes","indefinida"]},
+  partes:{t:"Integración por partes",sym:"∫ u dv = uv − ∫ v du",def:"Método que invierte la regla del producto. Se elige u con la regla LIATE.",ej:"∫ x·eˣ dx = eˣ(x − 1) + C.",rel:["sustitucion"]},
+  fraccionessimples:{t:"Fracciones simples",def:"Descomposición de un cociente de polinomios en suma de fracciones con denominadores lineales (o cuadráticos), que se integran como logaritmos.",ej:"1/(x² − 1) = ½/(x − 1) − ½/(x + 1).",rel:["indefinida"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+idea: G.plot({x:[-.5,4],y:[-1,8],polys:[{pts:G.area(function(t){return 2*t;},0,3),c:G.C.teal,op:.3,stroke:G.C.teal}],fns:[{f:function(t){return 2*t;},label:'v(t) = 2t',lx:3.2,ldx:-70,ldy:-6,c:G.C.red}],texts:[{x:2,y:1.5,s:'Área = 9',b:true,c:G.C.teal,a:'middle',fs:14}],xl:'t',yl:'v'}),
+  familia: G.plot({x:[-3,3],y:[-4,8],fns:[{f:function(x){return x*x;},label:'C = 0',lx:2.3,c:G.C.red},{f:function(x){return x*x+3;},label:'C = 3',lx:2.1,c:G.C.navy},{f:function(x){return x*x-3;},label:'C = −3',lx:2.5,ldy:14,c:G.C.teal}]}),
+  riem4: G.plot({w:300,h:260,x:[-.3,2.4],y:[-.5,4.5],step:.5,tickStep:1,polys:G.riemann(function(x){return x*x;},0,2,4,'der'),fns:[{f:function(x){return x*x;},c:G.C.red,dom:[-.3,2.2]}]}),
+  riem16: G.plot({w:300,h:260,x:[-.3,2.4],y:[-.5,4.5],step:.5,tickStep:1,polys:G.riemann(function(x){return x*x;},0,2,16,'der'),fns:[{f:function(x){return x*x;},c:G.C.red,dom:[-.3,2.2]}]}),
+  signo: G.plot({x:[-.5,2.5],y:[-1.5,3.5],polys:[{pts:G.area(function(x){return x*x-1;},0,1),c:G.C.red,op:.25,stroke:G.C.red},{pts:G.area(function(x){return x*x-1;},1,2),c:G.C.teal,op:.3,stroke:G.C.teal}],fns:[{f:function(x){return x*x-1;},label:'f',lx:2.2,c:G.C.navy}],texts:[{x:.5,y:-.5,s:'−2/3',b:true,c:G.C.red,a:'middle'},{x:1.65,y:.8,s:'4/3',b:true,c:G.C.teal,a:'middle'}]}),
+  entre: G.plot({x:[-3,2],y:[-2,5],polys:[{pts:G.between(function(x){return 4-x*x;},function(x){return x+2;},-2,1),c:G.C.teal,op:.3,stroke:'none'}],fns:[{f:function(x){return 4-x*x;},label:'f',lx:1.5,c:G.C.red},{f:function(x){return x+2;},label:'g',lx:1.6,ldy:-6,c:G.C.navy}],pts:[{x:-2,y:0,label:'(−2, 0)',dx:-46},{x:1,y:3,label:'(1, 3)'}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+</script>
+</body>
+</html>

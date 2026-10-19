@@ -158,7 +158,7 @@
   <header class="hero">
     <div class="eyebrow">Práctica autocorregida</div>
     <h1>Practicá tema por tema, en cuatro niveles</h1>
-    <p>Elegí un tema y una dificultad. Las de opción múltiple y las de verdadero/falso se corrigen solas. Las abiertas traen la solución explicada y te dejan autoevaluarte. Al final hay <strong>parciales modelo</strong> por unidad y un integrador.</p>
+    <p>Elegí un tema y una dificultad. Las de opción múltiple y las de verdadero/falso se corrigen solas. Las abiertas traen la solución explicada y te dejan autoevaluarte. Al final hay <strong>parciales modelo</strong> por unidad (incluidos derivadas e integrales) y un integrador.</p>
     <div class="legend">
       <span class="chip"><span class="dot b"></span> Básico · conceptos y cuentas simples</span>
       <span class="chip"><span class="dot n"></span> Normal · práctica de clase</span>
@@ -169,7 +169,7 @@
 
   <div class="wrap">
     <div class="stitle">Ruta de aprendizaje</div>
-    <p class="ssub">Ordenada por unidad, como el programa. Dentro de cada unidad, cada tema usa lo del anterior.</p>
+    <p class="ssub">Ordenada por unidad, como el programa, y al final el bloque de Cálculo (límites, derivadas e integrales). Dentro de cada bloque, cada tema usa lo del anterior.</p>
     <div class="path" id="topicList"></div>
 
     <div class="stitle">Parciales modelo</div>
@@ -213,6 +213,7 @@
 
 <script src="graficos.js"></script>
 <script src="examenes-datos.js"></script>
+<script src="examenes-calculo.js"></script>
 <script>
 /* ================= LÓGICA ================= */
 const LV = {
@@ -233,7 +234,7 @@ CURSO.topics.forEach(function(t){
   if(t.u!==lastUnit){
     lastUnit=t.u;const U=CURSO.unidades[t.u];
     const h=document.createElement('div');h.className='unit-head';
-    h.innerHTML='<span class="uk">Unidad '+t.u+'</span><h3>'+U.n+'</h3>'+(U.guia?'<a href="'+U.guia+'">Ir a la guía ›</a>':'');
+    h.innerHTML='<span class="uk">'+(U.k||('Unidad '+t.u))+'</span><h3>'+U.n+'</h3>'+(U.guia?'<a href="'+U.guia+'">Ir a la guía ›</a>':'');
     topicList.appendChild(h);
   }
   const div=document.createElement('div');
