@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derivadas · Modo APB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+
+  /* ---------- MODO APB ---------- */
+  body{font-size:18px;}
+  .apb-badge{display:inline-block;background:#5F8A2E;color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+  .progress{position:sticky;top:57px;z-index:35;background:var(--paper);padding:8px 0 10px;}
+  .progress .bar{height:9px;background:var(--line);border-radius:10px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#5F8A2E,var(--teal));transition:width .4s;}
+  .progress .ptxt{font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:var(--mono);}
+  .lesson-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;}
+  .lesson-meta .time{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;}
+  .lesson-meta .goal{font-size:15px;color:var(--navy);}
+  .done-btn{display:block;margin:26px auto 0;background:#fff;border:2px solid #5F8A2E;color:#4C6E21;border-radius:30px;padding:10px 22px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;}
+  .done-btn.on{background:#5F8A2E;color:#fff;}
+  .steps{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:18px 0;box-shadow:var(--shadow);}
+  .steps .st-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:12px 0 2px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line-strong);}
+  .steps .st-title + .step{border-top:none;}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+  .step .c{flex:1;}
+  .step .c .m{font-family:var(--mono);font-size:17px;color:var(--navy-deep);background:var(--paper);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px;}
+  .step.result .n{background:var(--teal);}
+  .hl{background:#FFE9A8;border-radius:4px;padding:0 3px;}
+  .hl2{background:#CDE7F5;border-radius:4px;padding:0 3px;}
+  .hl3{background:#F7D3D6;border-radius:4px;padding:0 3px;}
+  .big{font-family:var(--mono);font-size:21px;text-align:center;background:#fff;border:2px solid var(--navy);border-radius:14px;padding:16px;margin:18px 0;color:var(--navy-deep);}
+  .big small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-soft);margin-top:6px;}
+  .try{background:#F3F0FA;border:1px solid #D9CDEE;border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:18px 0;}
+  .try .tt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#6B3FA0;text-transform:uppercase;margin-bottom:8px;}
+  .try .tq{margin-bottom:10px;}
+  .try .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .try input{font-family:var(--mono);font-size:17px;padding:8px 12px;border:1.5px solid var(--line-strong);border-radius:9px;min-width:160px;flex:1;max-width:280px;}
+  .try input:focus{outline:none;border-color:#6B3FA0;}
+  .try .chk{background:#6B3FA0;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-family:var(--body);cursor:pointer;}
+  .try .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;border-radius:9px;padding:8px 12px;font-weight:600;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .try .tfb{margin-top:10px;font-size:15px;display:none;border-radius:9px;padding:9px 12px;}
+  .try .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .try .tfb.no{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .try details{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+  .try details summary{cursor:pointer;color:#6B3FA0;font-weight:600;}
+  .tipkb{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  @media(max-width:620px){.vs{grid-template-columns:1fr;}}
+  .vs > div{border-radius:12px;padding:12px 14px;font-size:15.5px;}
+  .vs .bad{background:var(--red-soft);border:1px solid #F1CFD1;}
+  .vs .good{background:var(--teal-soft);border:1px solid #C4E2DB;}
+  .vs b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+  .vs .bad b{color:var(--red);} .vs .good b{color:var(--teal);}
+  .next{display:block;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:16px;padding:20px 22px;margin:40px 0 0;text-decoration:none;}
+  .next b{font-family:var(--display);font-size:22px;display:block;margin-bottom:4px;}
+  .next span{color:rgba(255,255,255,.85);font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> APB · <b>Derivadas</b></span>
+    <nav class="topnav">
+      <a href="#que-es">Qué es</a>
+      <a href="#notacion">Cómo se escribe</a>
+      <a href="#potencia">Regla 1</a>
+      <a href="#numero">Regla 2</a>
+      <a href="#sumas">Regla 3</a>
+      <a href="#disfraz">Raíces</a>
+      <a href="#tabla">Las otras</a>
+      <a href="#producto">Producto</a>
+      <a href="#cociente">Cociente</a>
+      <a href="#cadena">Cadena</a>
+      <a href="#tangente">Tangente</a>
+      <a href="#maxmin">Máx. y mín.</a>
+      <a href="#chuleta">Chuleta</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <span class="apb-badge">MODO APB · A PRUEBA DE BOLUDOS</span>
+  <h1>Derivadas <span class="u">paso a paso</span></h1>
+  <p class="lead">Aprender a derivar es aprender <strong>unas pocas recetas</strong> y aplicarlas como quien sigue una receta de cocina. Acá van de a una, con colores, sin saltearse ningún paso. Si no sabés qué es un exponente o una pendiente, hacé antes la <a href="guia-apb-base.html">guía Matemática desde cero</a>.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Una lección por vez. Leé el ejemplo resuelto con los pasos numerados, después hacé los <b>"✍ Probá vos"</b>. Si fallás, no pasa nada: abrí la pista. Cuando la tengas, marcá la lección como entendida. Al final hay una <a href="#chuleta">chuleta</a> con todo en una tabla.</p>
+  </div>
+</header>
+
+<main>
+<div class="progress"><div class="bar"><div class="fill"></div></div><div class="ptxt"></div></div>
+<section class="section" id="que-es">
+  <div class="section-head"><span class="section-num">01</span><h2>¿Qué es una derivada? (sin fórmulas)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Entender la idea con un ejemplo de la vida real</span></div>
+
+  <p>Imaginá que vas en auto. El auto tiene dos relojes:</p>
+  <ul class="clean">
+    <li>El <strong>cuentakilómetros</strong>: te dice <em>dónde estás</em> (cuántos km recorriste).</li>
+    <li>El <strong>velocímetro</strong>: te dice <em>qué tan rápido estás cambiando de lugar</em> (km por hora).</li>
+  </ul>
+  <div class="big">Si la función es el cuentakilómetros,<br>la <b>derivada</b> es el velocímetro.</div>
+  <p>La derivada te dice <strong>qué tan rápido cambia algo</strong>, justo en un momento. Y en un gráfico, te dice <strong>qué tan empinada está la curva en cada punto</strong> (su pendiente, como en la recta).</p>
+  <div class="fig" data-fig="loma" data-cap="Una loma. Donde la curva sube, la derivada es positiva (+). Donde baja, es negativa (−). Justo en la cima está plana: la derivada vale 0."></div>
+  <table class="data">
+    <tr><th>Si la derivada es…</th><th>la función en ese punto…</th></tr>
+    <tr><td><b>positiva (+)</b></td><td>está subiendo ↗</td></tr>
+    <tr><td><b>negativa (−)</b></td><td>está bajando ↘</td></tr>
+    <tr><td><b>cero (0)</b></td><td>está plana: es una cima, un pozo, o un descanso →</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En una frase</span><p><strong>Derivar es calcular la pendiente de una curva en cada punto.</strong> Nada más. Todo lo demás son recetas para hacerlo rápido.</p></div>
+  <div class="try" data-ans="baja|bajando" data-why="Derivada negativa: baja."><div class="tt">✍ Probá vos</div><div class="tq">Si la derivada de una función en x = 2 vale −3, ¿la función ahí sube o baja?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="0|cero" data-why="En la cima la curva está plana."><div class="tt">✍ Probá vos</div><div class="tq">En la cima de una montaña, ¿cuánto vale la derivada?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="que-es">Marcar como entendida</button>
+</section>
+
+<section class="section" id="notacion">
+  <div class="section-head"><span class="section-num">02</span><h2>Cómo se escribe</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 3 min</span><span class="goal">🎯 No asustarte con los símbolos</span></div>
+
+  <p>Todas estas formas significan <strong>lo mismo</strong>: "la derivada de f".</p>
+  <div class="big">f′(x) &nbsp;=&nbsp; y′ &nbsp;=&nbsp; dy/dx &nbsp;=&nbsp; df/dx</div>
+  <p>El <strong>apóstrofo</strong> (′) se lee "prima": <span class="mono">f′(x)</span> se lee "f prima de x". Si ves dos (<span class="mono">f″</span>), es derivar dos veces seguidas.</p>
+  <div class="callout c-tip"><span class="tag">Tranquilo</span><p>dy/dx parece una fracción pero en este nivel tomalo como un "nombre" de la derivada, nada más.</p></div>
+
+  <button class="done-btn" data-l="notacion">Marcar como entendida</button>
+</section>
+
+<section class="section" id="potencia">
+  <div class="section-head"><span class="section-num">03</span><h2>Regla 1 · Las potencias de x (la más importante)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Derivar x², x³, x¹⁰ y también x y los números solos</span></div>
+
+  <div class="big">El exponente <b>baja adelante</b> multiplicando<br>y al exponente <b>se le resta 1</b>.<small>En fórmula: (xⁿ)′ = n · xⁿ⁻¹</small></div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar x³</div><div class="step"><span class="n">1</span><div class="c">Mirá el exponente: es <span class="hl">3</span>.<span class="m">x<sup class="hl">3</sup></span></div></div><div class="step"><span class="n">2</span><div class="c">Bajalo adelante, multiplicando.<span class="m"><span class="hl">3</span>·x<sup>3</sup></span></div></div><div class="step"><span class="n">3</span><div class="c">Al exponente restale 1: 3 − 1 = <span class="hl2">2</span>.<span class="m">3·x<sup class="hl2">2</sup></span></div></div><div class="step result"><span class="n">✓</span><div class="c">(x³)′ = <b>3x²</b></div></div></div>
+  <h3>Dos casos especiales que salen de la misma regla</h3>
+  <div class="vs">
+    <div class="good"><b>x solita</b>x = x¹ → baja el 1, queda x⁰ = 1.<br><span class="mono">(x)′ = 1</span></div>
+    <div class="good"><b>Un número solo</b>Un número no cambia nunca: su "velocidad" es 0.<br><span class="mono">(7)′ = 0 · (−3)′ = 0</span></div>
+  </div>
+  <p class="tipkb">Para escribir: x² lo podés tipear como <b>x^2</b>. Fracciones con barra: <b>1/2</b>. Da igual si usás coma o punto.</p><div class="try" data-ans="5x4" data-why="" data-show="5x⁴"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x⁵</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Baja el 5, y 5 − 1 = 4.</details></div><div class="try" data-ans="2x|2x1" data-why="2x¹ = 2x." data-show="2x"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x²</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="10x9" data-why="" data-show="10x⁹"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x¹⁰</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="1" data-why="Es x¹: baja el 1 y queda x⁰ = 1."><div class="tt">✍ Probá vos</div><div class="tq">Derivá x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="0" data-why="Un número no cambia: su derivada es 0."><div class="tt">✍ Probá vos</div><div class="tq">Derivá 8 (un número solo)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="potencia">Marcar como entendida</button>
+</section>
+
+<section class="section" id="numero">
+  <div class="section-head"><span class="section-num">04</span><h2>Regla 2 · Un número multiplicando</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 6 min</span><span class="goal">🎯 Derivar 4x³, 5x², 7x</span></div>
+
+  <div class="big">El número que multiplica <b>espera afuera</b>,<br>y al final multiplica al resultado.</div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar 4x³</div><div class="step"><span class="n">1</span><div class="c">Separá: el <span class="hl3">4</span> espera, derivás solo x³.<span class="m"><span class="hl3">4</span> · (x³)′</span></div></div><div class="step"><span class="n">2</span><div class="c">Derivás x³ con la Regla 1.<span class="m"><span class="hl3">4</span> · 3x²</span></div></div><div class="step"><span class="n">3</span><div class="c">Multiplicás los números: 4·3 = 12.</div></div><div class="step result"><span class="n">✓</span><div class="c">(4x³)′ = <b>12x²</b></div></div></div>
+  <div class="callout c-criollo"><span class="tag">Atajo</span><p>Con práctica se hace en un solo paso: <strong>"bajo el exponente, lo multiplico por el número de adelante y le resto 1 al exponente"</strong>. 5x² → 5·2 = 10 → <b>10x</b>.</p></div>
+  <div class="try" data-ans="10x" data-why="5·2 = 10 y x¹."><div class="tt">✍ Probá vos</div><div class="tq">Derivá 5x²</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="8x3" data-why="2·4 = 8 y x³." data-show="8x³"><div class="tt">✍ Probá vos</div><div class="tq">Derivá 2x⁴</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="7" data-why="7·(x)′ = 7·1."><div class="tt">✍ Probá vos</div><div class="tq">Derivá 7x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="-6x" data-why="−3·2 = −6."><div class="tt">✍ Probá vos</div><div class="tq">Derivá −3x²</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="numero">Marcar como entendida</button>
+</section>
+
+<section class="section" id="sumas">
+  <div class="section-head"><span class="section-num">05</span><h2>Regla 3 · Sumas y restas</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 6 min</span><span class="goal">🎯 Derivar polinomios enteros</span></div>
+
+  <div class="big">Si hay varios términos sumando o restando,<br><b>derivás cada uno por separado</b> y dejás los signos.</div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar 3x² + 5x − 7</div><div class="step"><span class="n">1</span><div class="c"><span class="hl">3x²</span> → 6x</div></div><div class="step"><span class="n">2</span><div class="c"><span class="hl2">+ 5x</span> → + 5</div></div><div class="step"><span class="n">3</span><div class="c"><span class="hl3">− 7</span> → 0 (número solo, desaparece)</div></div><div class="step result"><span class="n">✓</span><div class="c">(3x² + 5x − 7)′ = <b>6x + 5</b></div></div></div><div class="try" data-ans="3x2+2x+1" data-why="Cada término por separado." data-show="3x² + 2x + 1"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x³ + x² + x + 1</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="12x2-2" data-why="" data-show="12x² − 2"><div class="tt">✍ Probá vos</div><div class="tq">Derivá 4x³ − 2x + 9</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="4x3-10x" data-why="" data-show="4x³ − 10x"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x⁴ − 5x² + 3</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="sumas">Marcar como entendida</button>
+</section>
+
+<section class="section" id="disfraz">
+  <div class="section-head"><span class="section-num">06</span><h2>Raíces y x abajo: el truco del disfraz</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Derivar √x y 1/x sin fórmulas nuevas</span></div>
+
+  <p>La Regla 1 solo funciona con <strong>potencias</strong>. Entonces, primero <strong>disfrazás</strong> las raíces y las fracciones de potencia (lo viste en la <a href="guia-apb-base.html#potencias">lección 4 de la base</a>):</p>
+  <div class="big">√x = x^(1/2) &nbsp;·&nbsp; 1/x = x⁻¹ &nbsp;·&nbsp; 1/x² = x⁻²</div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar 1/x²</div><div class="step"><span class="n">1</span><div class="c">Disfrazás: la x está abajo, sube con el exponente cambiado de signo.<span class="m">1/x² = x⁻²</span></div></div><div class="step"><span class="n">2</span><div class="c">Regla 1: baja el −2, y −2 − 1 = −3.<span class="m">−2·x⁻³</span></div></div><div class="step"><span class="n">3</span><div class="c">Si querés, le sacás el disfraz: x⁻³ = 1/x³.</div></div><div class="step result"><span class="n">✓</span><div class="c">(1/x²)′ = <b>−2/x³</b></div></div></div><div class="steps"><div class="st-title">Ejemplo · derivar √x</div><div class="step"><span class="n">1</span><div class="c">Disfrazás.<span class="m">√x = x^(1/2)</span></div></div><div class="step"><span class="n">2</span><div class="c">Baja el ½, y ½ − 1 = −½.<span class="m">½·x^(−1/2)</span></div></div><div class="step"><span class="n">3</span><div class="c">Sacás el disfraz: x^(−1/2) = 1/√x.</div></div><div class="step result"><span class="n">✓</span><div class="c">(√x)′ = <b>1/(2√x)</b></div></div></div>
+  <div class="callout c-warn"><span class="tag">Ojo con la resta del exponente</span><p>Restar 1 a un negativo lo hace <strong>más negativo</strong>: −2 − 1 = −3 (no −1).</p></div>
+  <div class="try" data-ans="-1/x2|-x-2|-1x-2" data-why="Baja el −1, y −1 − 1 = −2: −x⁻² = −1/x²." data-show="−1/x²"><div class="tt">✍ Probá vos</div><div class="tq">Derivá 1/x (pista: es x⁻¹)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>x⁻¹ → baja el −1 → −1·x⁻².</details></div><div class="try" data-ans="-3/x4|-3x-4" data-why="" data-show="−3/x⁴"><div class="tt">✍ Probá vos</div><div class="tq">Derivá 1/x³</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>x⁻³ → baja el −3, y −3 − 1 = −4.</details></div>
+  <button class="done-btn" data-l="disfraz">Marcar como entendida</button>
+</section>
+
+<section class="section" id="tabla">
+  <div class="section-head"><span class="section-num">07</span><h2>Las otras funciones: hay que saberlas de memoria</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Derivar eˣ, ln x, sen x y cos x</span></div>
+
+  <p>Estas no siguen la regla de la potencia. Son <strong>4 datos</strong> para memorizar:</p>
+  <table class="data">
+    <tr><th>Función</th><th>Derivada</th><th>Cómo acordarte</th></tr>
+    <tr><td class="mono">eˣ</td><td class="mono"><b>eˣ</b></td><td>La única que no cambia al derivarla. "La inmortal".</td></tr>
+    <tr><td class="mono">ln x</td><td class="mono"><b>1/x</b></td><td>"ln se convierte en uno sobre x".</td></tr>
+    <tr><td class="mono">sen x</td><td class="mono"><b>cos x</b></td><td rowspan="2">Seno y coseno se pasan la pelota. <strong>Cuando el coseno la pasa, se le cae un menos.</strong></td></tr>
+    <tr><td class="mono">cos x</td><td class="mono"><b>−sen x</b></td></tr>
+  </table>
+  <div class="try" data-ans="ex+2x" data-why="" data-show="eˣ + 2x"><div class="tt">✍ Probá vos</div><div class="tq">Derivá eˣ + x²</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="3/x" data-why="3·(1/x)."><div class="tt">✍ Probá vos</div><div class="tq">Derivá 3·ln x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="cosx-senx|cosx-sinx" data-why="" data-show="cos x − sen x"><div class="tt">✍ Probá vos</div><div class="tq">Derivá sen x + cos x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>El coseno pasa con un menos.</details></div>
+  <button class="done-btn" data-l="tabla">Marcar como entendida</button>
+</section>
+
+<section class="section" id="producto">
+  <div class="section-head"><span class="section-num">08</span><h2>Regla 4 · Dos cosas con x multiplicándose</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Usar la regla del producto</span></div>
+
+  <p>Cuando hay <strong>dos pedazos que tienen x</strong> y están multiplicados, como <span class="mono">x²·eˣ</span>, NO se deriva cada uno por separado. Hay una receta:</p>
+  <div class="big">(<span class="hl">primero</span> · <span class="hl2">segundo</span>)′ =<br><span class="hl">derivo el primero</span> · <span class="hl2">copio el segundo</span> + <span class="hl">copio el primero</span> · <span class="hl2">derivo el segundo</span></div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar x²·eˣ</div><div class="step"><span class="n">1</span><div class="c">Identificás: primero = <span class="hl">x²</span>, segundo = <span class="hl2">eˣ</span>.</div></div><div class="step"><span class="n">2</span><div class="c">Derivo el primero y copio el segundo.<span class="m"><span class="hl">2x</span>·<span class="hl2">eˣ</span></span></div></div><div class="step"><span class="n">3</span><div class="c">Sumo: copio el primero y derivo el segundo.<span class="m">+ <span class="hl">x²</span>·<span class="hl2">eˣ</span></span></div></div><div class="step result"><span class="n">✓</span><div class="c">(x²·eˣ)′ = <b>2x·eˣ + x²·eˣ</b></div></div></div>
+  <div class="vs"><div class="bad"><b>✗ Mal</b>(x²·eˣ)′ = 2x·eˣ<br>(derivar los dos y multiplicar)</div><div class="good"><b>✓ Bien</b>2x·eˣ + x²·eˣ</div></div>
+  <div class="callout c-tip"><span class="tag">¿Cuándo NO hace falta?</span><p>Si uno de los dos es un número solo (5·x³), es la Regla 2, mucho más fácil.</p></div>
+  <div class="try" data-ans="lnx+1|1+lnx" data-why="1·ln x + x·(1/x) = ln x + 1." data-show="ln x + 1"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x·ln x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Primero = x (derivada 1), segundo = ln x (derivada 1/x).</details></div><div class="try" data-ans="3x2senx+x3cosx|3x2sinx+x3cosx" data-why="" data-show="3x²·sen x + x³·cos x"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x³·sen x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Primero x³ → 3x². Segundo sen x → cos x.</details></div>
+  <button class="done-btn" data-l="producto">Marcar como entendida</button>
+</section>
+
+<section class="section" id="cociente">
+  <div class="section-head"><span class="section-num">09</span><h2>Regla 5 · Una división con x arriba y abajo</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Usar la regla del cociente</span></div>
+
+  <div class="big">(<span class="hl">arriba</span> / <span class="hl2">abajo</span>)′ =<br>( <span class="hl">deriv. arriba</span>·<span class="hl2">abajo</span> − <span class="hl">arriba</span>·<span class="hl2">deriv. abajo</span> ) / <span class="hl2">abajo</span>²</div>
+  <div class="callout c-criollo"><span class="tag">Para memorizarla (cantito)</span><p><em>"Derivada de arriba por abajo, MENOS arriba por derivada de abajo, todo sobre abajo al cuadrado."</em> Es casi igual a la del producto, pero con <strong>menos</strong> y con el denominador al cuadrado.</p></div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar (x + 1)/(x − 1)</div><div class="step"><span class="n">1</span><div class="c">Arriba = <span class="hl">x + 1</span> (derivada 1). Abajo = <span class="hl2">x − 1</span> (derivada 1).</div></div><div class="step"><span class="n">2</span><div class="c">Armás el numerador.<span class="m">1·(x − 1) − (x + 1)·1</span></div></div><div class="step"><span class="n">3</span><div class="c">Hacés la cuenta: x − 1 − x − 1 = −2.</div></div><div class="step"><span class="n">4</span><div class="c">Abajo al cuadrado, y no lo desarrollés.<span class="m">(x − 1)²</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>−2/(x − 1)²</b></div></div></div>
+  <div class="callout c-warn"><span class="tag">El orden importa</span><p>Siempre <b>primero la derivada de arriba</b>. Si lo hacés al revés, te queda el signo cambiado.</p></div>
+  <div class="try" data-ans="1/(x+1)2" data-why="1·(x + 1) − x·1 = 1." data-show="1/(x + 1)²"><div class="tt">✍ Probá vos</div><div class="tq">Derivá x/(x + 1). Escribí el numerador simplificado sobre (x+1)^2</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Arriba x (derivada 1), abajo x + 1 (derivada 1).</details></div>
+  <button class="done-btn" data-l="cociente">Marcar como entendida</button>
+</section>
+
+<section class="section" id="cadena">
+  <div class="section-head"><span class="section-num">10</span><h2>Regla 6 · La cadena: algo adentro de otra cosa</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 15 min</span><span class="goal">🎯 Derivar cosas como (3x + 1)⁵, e^(2x), sen(x²)</span></div>
+
+  <p>Mirá <span class="mono">(3x + 1)⁵</span>: no es "x a la 5", es <strong>un paréntesis entero</strong> a la 5. Hay una función <strong>adentro</strong> de otra, como una cebolla con capas.</p>
+  <div class="big">1) Derivás la capa de <b>afuera</b>, dejando lo de adentro <b>igualito</b>.<br>2) Multiplicás por la derivada de lo de <b>adentro</b>.</div>
+  <div class="steps"><div class="st-title">Ejemplo · derivar (3x + 1)⁵</div><div class="step"><span class="n">1</span><div class="c">Afuera hay "algo a la 5". Adentro está <span class="hl2">3x + 1</span>.</div></div><div class="step"><span class="n">2</span><div class="c">Derivás la capa de afuera (Regla 1) sin tocar lo de adentro.<span class="m">5·(<span class="hl2">3x + 1</span>)⁴</span></div></div><div class="step"><span class="n">3</span><div class="c">Multiplicás por la derivada de lo de adentro: (3x + 1)′ = 3.<span class="m">5·(3x + 1)⁴ · <span class="hl">3</span></span></div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>15(3x + 1)⁴</b></div></div></div><div class="steps"><div class="st-title">Ejemplo · derivar e^(2x)</div><div class="step"><span class="n">1</span><div class="c">Afuera: e^(algo), que se deriva igual a sí misma. Adentro: <span class="hl2">2x</span>.<span class="m">e^(2x)</span></div></div><div class="step"><span class="n">2</span><div class="c">Multiplicás por la derivada de adentro: (2x)′ = 2.</div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>2e^(2x)</b></div></div></div><div class="steps"><div class="st-title">Ejemplo · derivar sen(x²)</div><div class="step"><span class="n">1</span><div class="c">Afuera: seno → coseno (de lo mismo).<span class="m">cos(<span class="hl2">x²</span>)</span></div></div><div class="step"><span class="n">2</span><div class="c">Por la derivada de adentro: (x²)′ = 2x.</div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>2x·cos(x²)</b></div></div></div>
+  <div class="callout c-criollo"><span class="tag">El atajo más útil</span><p>Si adentro hay <b>algo simple como 5x</b>, la derivada es la de siempre <strong>por 5</strong>: (sen 5x)′ = 5·cos 5x; (e^(3x))′ = 3e^(3x).</p></div>
+  <div class="callout c-tip"><span class="tag">¿Cómo me doy cuenta de que es cadena?</span><p>Si en vez de una x sola hay <strong>una cuenta</strong> (dentro de un paréntesis elevado, de una raíz, de un seno, de un ln o en el exponente de e), es cadena.</p></div>
+  <div class="try" data-ans="6(2x+1)2" data-why="3(2x + 1)²·2." data-show="6(2x + 1)²"><div class="tt">✍ Probá vos</div><div class="tq">Derivá (2x + 1)³</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Afuera "a la 3", adentro 2x + 1 (derivada 2).</details></div><div class="try" data-ans="5e5x|5e(5x)" data-why="" data-show="5e^(5x)"><div class="tt">✍ Probá vos</div><div class="tq">Derivá e^(5x)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Adentro 5x, derivada 5.</details></div><div class="try" data-ans="3cos3x|3cos(3x)" data-why="" data-show="3cos(3x)"><div class="tt">✍ Probá vos</div><div class="tq">Derivá sen(3x)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="2x/(x2+1)" data-why="ln(algo) → 1/algo, por la derivada de algo." data-show="2x/(x² + 1)"><div class="tt">✍ Probá vos</div><div class="tq">Derivá ln(x² + 1). Escribí la fracción</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>(1/(x² + 1))·2x.</details></div>
+  <button class="done-btn" data-l="cadena">Marcar como entendida</button>
+</section>
+
+<section class="section" id="tangente">
+  <div class="section-head"><span class="section-num">11</span><h2>Para qué sirve 1 · La recta tangente</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Sacar la ecuación de la recta que toca la curva en un punto</span></div>
+
+  <p>La recta tangente es la que "roza" la curva en un punto, con su misma inclinación. Te la piden un montón. Es una <strong>receta de 3 pasos</strong>:</p>
+  <div class="big">y − y₀ = m · (x − x₀)<small>x₀ = el punto que te dan · y₀ = f(x₀) · m = f′(x₀)</small></div>
+  <div class="steps"><div class="st-title">Ejemplo · tangente a f(x) = x² en x₀ = 3</div><div class="step"><span class="n">1</span><div class="c">El punto: reemplazás 3 en f.<span class="m">y₀ = f(3) = 9</span></div></div><div class="step"><span class="n">2</span><div class="c">La pendiente: derivás y reemplazás 3 en la derivada.<span class="m">f′(x) = 2x → m = f′(3) = 6</span></div></div><div class="step"><span class="n">3</span><div class="c">Armás la recta y despejás y.<span class="m">y − 9 = 6·(x − 3) → y = 6x − 18 + 9</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Tangente: <b>y = 6x − 9</b></div></div></div>
+  <div class="fig" data-fig="tg" data-cap="f(x) = x² y su tangente y = 6x − 9 en el punto (3, 9)."></div>
+  <div class="callout c-warn"><span class="tag">Error típico</span><p>El punto se saca con <b>f</b> y la pendiente con <b>f′</b>. Si los mezclás, no da.</p></div>
+  <div class="try" data-ans="2" data-why="f′(x) = 2x → f′(1) = 2."><div class="tt">✍ Probá vos</div><div class="tq">Para f(x) = x², ¿cuál es la pendiente de la tangente en x₀ = 1?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="2x-1|-1+2x" data-why="Punto (1, 1), pendiente 2: y − 1 = 2(x − 1)." data-show="y = 2x − 1"><div class="tt">✍ Probá vos</div><div class="tq">Escribí la tangente a f(x) = x² en x₀ = 1 (de la forma y = …)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="tangente">Marcar como entendida</button>
+</section>
+
+<section class="section" id="maxmin">
+  <div class="section-head"><span class="section-num">12</span><h2>Para qué sirve 2 · Máximos y mínimos</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 15 min</span><span class="goal">🎯 Encontrar dónde una función es más alta o más baja</span></div>
+
+  <p>En la cima de una loma y en el fondo de un pozo, la curva está <strong>plana</strong>: la derivada vale <strong>0</strong>. Esa es la clave.</p>
+  <div class="big">1) Derivás. &nbsp; 2) Igualás la derivada a 0 y despejás x.<br>3) Te fijás si es máximo o mínimo con una tablita de signos.</div>
+  <div class="steps"><div class="st-title">Ejemplo · f(x) = x² − 4x + 1</div><div class="step"><span class="n">1</span><div class="c">Derivás.<span class="m">f′(x) = 2x − 4</span></div></div><div class="step"><span class="n">2</span><div class="c">Igualás a 0 y despejás.<span class="m">2x − 4 = 0 → x = 2</span></div></div><div class="step"><span class="n">3</span><div class="c">Probás un número a la izquierda (x = 0): f′(0) = −4 → <b>baja</b>. Uno a la derecha (x = 3): f′(3) = 2 → <b>sube</b>.</div></div><div class="step"><span class="n">4</span><div class="c">Baja y después sube: es un <b>pozo</b>, o sea un mínimo. La altura: f(2) = 4 − 8 + 1 = −3.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>Mínimo en (2, −3)</b></div></div></div>
+  <table class="data">
+    <tr><th>A la izquierda</th><th>A la derecha</th><th>Es un…</th></tr>
+    <tr><td>sube (f′ +)</td><td>baja (f′ −)</td><td><b>máximo</b> (cima) ⛰</td></tr>
+    <tr><td>baja (f′ −)</td><td>sube (f′ +)</td><td><b>mínimo</b> (pozo) ⛳</td></tr>
+    <tr><td>igual de los dos lados</td><td>igual</td><td>ni máximo ni mínimo</td></tr>
+  </table>
+  <div class="fig" data-fig="cubica" data-cap="f(x) = x³ − 3x: f′(x) = 3x² − 3 = 0 → x = 1 y x = −1. En −1 hay un máximo (2) y en 1 un mínimo (−2)."></div>
+  <h3>Un problema de la vida real</h3>
+  <div class="steps"><div class="st-title">Con 20 metros de alambre, ¿qué rectángulo encierra más área?</div><div class="step"><span class="n">1</span><div class="c">Lados x e y. El perímetro: 2x + 2y = 20 → y = 10 − x.</div></div><div class="step"><span class="n">2</span><div class="c">El área: A = x·y = x·(10 − x) = 10x − x².</div></div><div class="step"><span class="n">3</span><div class="c">Derivás e igualás a 0: A′ = 10 − 2x = 0 → x = 5.</div></div><div class="step"><span class="n">4</span><div class="c">Entonces y = 10 − 5 = 5.</div></div><div class="step result"><span class="n">✓</span><div class="c">Es un <b>cuadrado de 5 × 5</b>, con área 25 m²</div></div></div><div class="try" data-ans="3" data-why="f′ = 2x − 6 = 0."><div class="tt">✍ Probá vos</div><div class="tq">f(x) = x² − 6x. ¿En qué x hay un mínimo?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="2" data-why="f′ = −2x + 4 = 0."><div class="tt">✍ Probá vos</div><div class="tq">f(x) = −x² + 4x. ¿En qué x hay un máximo?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="4" data-why="−4 + 8 = 4."><div class="tt">✍ Probá vos</div><div class="tq">Para f(x) = −x² + 4x, ¿cuál es la altura del máximo? (f(2))</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="maxmin">Marcar como entendida</button>
+</section>
+
+<section class="section" id="chuleta">
+  <div class="section-head"><span class="section-num">13</span><h2>La chuleta: todo en una tabla</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 5 min</span><span class="goal">🎯 Tener todas las reglas a mano</span></div>
+
+  <table class="data">
+    <tr><th>Tenés…</th><th>Hacés…</th><th>Ejemplo</th></tr>
+    <tr><td>un número solo</td><td>da 0</td><td class="mono">(5)′ = 0</td></tr>
+    <tr><td>xⁿ</td><td>baja el exponente y le restás 1</td><td class="mono">(x⁴)′ = 4x³</td></tr>
+    <tr><td>número · xⁿ</td><td>el número espera y multiplica</td><td class="mono">(3x²)′ = 6x</td></tr>
+    <tr><td>sumas y restas</td><td>cada término por separado</td><td class="mono">(x² + x)′ = 2x + 1</td></tr>
+    <tr><td>√x o 1/x</td><td>disfrazá de potencia primero</td><td class="mono">(x⁻¹)′ = −x⁻²</td></tr>
+    <tr><td>eˣ · ln x · sen x · cos x</td><td>de memoria</td><td class="mono">eˣ · 1/x · cos x · −sen x</td></tr>
+    <tr><td>dos cosas con x multiplicadas</td><td>producto: d1·c2 + c1·d2</td><td class="mono">(x·eˣ)′ = eˣ + x·eˣ</td></tr>
+    <tr><td>una división con x arriba y abajo</td><td>cociente: (d·ab − ar·d)/ab²</td><td class="mono">(x/(x+1))′ = 1/(x+1)²</td></tr>
+    <tr><td>una cuenta adentro de otra cosa</td><td>cadena: afuera × derivada de adentro</td><td class="mono">(e^(2x))′ = 2e^(2x)</td></tr>
+  </table>
+  <h3>Los 5 errores más comunes</h3>
+  <div class="vs"><div class="bad"><b>✗</b>(x²·eˣ)′ = 2x·eˣ</div><div class="good"><b>✓</b>2x·eˣ + x²·eˣ (producto)</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>(sen 3x)′ = cos 3x</div><div class="good"><b>✓</b>3 cos 3x (cadena)</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>(cos x)′ = sen x</div><div class="good"><b>✓</b>−sen x (el coseno pierde un menos)</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>(1/x²)′ = 1/(2x)</div><div class="good"><b>✓</b>(x⁻²)′ = −2x⁻³ = −2/x³</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>(e²)′ = 2e</div><div class="good"><b>✓</b>0 (e² es un número)</div></div>
+  <a class="next" href="guia-apb-integrales.html"><b>Siguiente: Integrales en modo APB →</b><span>Integrar es derivar al revés. Si llegaste hasta acá, ya tenés la mitad hecha.</span></a>
+  <p style="margin-top:18px">¿Querés practicar con exámenes? Andá al <a href="simulador-examenes.html">simulador</a>, bloque "Arranque desde cero". Cuando te sientas cómodo, pasá a la <a href="guia-derivadas.html">guía completa de derivadas</a>.</p>
+
+  <button class="done-btn" data-l="chuleta">Marcar como entendida</button>
+</section>
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">14</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Modo APB · Derivadas paso a paso.</b> Antes: <a href="guia-apb-base.html">Matemática desde cero</a> · Después: <a href="guia-apb-integrales.html">Integrales APB</a>.</p>
+  <p style="font-size:13px;margin-top:6px;">Versión completa (nivel parcial): <a href="guia-derivadas.html">guía de Derivadas</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+derivada:{t:"Derivada",sym:"f′(x)",def:"Cuán rápido cambia una función en cada punto; en el gráfico, la pendiente (inclinación) de la curva en ese punto.",ej:"(x²)′ = 2x: en x = 3 la curva x² tiene pendiente 6.",rel:["tangente"]},
+  tangente:{t:"Recta tangente",def:"La recta que toca la curva en un punto con su misma inclinación.",calc:"y − f(x₀) = f′(x₀)·(x − x₀).",ej:"Tangente a x² en x = 3: y = 6x − 9.",rel:["derivada"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+loma: G.plot({x:[-3,3],y:[-1,5],ticks:false,fns:[{f:function(x){return 4-x*x/2;},c:G.C.red},{f:G.tangente(function(x){return 4-x*x/2;},-1.8),c:G.C.teal,dash:true,wd:1.6,dom:[-2.8,-0.8]},{f:G.tangente(function(x){return 4-x*x/2;},1.8),c:G.C.navy,dash:true,wd:1.6,dom:[0.8,2.8]},{f:function(){return 4;},c:G.C.gold,dash:true,wd:1.6,dom:[-0.9,0.9]}],texts:[{x:-2.4,y:3.2,s:'sube: +',b:true,c:G.C.teal},{x:1.6,y:3.2,s:'baja: −',b:true,c:G.C.navy},{x:0,y:4.35,s:'cima: 0',b:true,c:G.C.gold,a:'middle'}],pts:[{x:-1.8,y:2.38,c:G.C.teal},{x:1.8,y:2.38,c:G.C.navy},{x:0,y:4,c:G.C.gold}]}),
+  tg: G.plot({x:[-1,4.5],y:[-2,14],tickStep:2,fns:[{f:function(x){return x*x;},c:G.C.red,label:'f(x) = x²',lx:1.5,ldx:-74},{f:function(x){return 6*x-9;},c:G.C.navy,label:'y = 6x − 9',lx:3.9,ldx:-82,ldy:16}],pts:[{x:3,y:9,label:'(3, 9)',dx:-46}]}),
+  cubica: G.plot({x:[-2.5,2.5],y:[-4,4],fns:[{f:function(x){return x*x*x-3*x;},c:G.C.red,label:'f',lx:2.2}],pts:[{x:-1,y:2,label:'máx (−1, 2)',dx:-30,dy:-12},{x:1,y:-2,label:'mín (1, −2)',dy:18}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+
+/* ===================== MODO APB: "probá vos" ===================== */
+(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+  function norm(s){
+    s=String(s).toLowerCase().trim();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g,function(c){return SUP[c];});
+    s=s.replace(/\|/g,'').replace(/−|–/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[·*×^]/g,'');
+    if(s.indexOf('=')>=0) s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/\+c$/,'');
+    s=s.replace(/^\+/,'');
+    return s;
+  }
+  document.querySelectorAll('.try').forEach(function(t){
+    var inp=t.querySelector('input'),fb=t.querySelector('.tfb');
+    var answers=(t.dataset.ans||'').split('|').map(norm);
+    var shown=t.dataset.show||t.dataset.ans.split('|')[0];
+    function check(){
+      var v=norm(inp.value);
+      if(!v){fb.className='tfb no';fb.innerHTML='Escribí algo primero 🙂';return;}
+      if(answers.indexOf(v)>=0){fb.className='tfb ok';fb.innerHTML='<b>¡Bien ahí! ✓</b> '+(t.dataset.why||'');}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> Revisá los pasos o abrí la pista. Si querés, tocá "Ver respuesta".';}
+    }
+    t.querySelector('.chk').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    var sh=t.querySelector('.shw');
+    if(sh)sh.addEventListener('click',function(){fb.className='tfb ok';fb.innerHTML='<b>Respuesta:</b> '+shown+'. '+(t.dataset.why||'');});
+  });
+  /* progreso ("Lo entendí") — se guarda solo en este navegador */
+  var key='apb:'+location.pathname;
+  var done={};try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var btns=document.querySelectorAll('.done-btn');
+  function paint(){
+    var n=0;btns.forEach(function(b){var on=!!done[b.dataset.l];b.classList.toggle('on',on);b.textContent=on?'✓ Lección entendida':'Marcar como entendida';if(on)n++;});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(btns.length?100*n/btns.length:0)+'%';t.textContent=n+' de '+btns.length+' lecciones entendidas';}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){done[b.dataset.l]=!done[b.dataset.l];try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}paint();});});
+  paint();
+})();
+</script>
+</body>
+</html>

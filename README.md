@@ -10,6 +10,9 @@ Portal de estudio interactivo para la carrera de Analista en Sistemas. Guías te
 | `guia-teoria-de-conjuntos.html` | **Análisis Matemático · Unidades 1 y 3**: teoría de conjuntos, producto cartesiano, matrices (tipos, propiedades, aplicaciones), determinantes de orden n (Sarrus, Laplace, cálculo con propiedades), adjunta e inversa, Gauss-Jordan, Cramer y sistemas (Rouché-Frobenius, conjunto solución, parámetros, problemas). |
 | `guia-vectores.html` | **Análisis Matemático · Unidad 2**: vectores de n componentes, operaciones, producto escalar, norma, proyecciones, producto vectorial, dependencia lineal, base, dimensión y transformaciones lineales (matriz, núcleo, imagen, composición). |
 | `guia-relaciones-funciones.html` | **Análisis Matemático · Unidad 4**: relaciones y sus propiedades, equivalencia y orden, funciones (inyectiva, sobreyectiva, biyectiva, composición, inversa, gráficas e intersecciones), Venn con 3 conjuntos y conteo, conjunto potencia, numerabilidad, aritmética modular y congruencias. |
+| `guia-apb-base.html` | **Modo APB · Matemática desde cero**: signos, orden de operaciones, fracciones, potencias, letras, despejes, funciones, gráficos, pendiente y funciones típicas. Ejercicios "probá vos" con autocorrección. |
+| `guia-apb-derivadas.html` | **Modo APB · Derivadas paso a paso**: recetas con pasos numerados (potencia, números, sumas, disfraz, tabla, producto, cociente, cadena, tangente, máximos) y chuleta final. |
+| `guia-apb-integrales.html` | **Modo APB · Integrales paso a paso**: derivar al revés, potencia, tabla, sustitución, partes, integral definida y áreas, con chuleta final. |
 | `guia-derivadas.html` | **Cálculo · Derivadas desde cero**: pendiente, límites y continuidad, definición de derivada, interpretación, derivabilidad, tabla y reglas, cadena, implícita y logarítmica, tangente y normal, crecimiento, extremos, concavidad, estudio completo, optimización, L'Hôpital, Rolle y Lagrange. |
 | `guia-integrales.html` | **Cálculo · Integrales desde cero**: primitivas, tabla, sustitución, partes, fracciones simples, trigonométricas, cómo elegir el método, Riemann, Teorema Fundamental y Barrow, propiedades, áreas, aplicaciones e impropias. |
 | `guia-bases-de-datos.html` | **Bases de Datos**: modelo Entidad-Relación, paso a tablas, integridad referencial, Verdadero/Falso conceptual. |
@@ -17,6 +20,7 @@ Portal de estudio interactivo para la carrera de Analista en Sistemas. Guías te
 | `simulador-examenes.html` | Simulador de exámenes de Análisis: 32 temas (incluye límites, derivadas e integrales) en 4 niveles (básico, normal, examen y **parcial terciario**), 6 parciales modelo (4 unidades + derivadas + integrales) y un integrador. Incluye preguntas de V/F que se responden interpretando gráficos o situaciones. Las de opción múltiple y V/F se corrigen solas; las de desarrollo tienen la solución explicada y autoevaluación. |
 | `graficos.js` | Mini-librería de gráficos SVG (funciones, vectores, Venn, diagramas sagitales, grafos, reloj modular) que usan las guías y el simulador. |
 | `examenes-datos.js` | Banco de preguntas del simulador (Unidades 1 a 4). |
+| `examenes-apb.js` | Bloque "Arranque desde cero" del simulador (exámenes cortos y fáciles). |
 | `examenes-calculo.js` | Banco de preguntas de límites, derivadas e integrales. |
 
 Cada guía tiene conceptos clave clickeables (abren su definición), cajas **"En criollo"** en lenguaje cotidiano y ejercicios resueltos, incluyendo ejercicios de dificultad **"nivel libro"**.

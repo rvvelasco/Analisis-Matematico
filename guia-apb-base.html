@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matemática desde cero · Modo APB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+
+  /* ---------- MODO APB ---------- */
+  body{font-size:18px;}
+  .apb-badge{display:inline-block;background:#5F8A2E;color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+  .progress{position:sticky;top:57px;z-index:35;background:var(--paper);padding:8px 0 10px;}
+  .progress .bar{height:9px;background:var(--line);border-radius:10px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#5F8A2E,var(--teal));transition:width .4s;}
+  .progress .ptxt{font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:var(--mono);}
+  .lesson-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;}
+  .lesson-meta .time{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;}
+  .lesson-meta .goal{font-size:15px;color:var(--navy);}
+  .done-btn{display:block;margin:26px auto 0;background:#fff;border:2px solid #5F8A2E;color:#4C6E21;border-radius:30px;padding:10px 22px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;}
+  .done-btn.on{background:#5F8A2E;color:#fff;}
+  .steps{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:18px 0;box-shadow:var(--shadow);}
+  .steps .st-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:12px 0 2px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line-strong);}
+  .steps .st-title + .step{border-top:none;}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+  .step .c{flex:1;}
+  .step .c .m{font-family:var(--mono);font-size:17px;color:var(--navy-deep);background:var(--paper);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px;}
+  .step.result .n{background:var(--teal);}
+  .hl{background:#FFE9A8;border-radius:4px;padding:0 3px;}
+  .hl2{background:#CDE7F5;border-radius:4px;padding:0 3px;}
+  .hl3{background:#F7D3D6;border-radius:4px;padding:0 3px;}
+  .big{font-family:var(--mono);font-size:21px;text-align:center;background:#fff;border:2px solid var(--navy);border-radius:14px;padding:16px;margin:18px 0;color:var(--navy-deep);}
+  .big small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-soft);margin-top:6px;}
+  .try{background:#F3F0FA;border:1px solid #D9CDEE;border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:18px 0;}
+  .try .tt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#6B3FA0;text-transform:uppercase;margin-bottom:8px;}
+  .try .tq{margin-bottom:10px;}
+  .try .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .try input{font-family:var(--mono);font-size:17px;padding:8px 12px;border:1.5px solid var(--line-strong);border-radius:9px;min-width:160px;flex:1;max-width:280px;}
+  .try input:focus{outline:none;border-color:#6B3FA0;}
+  .try .chk{background:#6B3FA0;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-family:var(--body);cursor:pointer;}
+  .try .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;border-radius:9px;padding:8px 12px;font-weight:600;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .try .tfb{margin-top:10px;font-size:15px;display:none;border-radius:9px;padding:9px 12px;}
+  .try .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .try .tfb.no{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .try details{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+  .try details summary{cursor:pointer;color:#6B3FA0;font-weight:600;}
+  .tipkb{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  @media(max-width:620px){.vs{grid-template-columns:1fr;}}
+  .vs > div{border-radius:12px;padding:12px 14px;font-size:15.5px;}
+  .vs .bad{background:var(--red-soft);border:1px solid #F1CFD1;}
+  .vs .good{background:var(--teal-soft);border:1px solid #C4E2DB;}
+  .vs b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+  .vs .bad b{color:var(--red);} .vs .good b{color:var(--teal);}
+  .next{display:block;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:16px;padding:20px 22px;margin:40px 0 0;text-decoration:none;}
+  .next b{font-family:var(--display);font-size:22px;display:block;margin-bottom:4px;}
+  .next span{color:rgba(255,255,255,.85);font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> APB · <b>Matemática desde cero</b></span>
+    <nav class="topnav">
+      <a href="#signos">Signos</a>
+      <a href="#orden">Orden</a>
+      <a href="#fracciones">Fracciones</a>
+      <a href="#potencias">Potencias</a>
+      <a href="#letras">Letras</a>
+      <a href="#despejar">Despejar</a>
+      <a href="#funcion">Función</a>
+      <a href="#grafico">Gráficos</a>
+      <a href="#recta">La recta</a>
+      <a href="#familia">Funciones típicas</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <span class="apb-badge">MODO APB · A PRUEBA DE BOLUDOS</span>
+  <h1>Matemática <span class="u">desde cero</span></h1>
+  <p class="lead">Si no tenés base, <strong>arrancá acá</strong>. Son 10 lecciones cortitas (5 a 10 minutos cada una) con todo lo que necesitás antes de derivadas e integrales: signos, fracciones, potencias, despejar, qué es una función y cómo leer un gráfico. Sin palabras raras, y si aparece una, se explica.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p><strong>1.</strong> Leé una lección. <strong>2.</strong> Hacé los ejercicios <b>"✍ Probá vos"</b>: escribís la respuesta y te dice si está bien. Si te trabás, abrí la <b>pista</b>. <strong>3.</strong> Cuando la entiendas, tocá <b>"Marcar como entendida"</b> (queda guardado en tu navegador). No pasa nada si una lección te lleva dos veces: es normal.</p>
+  </div>
+</header>
+
+<main>
+<div class="progress"><div class="bar"><div class="fill"></div></div><div class="ptxt"></div></div>
+<section class="section" id="signos">
+  <div class="section-head"><span class="section-num">01</span><h2>Los signos: más y menos</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Sumar, restar y multiplicar con negativos sin equivocarte</span></div>
+
+  <p>Los números negativos son como <strong>deudas</strong>. Tener −5 es deber $5. Tener +3 es tener $3 en el bolsillo.</p>
+  <div class="fig" data-fig="recta_num" data-cap="La recta numérica: a la derecha los positivos, a la izquierda los negativos. Sumar es moverse a la derecha; restar, a la izquierda."></div>
+  <h3>Sumar y restar</h3>
+  <ul class="clean">
+    <li><span class="mono">−3 + 5 = 2</span> → debés 3, cobrás 5: te quedan 2.</li>
+    <li><span class="mono">−4 − 2 = −6</span> → debés 4 y te endeudás 2 más: debés 6.</li>
+    <li><span class="mono">3 − 7 = −4</span> → tenés 3 y gastás 7: quedás debiendo 4.</li>
+  </ul>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Si los dos números tienen el <strong>mismo signo</strong>, se suman y queda ese signo (−4 − 2 = −6). Si tienen <strong>signos distintos</strong>, se restan y gana el signo del que "pesa más" (−3 + 5: gana el 5, queda +2).</p></div>
+  <h3>Multiplicar y dividir: la regla de los signos</h3>
+  <table class="data">
+    <tr><th>Signos</th><th>Resultado</th><th>Ejemplo</th></tr>
+    <tr><td class="mono">+ por +</td><td><b>+</b></td><td class="mono">3·2 = 6</td></tr>
+    <tr><td class="mono">− por −</td><td><b>+</b></td><td class="mono">(−3)·(−2) = 6</td></tr>
+    <tr><td class="mono">+ por −</td><td><b>−</b></td><td class="mono">3·(−2) = −6</td></tr>
+    <tr><td class="mono">− por +</td><td><b>−</b></td><td class="mono">(−8) ÷ 2 = −4</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">Truco para acordarte</span><p><strong>Iguales dan más, distintos dan menos.</strong> O con la frase de siempre: "el amigo de mi amigo es mi amigo; el enemigo de mi enemigo es mi amigo; el amigo de mi enemigo es mi enemigo".</p></div>
+  <div class="try" data-ans="2" data-why="Debés 3, cobrás 5: te quedan 2."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es −3 + 5?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="-6" data-why="Mismo signo: se suman y queda negativo."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es −4 − 2?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="6" data-why="Menos por menos da más."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es (−3)·(−2)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Iguales dan más.</details></div><div class="try" data-ans="-4" data-why="Signos distintos dan menos."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 8 ÷ (−2)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="signos">Marcar como entendida</button>
+</section>
+
+<section class="section" id="orden">
+  <div class="section-head"><span class="section-num">02</span><h2>En qué orden se hacen las cuentas</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 6 min</span><span class="goal">🎯 No equivocarte cuando hay muchas operaciones juntas</span></div>
+
+  <p>En <span class="mono">2 + 3·4</span>, ¿da 20 o da 14? Da <strong>14</strong>, porque hay un orden fijo:</p>
+  <div class="big">1° paréntesis → 2° potencias y raíces → 3° multiplicar y dividir → 4° sumar y restar</div>
+  <div class="steps"><div class="st-title">Ejemplo · 10 − 2·(1 + 3)²</div><div class="step"><span class="n">1</span><div class="c">Primero el paréntesis: 1 + 3 = 4<span class="m">10 − 2·4²</span></div></div><div class="step"><span class="n">2</span><div class="c">Después la potencia: 4² = 16<span class="m">10 − 2·16</span></div></div><div class="step"><span class="n">3</span><div class="c">Después la multiplicación: 2·16 = 32<span class="m">10 − 32</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Por último la resta: 10 − 32 = <b>−22</b></div></div></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Los signos <b>+</b> y <b>−</b> "separan" la cuenta en pedazos. Primero resolvés cada pedazo (lo que está pegado con · o ÷) y recién al final sumás y restás los pedazos.</p></div>
+  <div class="try" data-ans="4" data-why="Primero 2·3 = 6, después 10 − 6."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 10 − 2·3?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="24" data-why="El paréntesis manda: 8·3."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es (10 − 2)·3?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="7" data-why="2² = 4, después 3 + 4."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 3 + 2²?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="orden">Marcar como entendida</button>
+</section>
+
+<section class="section" id="fracciones">
+  <div class="section-head"><span class="section-num">03</span><h2>Fracciones</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Simplificar, sumar, multiplicar y dividir fracciones</span></div>
+
+  <p>Una fracción es <strong>una parte de algo</strong>. <span class="mono">3/4</span> es "de una pizza cortada en 4 porciones, me como 3". El de abajo (denominador) dice <em>en cuántas partes cortás</em>; el de arriba (numerador), <em>cuántas agarrás</em>.</p>
+  <h3>Simplificar</h3>
+  <p>Dividís arriba y abajo por el mismo número: <span class="mono">6/8 = 3/4</span> (dividí los dos por 2). Es la misma cantidad de pizza, con porciones más grandes.</p>
+  <h3>Sumar y restar</h3>
+  <ul class="clean">
+    <li><b>Mismo denominador:</b> sumás los de arriba y dejás el de abajo. <span class="mono">1/5 + 2/5 = 3/5</span>.</li>
+    <li><b>Distinto denominador:</b> "en cruz".</li>
+  </ul>
+  <div class="steps"><div class="st-title">Sumar en cruz · 1/2 + 1/3</div><div class="step"><span class="n">1</span><div class="c">Abajo multiplicás los dos denominadores: 2·3 = 6</div></div><div class="step"><span class="n">2</span><div class="c">Arriba, en cruz: 1·3 + 1·2 = 3 + 2 = 5</div></div><div class="step result"><span class="n">✓</span><div class="c">Queda <b>5/6</b></div></div></div>
+  <h3>Multiplicar: derecho</h3>
+  <p>Arriba por arriba y abajo por abajo: <span class="mono">2/3 · 3/4 = 6/12 = 1/2</span>.</p>
+  <h3>Dividir: das vuelta la segunda y multiplicás</h3>
+  <p><span class="mono">(1/2) ÷ (1/4) = 1/2 · 4/1 = 4/2 = 2</span>. Tiene sentido: en media pizza entran 2 cuartos.</p>
+  <div class="callout c-warn"><span class="tag">Error clásico</span><p><span class="mono">1/2 + 1/3 ≠ 2/5</span>. ¡No se suman arriba con arriba y abajo con abajo! Eso solo vale para multiplicar.</p></div>
+  <p class="tipkb">Para escribir: x² lo podés tipear como <b>x^2</b>. Fracciones con barra: <b>1/2</b>. Da igual si usás coma o punto.</p><div class="try" data-ans="5/6" data-why=""><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 1/2 + 1/3?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Abajo 2·3; arriba 1·3 + 1·2.</details></div><div class="try" data-ans="1/2|0.5|6/12" data-why="" data-show="1/2"><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 2/3 · 3/4? (simplificado)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Arriba por arriba, abajo por abajo, y después simplificá.</details></div><div class="try" data-ans="2|4/2" data-why="" data-show="2"><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es (1/2) ÷ (1/4)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Das vuelta la segunda (1/4 pasa a 4/1) y multiplicás.</details></div><div class="try" data-ans="2/3" data-why="Dividí arriba y abajo por 5."><div class="tt">✍ Probá vos</div><div class="tq">Simplificá 10/15</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="fracciones">Marcar como entendida</button>
+</section>
+
+<section class="section" id="potencias">
+  <div class="section-head"><span class="section-num">04</span><h2>Potencias y raíces (¡clave para derivar!)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 12 min</span><span class="goal">🎯 Entender los exponentes, incluso negativos y con fracciones</span></div>
+
+  <p>Una potencia es una <strong>multiplicación repetida</strong>: <span class="mono">2³ = 2·2·2 = 8</span>. El número de arriba (exponente) dice <em>cuántas veces</em> se multiplica el de abajo (base). <span class="mono">x² = x·x</span> ("x al cuadrado") y <span class="mono">x³ = x·x·x</span> ("x al cubo").</p>
+  <h3>Las 5 reglas que vas a usar todo el tiempo</h3>
+  <table class="data">
+    <tr><th>Regla</th><th>Qué dice</th><th>Ejemplo</th></tr>
+    <tr><td>Multiplicar misma base</td><td>se <b>suman</b> los exponentes</td><td class="mono">x²·x³ = x⁵</td></tr>
+    <tr><td>Dividir misma base</td><td>se <b>restan</b> los exponentes</td><td class="mono">x⁵/x² = x³</td></tr>
+    <tr><td>Exponente 0</td><td>todo número a la 0 da <b>1</b></td><td class="mono">7⁰ = 1 · x⁰ = 1</td></tr>
+    <tr><td>Exponente negativo</td><td>significa <b>"dar vuelta"</b> (pasar abajo)</td><td class="mono">x⁻² = 1/x² · 2⁻¹ = 1/2</td></tr>
+    <tr><td>Exponente fracción</td><td>es una <b>raíz</b></td><td class="mono">x^(1/2) = √x · x^(1/3) = ∛x</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">En criollo · los disfraces</span>
+    <p>Para derivar e integrar vas a necesitar <strong>disfrazar</strong> raíces y fracciones de potencia, porque hay una sola receta y solo funciona con potencias:</p>
+    <p class="mono">√x = x^(1/2) &nbsp;·&nbsp; 1/x = x⁻¹ &nbsp;·&nbsp; 1/x³ = x⁻³ &nbsp;·&nbsp; 1/√x = x^(−1/2)</p>
+    <p>Regla mental: <strong>"si x está abajo, sube con el exponente cambiado de signo"</strong>.</p>
+  </div>
+  <h3>Raíces</h3>
+  <p>La raíz cuadrada pregunta <em>"¿qué número al cuadrado da esto?"</em>: <span class="mono">√9 = 3</span> porque 3² = 9. <span class="mono">∛8 = 2</span> porque 2³ = 8. No existe √ de un negativo (en los reales).</p>
+  <p class="tipkb">Para escribir: x² lo podés tipear como <b>x^2</b>. Fracciones con barra: <b>1/2</b>. Da igual si usás coma o punto.</p><div class="try" data-ans="16" data-why="2·2·2·2."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 2⁴?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="x5" data-why="Misma base multiplicando: se suman los exponentes." data-show="x⁵"><div class="tt">✍ Probá vos</div><div class="tq">Simplificá x²·x³</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="1" data-why="Todo número a la 0 da 1."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 5⁰?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="x-2" data-why="x sube y el exponente cambia de signo." data-show="x⁻²"><div class="tt">✍ Probá vos</div><div class="tq">Escribí 1/x² como potencia (con exponente negativo)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Si x está abajo, sube con el exponente cambiado de signo.</details></div><div class="try" data-ans="x1/2|x(1/2)|x0.5" data-why="Raíz cuadrada = exponente 1/2." data-show="x^(1/2)"><div class="tt">✍ Probá vos</div><div class="tq">Escribí √x como potencia</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="-1/2|-0.5" data-why="Medio menos uno da menos medio." data-show="−1/2"><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto es 1/2 − 1? (lo vas a usar al derivar √x)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>1/2 − 2/2.</details></div>
+  <button class="done-btn" data-l="potencias">Marcar como entendida</button>
+</section>
+
+<section class="section" id="letras">
+  <div class="section-head"><span class="section-num">05</span><h2>Las letras: qué es la x</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Reemplazar valores y juntar términos parecidos</span></div>
+
+  <p>La <strong>x</strong> es una <strong>cajita vacía</strong> donde va un número que todavía no sabemos o que puede cambiar. En <span class="mono">2x + 1</span>, "2x" significa "2 por x" (el · no se escribe).</p>
+  <h3>Reemplazar (valor numérico)</h3>
+  <div class="steps"><div class="st-title">Si x = 3, ¿cuánto vale 2x + 1?</div><div class="step"><span class="n">1</span><div class="c">Ponés 3 donde está la x<span class="m">2·3 + 1</span></div></div><div class="step"><span class="n">2</span><div class="c">Hacés la cuenta<span class="m">6 + 1</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Da <b>7</b></div></div></div>
+  <div class="callout c-warn"><span class="tag">Cuidado con los negativos</span><p>Si x = −2, entonces x² = (−2)² = <b>4</b> (menos por menos da más). Siempre poné el número entre paréntesis al reemplazar.</p></div>
+  <h3>Juntar lo que es igual (términos semejantes)</h3>
+  <p>Solo se juntan las cosas que tienen <strong>exactamente la misma letra con el mismo exponente</strong>: <span class="mono">3x + 2x = 5x</span> (3 manzanas + 2 manzanas). Pero <span class="mono">x + x²</span> no se puede juntar: son manzanas y peras.</p>
+  <h3>Distributiva</h3>
+  <p>El número de afuera multiplica a <strong>todos</strong> los de adentro: <span class="mono">2·(x + 3) = 2x + 6</span>.</p>
+  <div class="try" data-ans="8" data-why="3² = 9; 9 − 1 = 8."><div class="tt">✍ Probá vos</div><div class="tq">Si x = 3, ¿cuánto vale x² − 1?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="4" data-why="(−2)·(−2) = 4."><div class="tt">✍ Probá vos</div><div class="tq">Si x = −2, ¿cuánto vale x²?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="6x" data-why="4 + 3 − 1 = 6."><div class="tt">✍ Probá vos</div><div class="tq">Simplificá 4x + 3x − x</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="3x-6" data-why="El 3 multiplica a la x y al −2."><div class="tt">✍ Probá vos</div><div class="tq">Aplicá la distributiva: 3(x − 2)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="letras">Marcar como entendida</button>
+</section>
+
+<section class="section" id="despejar">
+  <div class="section-head"><span class="section-num">06</span><h2>Despejar: encontrar cuánto vale x</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 12 min</span><span class="goal">🎯 Resolver ecuaciones de primer y segundo grado</span></div>
+
+  <p>Una ecuación es una <strong>balanza equilibrada</strong>: lo de la izquierda pesa lo mismo que lo de la derecha. Para que siga equilibrada, <strong>lo que hacés de un lado lo tenés que hacer del otro</strong>.</p>
+  <div class="callout c-criollo"><span class="tag">Atajo que usa todo el mundo</span><p>Lo que <b>suma</b> pasa al otro lado <b>restando</b>; lo que <b>resta</b> pasa <b>sumando</b>; lo que <b>multiplica</b> pasa <b>dividiendo</b>; lo que <b>divide</b> pasa <b>multiplicando</b>.</p></div>
+  <div class="steps"><div class="st-title">Ejemplo · 2x + 3 = 11</div><div class="step"><span class="n">1</span><div class="c">El +3 pasa restando<span class="m">2x = 11 − 3 = 8</span></div></div><div class="step"><span class="n">2</span><div class="c">El 2 está multiplicando a la x: pasa dividiendo<span class="m">x = 8 ÷ 2</span></div></div><div class="step result"><span class="n">✓</span><div class="c"><b>x = 4</b>. Verificás: 2·4 + 3 = 11 ✓</div></div></div>
+  <h3>Cuando hay x² (ecuaciones de segundo grado)</h3>
+  <p>Para derivadas vas a necesitar resolver cosas como <span class="mono">x² − 5x + 6 = 0</span>. Hay dos caminos:</p>
+  <p><strong>Camino 1 · Factor común (cuando NO hay número suelto).</strong> En <span class="mono">x² − 3x = 0</span> sacás la x afuera: <span class="mono">x·(x − 3) = 0</span>. Si un producto da 0, alguno de los dos es 0: <b>x = 0</b> o <b>x = 3</b>.</p>
+  <p><strong>Camino 2 · La fórmula (sirve siempre).</strong> Para <span class="mono">ax² + bx + c = 0</span>:</p>
+  <div class="big">x = ( −b ± √(b² − 4·a·c) ) / (2·a)<small>El ± significa que hay dos resultados: uno con + y otro con −.</small></div>
+  <div class="steps"><div class="st-title">Ejemplo · x² − 5x + 6 = 0 (a = 1, b = −5, c = 6)</div><div class="step"><span class="n">1</span><div class="c">Lo de adentro de la raíz: b² − 4ac = 25 − 24 = 1<span class="m">√1 = 1</span></div></div><div class="step"><span class="n">2</span><div class="c">Con +: (5 + 1)/2 = 3</div></div><div class="step"><span class="n">3</span><div class="c">Con −: (5 − 1)/2 = 2</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>x = 3</b> y <b>x = 2</b></div></div></div>
+  <div class="callout c-tip"><span class="tag">Si lo de adentro de la raíz da negativo</span><p>No hay solución real. Si da 0, hay una sola solución.</p></div>
+  <div class="try" data-ans="3" data-why=""><div class="tt">✍ Probá vos</div><div class="tq">Despejá: x + 7 = 10</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>El 7 pasa restando.</details></div><div class="try" data-ans="4" data-why=""><div class="tt">✍ Probá vos</div><div class="tq">Despejá: 3x = 12</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>El 3 pasa dividiendo.</details></div><div class="try" data-ans="2" data-why="2x = 4, x = 2."><div class="tt">✍ Probá vos</div><div class="tq">Despejá: 2x − 4 = 0</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="0y4|4y0|0;4|4;0|0.4|4.0|0-4" data-why="x·(x − 4) = 0." data-show="0 y 4"><div class="tt">✍ Probá vos</div><div class="tq">Resolvé x² − 4x = 0 (escribí las dos, por ejemplo: 1 y 2)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Sacá x de factor común.</details></div>
+  <button class="done-btn" data-l="despejar">Marcar como entendida</button>
+</section>
+
+<section class="section" id="funcion">
+  <div class="section-head"><span class="section-num">07</span><h2>¿Qué es una función?</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Entender f(x) y calcular valores</span></div>
+
+  <p>Una función es una <strong>maquinita</strong>: le metés un número (x), hace siempre la misma cuenta y te devuelve otro número (y).</p>
+  <div class="big">f(x) = 2x + 1<small>Se lee "f de x". Significa: "la máquina f agarra el x, lo multiplica por 2 y le suma 1".</small></div>
+  <table class="data">
+    <tr><th>Entra x</th><td class="mono">0</td><td class="mono">1</td><td class="mono">2</td><td class="mono">3</td><td class="mono">−1</td></tr>
+    <tr><th>Sale f(x)</th><td class="mono">1</td><td class="mono">3</td><td class="mono">5</td><td class="mono">7</td><td class="mono">−1</td></tr>
+  </table>
+  <p><span class="mono">f(3) = 7</span> se lee "f de 3 vale 7": si entra 3, sale 7. Para calcularlo, <strong>reemplazás la x por 3</strong> (lección 5).</p>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es como una máquina de café: apretás un botón (x) y siempre sale lo mismo para ese botón. Una función <strong>nunca</strong> te da dos cosas distintas para el mismo botón.</p></div>
+  <div class="try" data-ans="11" data-why="2·5 + 1."><div class="tt">✍ Probá vos</div><div class="tq">Si f(x) = 2x + 1, ¿cuánto vale f(5)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="3" data-why="4 − 1."><div class="tt">✍ Probá vos</div><div class="tq">Si f(x) = x² − 1, ¿cuánto vale f(2)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="8" data-why="(−3)² = 9; 9 − 1 = 8."><div class="tt">✍ Probá vos</div><div class="tq">Si f(x) = x² − 1, ¿cuánto vale f(−3)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Ojo: (−3)² es positivo.</details></div>
+  <button class="done-btn" data-l="funcion">Marcar como entendida</button>
+</section>
+
+<section class="section" id="grafico">
+  <div class="section-head"><span class="section-num">08</span><h2>Cómo leer un gráfico</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Ubicar puntos y sacar información mirando el dibujo</span></div>
+
+  <p>El gráfico es <strong>el dibujo de la tabla</strong>. Tiene dos ejes: el horizontal (<b>x</b>, lo que entra) y el vertical (<b>y</b>, lo que sale). Cada punto se escribe <span class="mono">(x, y)</span>.</p>
+  <div class="callout c-criollo"><span class="tag">Para ubicar un punto</span><p><strong>"Primero caminás, después subís."</strong> El punto (3, 2) es: caminás 3 hacia la derecha y subís 2. El (−1, 4): caminás 1 hacia la izquierda y subís 4.</p></div>
+  <div class="fig" data-fig="puntos" data-cap="Los puntos A(3, 2), B(−1, 4) y C(2, −3)."></div>
+  <h3>Qué se lee de un gráfico</h3>
+  <div class="fig" data-fig="leer" data-cap="f(x) = x² − 2x − 3."></div>
+  <ul class="clean">
+    <li><b>Cuánto vale f(4):</b> parás en x = 4, subís hasta la curva y mirás la altura: 5.</li>
+    <li><b>Dónde corta el eje x</b> (los "ceros"): donde la curva toca la línea horizontal: x = −1 y x = 3.</li>
+    <li><b>Dónde sube y dónde baja:</b> leyendo de izquierda a derecha, baja hasta x = 1 y después sube.</li>
+    <li><b>El punto más bajo</b> (mínimo): (1, −4).</li>
+  </ul>
+  <div class="try" data-ans="-3" data-why="En x = 0 la curva corta al eje y a la altura −3."><div class="tt">✍ Probá vos</div><div class="tq">Mirando el gráfico de f(x) = x² − 2x − 3, ¿cuánto vale f(0)?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="1" data-why="El mínimo es (1, −4)."><div class="tt">✍ Probá vos</div><div class="tq">¿En qué x la curva está en su punto más bajo?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="2|dos" data-why="En x = −1 y en x = 3."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuántas veces corta la curva al eje x?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="grafico">Marcar como entendida</button>
+</section>
+
+<section class="section" id="recta">
+  <div class="section-head"><span class="section-num">09</span><h2>La recta y la pendiente</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Entender qué es la pendiente (la idea base de la derivada)</span></div>
+
+  <p>Las rectas tienen la forma <span class="mono">y = m·x + b</span>, y cada letra significa algo:</p>
+  <ul class="clean">
+    <li><b>b</b> = dónde la recta corta al eje y (la "altura de arranque").</li>
+    <li><b>m</b> = la <span class="term" data-def="pendiente" tabindex="0">pendiente</span>: <strong>cuánto sube la recta por cada paso de 1 hacia la derecha</strong>.</li>
+  </ul>
+  <div class="fig" data-fig="rectas" data-cap="Roja: y = 2x + 1 (sube 2 por cada paso). Azul: y = −x + 3 (baja 1 por cada paso). Verde: y = 2 (horizontal, pendiente 0)."></div>
+  <table class="data">
+    <tr><th>Si m es…</th><th>la recta…</th></tr>
+    <tr><td>positiva (m &gt; 0)</td><td>sube ↗</td></tr>
+    <tr><td>negativa (m &lt; 0)</td><td>baja ↘</td></tr>
+    <tr><td>cero (m = 0)</td><td>es horizontal →</td></tr>
+    <tr><td>grande (por ejemplo 10)</td><td>es muy empinada</td></tr>
+  </table>
+  <h3>Pendiente entre dos puntos</h3>
+  <div class="big">m = (cuánto subió) / (cuánto avanzó) = (y₂ − y₁) / (x₂ − x₁)</div>
+  <div class="steps"><div class="st-title">Pendiente entre (1, 2) y (3, 8)</div><div class="step"><span class="n">1</span><div class="c">Cuánto subió: 8 − 2 = 6</div></div><div class="step"><span class="n">2</span><div class="c">Cuánto avanzó: 3 − 1 = 2</div></div><div class="step result"><span class="n">✓</span><div class="c">m = 6/2 = <b>3</b>: por cada paso a la derecha sube 3</div></div></div>
+  <div class="callout c-criollo"><span class="tag">¿Por qué esto es tan importante?</span><p>Porque <strong>la derivada es exactamente esto, pero para curvas</strong>. Una recta tiene la misma pendiente en todos lados. Una curva tiene una pendiente distinta en cada punto, y la derivada te dice cuál es. Si entendiste la pendiente, ya entendiste la mitad de derivadas.</p></div>
+  <div class="try" data-ans="3" data-why="Es el número que multiplica a la x."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuál es la pendiente de y = 3x − 2?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="-2" data-why="Es el número suelto, b."><div class="tt">✍ Probá vos</div><div class="tq">¿Dónde corta al eje y la recta y = 3x − 2? (escribí la altura)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="baja" data-why="La pendiente es −2, negativa."><div class="tt">✍ Probá vos</div><div class="tq">La recta y = −2x + 1, ¿sube o baja?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="2" data-why="(5 − 1)/(2 − 0) = 4/2."><div class="tt">✍ Probá vos</div><div class="tq">Pendiente entre (0, 1) y (2, 5)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="recta">Marcar como entendida</button>
+</section>
+
+<section class="section" id="familia">
+  <div class="section-head"><span class="section-num">10</span><h2>Las funciones que vas a ver (para reconocerlas)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Reconocer las formas típicas</span></div>
+
+  <p>No hace falta entenderlas a fondo: alcanza con <strong>reconocerlas</strong> cuando aparezcan.</p>
+  <div class="figrow">
+    <div class="fig"><h4>Parábola · y = x²</h4><div data-figin="f_par"></div><div class="cap">Forma de U. Baja y después sube.</div></div>
+    <div class="fig"><h4>Raíz · y = √x</h4><div data-figin="f_raiz"></div><div class="cap">Solo existe para x ≥ 0. Sube cada vez más despacio.</div></div>
+    <div class="fig"><h4>Hipérbola · y = 1/x</h4><div data-figin="f_hip"></div><div class="cap">No existe en x = 0 (no se divide por 0).</div></div>
+    <div class="fig"><h4>Exponencial · y = eˣ</h4><div data-figin="f_exp"></div><div class="cap">Siempre positiva. Crece rapidísimo. e ≈ 2,718.</div></div>
+    <div class="fig"><h4>Logaritmo · y = ln x</h4><div data-figin="f_ln"></div><div class="cap">La "inversa" de eˣ. Solo para x &gt; 0. ln 1 = 0.</div></div>
+    <div class="fig"><h4>Seno · y = sen x</h4><div data-figin="f_sen"></div><div class="cap">Una ola que sube y baja entre −1 y 1.</div></div>
+  </div>
+  <div class="callout c-tip"><span class="tag">Dos datos que se usan mucho</span><p><span class="mono">e⁰ = 1</span> (todo a la 0 da 1) y <span class="mono">ln 1 = 0</span>. Además, <span class="mono">eˣ</span> nunca vale 0: siempre es positivo.</p></div>
+  <div class="try" data-ans="1" data-why="Todo número a la 0 da 1."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto vale e⁰?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="0" data-why="Porque e⁰ = 1."><div class="tt">✍ Probá vos</div><div class="tq">¿Cuánto vale ln 1?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <a class="next" href="guia-apb-derivadas.html"><b>¡Listo! Ya tenés la base →</b><span>Seguí con Derivadas en modo APB: lo mismo de fácil, paso a paso.</span></a>
+
+  <button class="done-btn" data-l="familia">Marcar como entendida</button>
+</section>
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">11</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Modo APB · Matemática desde cero.</b> Después seguí con <a href="guia-apb-derivadas.html">Derivadas APB</a> y <a href="guia-apb-integrales.html">Integrales APB</a>.</p>
+  <p style="font-size:13px;margin-top:6px;">Para practicar con exámenes: <a href="simulador-examenes.html">simulador</a>, bloque "Arranque desde cero".</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+pendiente:{t:"Pendiente",sym:"m",def:"Cuánto sube una recta por cada paso de 1 hacia la derecha. Si es negativa, la recta baja.",calc:"m = (y₂ − y₁)/(x₂ − x₁).",ej:"y = 3x − 2 tiene pendiente 3.",rel:["funcion"]},
+  funcion:{t:"Función",sym:"f(x)",def:"Una \"máquina\" que a cada número x le asigna un único resultado f(x).",ej:"f(x) = 2x + 1: f(3) = 7.",rel:["pendiente"]},
+  potencia:{t:"Potencia",sym:"aⁿ",def:"Multiplicar un número por sí mismo n veces.",ej:"2³ = 8; x⁻² = 1/x²; x^(1/2) = √x.",rel:["funcion"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+recta_num: G.plot({w:420,h:120,x:[-6,6],y:[-1,1],grid:false,ticks:true,yl:'',pts:[{x:-3,y:0,c:G.C.red,label:'−3',dy:-10},{x:2,y:0,c:G.C.teal,label:'+2',dy:-10}],vecs:[{from:[-3,0.35],to:[2,0.35],c:G.C.navy,label:'+5',ldy:-6}]}),
+  puntos: G.plot({x:[-3,5],y:[-4,5],pts:[{x:3,y:2,label:'A(3, 2)'},{x:-1,y:4,label:'B(−1, 4)'},{x:2,y:-3,label:'C(2, −3)'}],segs:[[0,0,3,0,G.C.red,true,2],[3,0,3,2,G.C.red,true,2]]}),
+  leer: G.plot({x:[-3,5],y:[-5,6],fns:[{f:function(x){return x*x-2*x-3;},c:G.C.red,label:'f',lx:4.2}],pts:[{x:-1,y:0,label:'(−1, 0)',dx:-50},{x:3,y:0,label:'(3, 0)'},{x:1,y:-4,label:'mín (1, −4)',dy:16},{x:4,y:5,label:'(4, 5)',dx:-48},{x:0,y:-3,label:'(0, −3)',dx:-50}]}),
+  rectas: G.plot({x:[-2,4],y:[-3,7],fns:[{f:function(x){return 2*x+1;},c:G.C.red,label:'y = 2x + 1',lx:2.3,ldx:-80},{f:function(x){return -x+3;},c:G.C.navy,label:'y = −x + 3',lx:-1.6,ldy:-6},{f:function(){return 2;},c:G.C.teal,label:'y = 2',lx:3.2,ldy:16}]}),
+  f_par: G.plot({w:240,h:200,x:[-3,3],y:[-1,5],ticks:false,fns:[{f:function(x){return x*x;},c:G.C.red}]}),
+  f_raiz: G.plot({w:240,h:200,x:[-1,5],y:[-1,3],ticks:false,fns:[{f:Math.sqrt,dom:[0,5],c:G.C.red}]}),
+  f_hip: G.plot({w:240,h:200,x:[-3,3],y:[-4,4],ticks:false,fns:[{f:function(x){return 1/x;},c:G.C.red,n:800}]}),
+  f_exp: G.plot({w:240,h:200,x:[-3,2],y:[-1,6],ticks:false,fns:[{f:Math.exp,c:G.C.red}],pts:[{x:0,y:1,label:'(0, 1)'}]}),
+  f_ln: G.plot({w:240,h:200,x:[-1,5],y:[-3,2],ticks:false,fns:[{f:Math.log,dom:[0.03,5],c:G.C.red}],pts:[{x:1,y:0,label:'(1, 0)'}]}),
+  f_sen: G.plot({w:240,h:200,x:[-1,7],y:[-1.6,1.6],ticks:false,fns:[{f:Math.sin,c:G.C.red}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+
+/* ===================== MODO APB: "probá vos" ===================== */
+(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+  function norm(s){
+    s=String(s).toLowerCase().trim();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g,function(c){return SUP[c];});
+    s=s.replace(/\|/g,'').replace(/−|–/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[·*×^]/g,'');
+    if(s.indexOf('=')>=0) s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/\+c$/,'');
+    s=s.replace(/^\+/,'');
+    return s;
+  }
+  document.querySelectorAll('.try').forEach(function(t){
+    var inp=t.querySelector('input'),fb=t.querySelector('.tfb');
+    var answers=(t.dataset.ans||'').split('|').map(norm);
+    var shown=t.dataset.show||t.dataset.ans.split('|')[0];
+    function check(){
+      var v=norm(inp.value);
+      if(!v){fb.className='tfb no';fb.innerHTML='Escribí algo primero 🙂';return;}
+      if(answers.indexOf(v)>=0){fb.className='tfb ok';fb.innerHTML='<b>¡Bien ahí! ✓</b> '+(t.dataset.why||'');}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> Revisá los pasos o abrí la pista. Si querés, tocá "Ver respuesta".';}
+    }
+    t.querySelector('.chk').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    var sh=t.querySelector('.shw');
+    if(sh)sh.addEventListener('click',function(){fb.className='tfb ok';fb.innerHTML='<b>Respuesta:</b> '+shown+'. '+(t.dataset.why||'');});
+  });
+  /* progreso ("Lo entendí") — se guarda solo en este navegador */
+  var key='apb:'+location.pathname;
+  var done={};try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var btns=document.querySelectorAll('.done-btn');
+  function paint(){
+    var n=0;btns.forEach(function(b){var on=!!done[b.dataset.l];b.classList.toggle('on',on);b.textContent=on?'✓ Lección entendida':'Marcar como entendida';if(on)n++;});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(btns.length?100*n/btns.length:0)+'%';t.textContent=n+' de '+btns.length+' lecciones entendidas';}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){done[b.dataset.l]=!done[b.dataset.l];try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}paint();});});
+  paint();
+})();
+</script>
+</body>
+</html>
