@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrales · Modo APB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+
+  /* ---------- MODO APB ---------- */
+  body{font-size:18px;}
+  .apb-badge{display:inline-block;background:#5F8A2E;color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+  .progress{position:sticky;top:57px;z-index:35;background:var(--paper);padding:8px 0 10px;}
+  .progress .bar{height:9px;background:var(--line);border-radius:10px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#5F8A2E,var(--teal));transition:width .4s;}
+  .progress .ptxt{font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:var(--mono);}
+  .lesson-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;}
+  .lesson-meta .time{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;}
+  .lesson-meta .goal{font-size:15px;color:var(--navy);}
+  .done-btn{display:block;margin:26px auto 0;background:#fff;border:2px solid #5F8A2E;color:#4C6E21;border-radius:30px;padding:10px 22px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;}
+  .done-btn.on{background:#5F8A2E;color:#fff;}
+  .steps{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:18px 0;box-shadow:var(--shadow);}
+  .steps .st-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:12px 0 2px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line-strong);}
+  .steps .st-title + .step{border-top:none;}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+  .step .c{flex:1;}
+  .step .c .m{font-family:var(--mono);font-size:17px;color:var(--navy-deep);background:var(--paper);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px;}
+  .step.result .n{background:var(--teal);}
+  .hl{background:#FFE9A8;border-radius:4px;padding:0 3px;}
+  .hl2{background:#CDE7F5;border-radius:4px;padding:0 3px;}
+  .hl3{background:#F7D3D6;border-radius:4px;padding:0 3px;}
+  .big{font-family:var(--mono);font-size:21px;text-align:center;background:#fff;border:2px solid var(--navy);border-radius:14px;padding:16px;margin:18px 0;color:var(--navy-deep);}
+  .big small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-soft);margin-top:6px;}
+  .try{background:#F3F0FA;border:1px solid #D9CDEE;border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:18px 0;}
+  .try .tt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#6B3FA0;text-transform:uppercase;margin-bottom:8px;}
+  .try .tq{margin-bottom:10px;}
+  .try .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .try input{font-family:var(--mono);font-size:17px;padding:8px 12px;border:1.5px solid var(--line-strong);border-radius:9px;min-width:160px;flex:1;max-width:280px;}
+  .try input:focus{outline:none;border-color:#6B3FA0;}
+  .try .chk{background:#6B3FA0;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-family:var(--body);cursor:pointer;}
+  .try .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;border-radius:9px;padding:8px 12px;font-weight:600;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .try .tfb{margin-top:10px;font-size:15px;display:none;border-radius:9px;padding:9px 12px;}
+  .try .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .try .tfb.no{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .try details{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+  .try details summary{cursor:pointer;color:#6B3FA0;font-weight:600;}
+  .tipkb{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  @media(max-width:620px){.vs{grid-template-columns:1fr;}}
+  .vs > div{border-radius:12px;padding:12px 14px;font-size:15.5px;}
+  .vs .bad{background:var(--red-soft);border:1px solid #F1CFD1;}
+  .vs .good{background:var(--teal-soft);border:1px solid #C4E2DB;}
+  .vs b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+  .vs .bad b{color:var(--red);} .vs .good b{color:var(--teal);}
+  .next{display:block;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:16px;padding:20px 22px;margin:40px 0 0;text-decoration:none;}
+  .next b{font-family:var(--display);font-size:22px;display:block;margin-bottom:4px;}
+  .next span{color:rgba(255,255,255,.85);font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> APB · <b>Integrales</b></span>
+    <nav class="topnav">
+      <a href="#que-es">Qué es</a>
+      <a href="#potencia">Regla 1</a>
+      <a href="#numero">Regla 2</a>
+      <a href="#disfraz">Raíces y 1/x</a>
+      <a href="#tabla">Las otras</a>
+      <a href="#sustitucion">Sustitución</a>
+      <a href="#partes">Por partes</a>
+      <a href="#definida">Con números</a>
+      <a href="#areas">Áreas</a>
+      <a href="#chuleta">Chuleta</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <span class="apb-badge">MODO APB · A PRUEBA DE BOLUDOS</span>
+  <h1>Integrales <span class="u">paso a paso</span></h1>
+  <p class="lead">Integrar es <strong>derivar al revés</strong>. Si ya hiciste <a href="guia-apb-derivadas.html">Derivadas APB</a>, tenés la mitad del camino hecho. Acá van las recetas de a una, con ejemplos resueltos y ejercicios que se corrigen solos.</p>
+  <div class="howto">
+    <h4>Cómo usar esta guía</h4>
+    <p>Una lección por vez. Hacé los <b>"✍ Probá vos"</b> y marcá cada lección cuando la entiendas. El superpoder de integrales: <strong>siempre podés comprobar tu resultado derivándolo</strong>. Si al derivar te vuelve lo que tenías, está bien.</p>
+  </div>
+</header>
+
+<main>
+<div class="progress"><div class="bar"><div class="fill"></div></div><div class="ptxt"></div></div>
+<section class="section" id="que-es">
+  <div class="section-head"><span class="section-num">01</span><h2>¿Qué es integrar?</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Entender la idea y por qué aparece el + C</span></div>
+
+  <p>Derivar es: te doy una función y vos me decís su "velocidad". <strong>Integrar es el juego al revés</strong>: te doy la velocidad y vos me decís <em>de qué función vino</em>.</p>
+  <div class="big">¿Qué función, al derivarla, da 2x? → <b>x²</b><small>Entonces: la integral de 2x es x² (más una cosita, ya vemos cuál).</small></div>
+  <p>Se escribe así: <span class="mono">∫ 2x dx = x² + C</span>. La <b>∫</b> es una S alargada (viene de "suma") y el <b>dx</b> del final solo avisa que la letra es x. Van siempre juntos, como signos de pregunta ¿…?.</p>
+  <h3>¿Qué es ese + C?</h3>
+  <p>Fijate: x², x² + 5 y x² − 3 <strong>derivan todas a 2x</strong>, porque el número suelto desaparece al derivar. Entonces no sabemos cuál era el número original. Le ponemos <b>C</b> ("cualquier número") y listo.</p>
+  <div class="fig" data-fig="familia" data-cap="x², x² + 2 y x² − 3: la misma curva subida o bajada. Todas tienen la misma derivada, 2x."></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Integrar es <strong>"¿de dónde vengo?"</strong>. Y el + C es admitir: "vengo de x², pero no sé si me sumaron un número que se perdió en el camino".</p></div>
+  <div class="try" data-ans="x3" data-why="(x³)′ = 3x²." data-show="x³"><div class="tt">✍ Probá vos</div><div class="tq">¿Qué función, al derivarla, da 3x²? (sin la C)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Pensá en la Regla 1 de derivadas al revés.</details></div><div class="try" data-ans="senx|sinx" data-why="(sen x)′ = cos x." data-show="sen x"><div class="tt">✍ Probá vos</div><div class="tq">¿Qué función, al derivarla, da cos x?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="que-es">Marcar como entendida</button>
+</section>
+
+<section class="section" id="potencia">
+  <div class="section-head"><span class="section-num">02</span><h2>Regla 1 · Potencias de x (al revés que derivar)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Integrar x², x³, x y números solos</span></div>
+
+  <div class="big">Al exponente <b>sumale 1</b>,<br>y <b>dividí por ese exponente nuevo</b>.<small>En fórmula: ∫ xⁿ dx = xⁿ⁺¹/(n + 1) + C</small></div>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ x² dx</div><div class="step"><span class="n">1</span><div class="c">El exponente es <span class="hl">2</span>. Sumale 1: 2 + 1 = <span class="hl2">3</span>.<span class="m">x<sup class="hl2">3</sup></span></div></div><div class="step"><span class="n">2</span><div class="c">Dividí por el exponente nuevo.<span class="m">x³ / <span class="hl2">3</span></span></div></div><div class="step"><span class="n">3</span><div class="c">Agregá la C.</div></div><div class="step result"><span class="n">✓</span><div class="c">∫ x² dx = <b>x³/3 + C</b></div></div></div>
+  <div class="callout c-tip"><span class="tag">Comprobalo derivando</span><p>(x³/3)′ = 3x²/3 = x² ✓. Es exactamente la receta de derivar, pero en reversa: derivar es "bajar y restar 1"; integrar es "sumar 1 y dividir".</p></div>
+  <div class="vs">
+    <div class="good"><b>x solita</b>x = x¹ → x²/2<br><span class="mono">∫ x dx = x²/2 + C</span></div>
+    <div class="good"><b>Un número solo</b>Le agregás una x al lado.<br><span class="mono">∫ 5 dx = 5x + C</span></div>
+  </div>
+  <p class="tipkb">Para escribir: x² lo podés tipear como <b>x^2</b>. Fracciones con barra: <b>1/2</b>. Da igual si usás coma o punto.</p><div class="try" data-ans="x4/4|1/4x4|0.25x4" data-why="" data-show="x⁴/4 + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ x³ dx (podés no escribir la C)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Sumale 1 al 3 y dividí por 4.</details></div><div class="try" data-ans="x2/2|1/2x2|0.5x2" data-why="" data-show="x²/2 + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ x dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="7x" data-why="Un número solo: le agregás x." data-show="7x + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 7 dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="x6/6|1/6x6" data-why="" data-show="x⁶/6 + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ x⁵ dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="potencia">Marcar como entendida</button>
+</section>
+
+<section class="section" id="numero">
+  <div class="section-head"><span class="section-num">03</span><h2>Regla 2 · Números multiplicando y sumas</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 8 min</span><span class="goal">🎯 Integrar polinomios enteros</span></div>
+
+  <p>Igual que en derivadas: el número que multiplica <strong>espera afuera</strong>, y en las sumas se integra <strong>cada término por separado</strong>. La C se pone <strong>una sola vez</strong> al final.</p>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ (6x² + 4x − 3) dx</div><div class="step"><span class="n">1</span><div class="c"><span class="hl">6x²</span> → 6·x³/3 = 2x³</div></div><div class="step"><span class="n">2</span><div class="c"><span class="hl2">4x</span> → 4·x²/2 = 2x²</div></div><div class="step"><span class="n">3</span><div class="c"><span class="hl3">−3</span> → −3x</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>2x³ + 2x² − 3x + C</b></div></div></div>
+  <div class="callout c-tip"><span class="tag">Comprobación</span><p>(2x³ + 2x² − 3x)′ = 6x² + 4x − 3 ✓</p></div>
+  <div class="try" data-ans="2x3" data-why="6·x³/3 = 2x³." data-show="2x³ + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 6x² dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="x3+x2+x" data-why="" data-show="x³ + x² + x + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ (3x² + 2x + 1) dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Cada término por separado.</details></div><div class="try" data-ans="x4-2x" data-why="" data-show="x⁴ − 2x + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ (4x³ − 2) dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="numero">Marcar como entendida</button>
+</section>
+
+<section class="section" id="disfraz">
+  <div class="section-head"><span class="section-num">04</span><h2>Raíces, x abajo y la excepción 1/x</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Integrar √x y 1/x²; y saber que ∫ 1/x da ln</span></div>
+
+  <p>Como en derivadas: primero <strong>disfrazás de potencia</strong> y después aplicás la Regla 1.</p>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ 1/x² dx</div><div class="step"><span class="n">1</span><div class="c">Disfrazás.<span class="m">1/x² = x⁻²</span></div></div><div class="step"><span class="n">2</span><div class="c">Sumás 1 al exponente: −2 + 1 = −1. Dividís por −1.<span class="m">x⁻¹/(−1) = −x⁻¹</span></div></div><div class="step"><span class="n">3</span><div class="c">Sacás el disfraz.</div></div><div class="step result"><span class="n">✓</span><div class="c">∫ 1/x² dx = <b>−1/x + C</b></div></div></div><div class="steps"><div class="st-title">Ejemplo · ∫ √x dx</div><div class="step"><span class="n">1</span><div class="c">Disfrazás.<span class="m">√x = x^(1/2)</span></div></div><div class="step"><span class="n">2</span><div class="c">Sumás 1: ½ + 1 = 3/2. Dividir por 3/2 es multiplicar por 2/3.<span class="m">(2/3)·x^(3/2)</span></div></div><div class="step result"><span class="n">✓</span><div class="c">∫ √x dx = <b>(2/3)·x^(3/2) + C</b></div></div></div>
+  <div class="callout c-warn"><span class="tag">La única excepción: 1/x</span>
+    <p>1/x = x⁻¹. Si sumás 1 al exponente da 0, y <strong>no se puede dividir por 0</strong>. Para ese caso hay un dato especial:</p>
+    <p class="mono" style="font-size:18px">∫ 1/x dx = ln|x| + C</p>
+    <p>(Las barritas | | son el valor absoluto: hacen que lo de adentro sea positivo. Podés leerlo "ln de x".)</p>
+  </div>
+  <div class="try" data-ans="-1/(2x2)|-1/2x-2|-x-2/2|-0.5x-2" data-why="−3 + 1 = −2 → x⁻²/(−2)." data-show="−1/(2x²) + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 1/x³ dx (pista: x⁻³)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>x⁻³ → sumale 1 al −3.</details></div><div class="try" data-ans="5lnx|5ln(x)" data-why="5 espera afuera; ∫ 1/x = ln|x|." data-show="5 ln|x| + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 5/x dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="disfraz">Marcar como entendida</button>
+</section>
+
+<section class="section" id="tabla">
+  <div class="section-head"><span class="section-num">05</span><h2>Las otras: de memoria</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 6 min</span><span class="goal">🎯 Integrar eˣ, sen x y cos x</span></div>
+
+  <table class="data">
+    <tr><th>∫ de…</th><th>da…</th><th>Cómo acordarte</th></tr>
+    <tr><td class="mono">eˣ</td><td class="mono"><b>eˣ + C</b></td><td>La inmortal sigue siendo ella misma.</td></tr>
+    <tr><td class="mono">cos x</td><td class="mono"><b>sen x + C</b></td><td>Porque (sen x)′ = cos x.</td></tr>
+    <tr><td class="mono">sen x</td><td class="mono"><b>−cos x + C</b></td><td>¡Con menos! Porque (−cos x)′ = sen x.</td></tr>
+    <tr><td class="mono">1/x</td><td class="mono"><b>ln|x| + C</b></td><td>La excepción de la lección anterior.</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">El atajo para e^(número·x)</span><p>∫ e^(3x) dx = e^(3x)/<b>3</b> + C. Lo mismo con seno y coseno: ∫ cos(5x) dx = sen(5x)/<b>5</b> + C. <strong>Dividís por el número que acompaña a la x</strong> (en derivadas lo multiplicabas).</p></div>
+  <div class="try" data-ans="ex+x2|x2+ex" data-why="" data-show="eˣ + x² + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ (eˣ + 2x) dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="-cosx" data-why="Ojo con el menos." data-show="−cos x + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ sen x dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="e2x/2|1/2e2x|e(2x)/2|0.5e2x" data-why="Dividís por el 2." data-show="e^(2x)/2 + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ e^(2x) dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="tabla">Marcar como entendida</button>
+</section>
+
+<section class="section" id="sustitucion">
+  <div class="section-head"><span class="section-num">06</span><h2>Método 1 · Sustitución (cuando hay algo adentro)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 15 min</span><span class="goal">🎯 Resolver integrales con una cuenta adentro y su derivada afuera</span></div>
+
+  <p>Mirá <span class="mono">∫ 2x·(x² + 1)⁵ dx</span>. Adentro del paréntesis está <span class="hl2">x² + 1</span>, y afuera, multiplicando, está <span class="hl">2x</span>… <strong>¡que es justo su derivada!</strong> Cuando pasa eso, se usa sustitución.</p>
+  <div class="big">1) A lo de adentro llamalo <b>u</b>. &nbsp; 2) Derivalo: eso es <b>du</b>.<br>3) Reemplazá todo: tiene que quedar solo u. &nbsp; 4) Integrá y volvé a poner x.</div>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ 2x·(x² + 1)⁵ dx</div><div class="step"><span class="n">1</span><div class="c">Lo de adentro: <span class="hl2">u = x² + 1</span>.</div></div><div class="step"><span class="n">2</span><div class="c">Lo derivás: <span class="hl">du = 2x dx</span>. ¡El 2x dx ya está en la integral!</div></div><div class="step"><span class="n">3</span><div class="c">Reemplazás: (x² + 1)⁵ es u⁵ y 2x dx es du.<span class="m">∫ u⁵ du</span></div></div><div class="step"><span class="n">4</span><div class="c">Integrás con la Regla 1.<span class="m">u⁶/6 + C</span></div></div><div class="step"><span class="n">5</span><div class="c">Volvés a poner lo que era u.</div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>(x² + 1)⁶/6 + C</b></div></div></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es <strong>ponerle un apodo</strong> a la parte complicada para que la integral parezca una fácil. La señal es: <em>"adentro hay algo, y afuera está su derivada (o casi, salvo un número)"</em>.</p></div>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ x·e^(x²) dx (falta un número)</div><div class="step"><span class="n">1</span><div class="c">u = x², du = 2x dx. Pero afuera hay x dx, no 2x dx.</div></div><div class="step"><span class="n">2</span><div class="c">Arreglo: x dx = du/2. El ½ espera afuera.<span class="m">½ ∫ eᵘ du</span></div></div><div class="step"><span class="n">3</span><div class="c">Integrás: ½·eᵘ.</div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>e^(x²)/2 + C</b></div></div></div><div class="try" data-ans="(x3+2)5/5|1/5(x3+2)5" data-why="Queda ∫ u⁴ du = u⁵/5." data-show="(x³ + 2)⁵/5 + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 3x²·(x³ + 2)⁴ dx. Tomá u = x³ + 2. ¿Cuánto da?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>du = 3x² dx, que ya está.</details></div><div class="try" data-ans="ln(x2+1)|lnx2+1" data-why="∫ du/u = ln|u|." data-show="ln(x² + 1) + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ 2x/(x² + 1) dx (pista: u = x² + 1, queda ∫ du/u)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="sustitucion">Marcar como entendida</button>
+</section>
+
+<section class="section" id="partes">
+  <div class="section-head"><span class="section-num">07</span><h2>Método 2 · Por partes (dos cosas distintas multiplicadas)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 15 min</span><span class="goal">🎯 Resolver ∫ x·eˣ, ∫ x·cos x, ∫ ln x</span></div>
+
+  <p>Para <span class="mono">∫ x·eˣ dx</span> no sirve sustitución (afuera no está la derivada de lo de adentro). Cuando hay un producto de <strong>dos cosas de distinto tipo</strong>, se usa esta fórmula:</p>
+  <div class="big">∫ u·dv = u·v − ∫ v·du<small>Frase para recordarla: "<b>u</b>n <b>d</b>ía <b>v</b>i <b>u</b>na <b>v</b>aca <b>v</b>estida de <b>u</b>niforme"</small></div>
+  <p><b>¿Quién es u?</b> El que aparece primero en esta lista (la palabra LIATE):</p>
+  <div class="big" style="font-size:17px">L ogaritmo (ln) → I nversas → A lgebraicas (x, x²) → T rigonométricas (sen, cos) → E xponencial (eˣ)</div>
+  <div class="steps"><div class="st-title">Ejemplo · ∫ x·eˣ dx</div><div class="step"><span class="n">1</span><div class="c">LIATE: la x (A) va antes que eˣ (E). Entonces <span class="hl">u = x</span> y <span class="hl2">dv = eˣ dx</span>.</div></div><div class="step"><span class="n">2</span><div class="c">Derivás u: <span class="hl">du = dx</span>. Integrás dv: <span class="hl2">v = eˣ</span>.</div></div><div class="step"><span class="n">3</span><div class="c">Reemplazás en la fórmula u·v − ∫ v·du.<span class="m">x·eˣ − ∫ eˣ dx</span></div></div><div class="step"><span class="n">4</span><div class="c">La integral que quedó es fácil: ∫ eˣ dx = eˣ.<span class="m">x·eˣ − eˣ</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>x·eˣ − eˣ + C</b> (o eˣ·(x − 1) + C)</div></div></div>
+  <table class="data">
+    <tr><th>u (se deriva)</th><th>du</th><th>dv (se integra)</th><th>v</th></tr>
+    <tr><td class="mono">x</td><td class="mono">dx</td><td class="mono">eˣ dx</td><td class="mono">eˣ</td></tr>
+  </table>
+  <div class="callout c-tip"><span class="tag">Armá siempre esa tablita</span><p>Los errores en partes casi siempre son por mezclar quién se deriva y quién se integra. Con la tabla de 4 casilleros no te equivocás.</p></div>
+  <div class="callout c-criollo"><span class="tag">El truco de ∫ ln x dx</span><p>Si hay una sola cosa (ln x), poné <b>u = ln x</b> y <b>dv = dx</b> (o sea v = x). Da x·ln x − x + C.</p></div>
+  <div class="try" data-ans="xsenx+cosx|xsinx+cosx|cosx+xsenx" data-why="x·sen x − ∫ sen x dx = x·sen x + cos x." data-show="x·sen x + cos x + C"><div class="tt">✍ Probá vos</div><div class="tq">∫ x·cos x dx. Con u = x, dv = cos x dx, ¿cuánto da?</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>v = sen x. Ojo: −∫ sen x = +cos x.</details></div>
+  <button class="done-btn" data-l="partes">Marcar como entendida</button>
+</section>
+
+<section class="section" id="definida">
+  <div class="section-head"><span class="section-num">08</span><h2>Integral con números arriba y abajo (definida)</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 10 min</span><span class="goal">🎯 Calcular ∫ de a hasta b y entender que es un área</span></div>
+
+  <p>A veces la integral trae números: <span class="mono">∫₀² x² dx</span> (se lee "integral de 0 a 2"). Eso ya no da una función: da <strong>un número</strong>, que es el <strong>área bajo la curva</strong> entre esos dos valores de x.</p>
+  <div class="fig" data-fig="area" data-cap="∫₀² x² dx es el área pintada: la región debajo de x², entre x = 0 y x = 2. Da 8/3 ≈ 2,67."></div>
+  <div class="big">1) Integrás (sin la C). &nbsp; 2) Reemplazás el número de <b>arriba</b>.<br>3) Reemplazás el de <b>abajo</b>. &nbsp; 4) <b>Restás</b>: arriba − abajo.</div>
+  <div class="steps"><div class="st-title">Ejemplo · ∫₀² x² dx</div><div class="step"><span class="n">1</span><div class="c">Integrás.<span class="m">x³/3</span></div></div><div class="step"><span class="n">2</span><div class="c">Reemplazás el de arriba (2).<span class="m">2³/3 = 8/3</span></div></div><div class="step"><span class="n">3</span><div class="c">Reemplazás el de abajo (0).<span class="m">0³/3 = 0</span></div></div><div class="step"><span class="n">4</span><div class="c">Restás.<span class="m">8/3 − 0</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Resultado: <b>8/3</b> (≈ 2,67)</div></div></div>
+  <div class="callout c-criollo"><span class="tag">En criollo</span><p>Es como un medidor: lo que marca al final menos lo que marcaba al principio. Si la nafta del tanque marcaba 10 L y ahora marca 35 L, entraron 25 L. No importa cómo fue entrando.</p></div>
+  <div class="try" data-ans="9" data-why="Integral: x². 3² − 0² = 9."><div class="tt">✍ Probá vos</div><div class="tq">∫₀³ 2x dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Primero integrá 2x (da x²).</details></div><div class="try" data-ans="7" data-why="x³: 8 − 1 = 7."><div class="tt">✍ Probá vos</div><div class="tq">∫₁² 3x² dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div><div class="try" data-ans="3/2|1.5" data-why="x²/2 + x: (1/2 + 1) − 0." data-show="3/2"><div class="tt">✍ Probá vos</div><div class="tq">∫₀¹ (x + 1) dx</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div></div>
+  <button class="done-btn" data-l="definida">Marcar como entendida</button>
+</section>
+
+<section class="section" id="areas">
+  <div class="section-head"><span class="section-num">09</span><h2>Área entre dos curvas: techo menos piso</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 12 min</span><span class="goal">🎯 Calcular el área encerrada entre dos gráficos</span></div>
+
+  <p>Si te piden el área encerrada entre dos curvas, es <strong>"la de arriba menos la de abajo"</strong>, integrada entre los puntos donde se cruzan.</p>
+  <div class="big">Área = ∫ (techo − piso) dx<small>Los números de la integral son los x donde las curvas se cruzan.</small></div>
+  <div class="steps"><div class="st-title">Ejemplo · área entre y = x e y = x²</div><div class="step"><span class="n">1</span><div class="c">Dónde se cruzan: igualás x = x² → x² − x = 0 → x·(x − 1) = 0 → <b>x = 0 y x = 1</b>.</div></div><div class="step"><span class="n">2</span><div class="c">Quién está arriba: probás un número del medio, x = 0,5. La recta da 0,5 y la parábola 0,25: <b>arriba está y = x</b>.</div></div><div class="step"><span class="n">3</span><div class="c">Armás la integral: techo − piso.<span class="m">∫₀¹ (x − x²) dx</span></div></div><div class="step"><span class="n">4</span><div class="c">Integrás y reemplazás.<span class="m">[x²/2 − x³/3] → (1/2 − 1/3) − 0</span></div></div><div class="step result"><span class="n">✓</span><div class="c">Área = <b>1/6</b></div></div></div>
+  <div class="fig" data-fig="entre" data-cap="La región entre y = x (arriba) e y = x² (abajo), desde x = 0 hasta x = 1."></div>
+  <div class="callout c-warn"><span class="tag">Ojo</span><p>Si una curva queda <strong>debajo del eje x</strong>, su integral da negativa. Para áreas, cuando cruza el eje, partí la integral en ese punto y sumá todo en positivo.</p></div>
+  <div class="try" data-ans="4/3|1.33|1.333" data-why="∫₀² (2x − x²) dx = 4 − 8/3." data-show="4/3"><div class="tt">✍ Probá vos</div><div class="tq">Área entre y = 2x e y = x² (se cruzan en 0 y 2; arriba está 2x)</div><div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="tu respuesta"><button class="chk">Comprobar</button><button class="shw">Ver respuesta</button></div><div class="tfb"></div><details><summary>Pista</summary>Integrá 2x − x²: x² − x³/3.</details></div>
+  <button class="done-btn" data-l="areas">Marcar como entendida</button>
+</section>
+
+<section class="section" id="chuleta">
+  <div class="section-head"><span class="section-num">10</span><h2>La chuleta de integrales</h2></div>
+  <div class="lesson-meta"><span class="time">⏱ 5 min</span><span class="goal">🎯 Tener todo en una tabla</span></div>
+
+  <table class="data">
+    <tr><th>Tenés…</th><th>Hacés…</th><th>Ejemplo</th></tr>
+    <tr><td>un número solo</td><td>le agregás x</td><td class="mono">∫ 5 dx = 5x</td></tr>
+    <tr><td>xⁿ</td><td>sumás 1 al exponente y dividís por el nuevo</td><td class="mono">∫ x³ dx = x⁴/4</td></tr>
+    <tr><td>número · xⁿ</td><td>el número espera</td><td class="mono">∫ 6x² dx = 2x³</td></tr>
+    <tr><td>sumas</td><td>cada término por separado</td><td class="mono">∫ (x + 1) dx = x²/2 + x</td></tr>
+    <tr><td>√x, 1/x²</td><td>disfrazás de potencia</td><td class="mono">∫ x⁻² dx = −1/x</td></tr>
+    <tr><td>1/x</td><td>excepción: ln</td><td class="mono">∫ 1/x dx = ln|x|</td></tr>
+    <tr><td>eˣ, cos x, sen x</td><td>de memoria</td><td class="mono">eˣ · sen x · −cos x</td></tr>
+    <tr><td>algo adentro y su derivada afuera</td><td>sustitución (u = lo de adentro)</td><td class="mono">∫ 2x(x² + 1)⁵ dx</td></tr>
+    <tr><td>dos cosas distintas multiplicadas</td><td>partes (LIATE para elegir u)</td><td class="mono">∫ x·eˣ dx</td></tr>
+    <tr><td>números arriba y abajo</td><td>integrás, arriba − abajo</td><td class="mono">∫₀² x² dx = 8/3</td></tr>
+  </table>
+  <h3>Los errores más comunes</h3>
+  <div class="vs"><div class="bad"><b>✗</b>∫ sen x dx = cos x</div><div class="good"><b>✓</b>−cos x + C</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>∫ 1/x² dx = ln(x²)</div><div class="good"><b>✓</b>−1/x + C (es una potencia, x⁻²)</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>∫ x·eˣ dx = (x²/2)·eˣ</div><div class="good"><b>✓</b>Por partes: eˣ(x − 1) + C</div></div>
+  <div class="vs"><div class="bad"><b>✗</b>Olvidarse la C</div><div class="good"><b>✓</b>Toda integral sin números lleva + C</div></div>
+  <a class="next" href="simulador-examenes.html"><b>¡A practicar! →</b><span>Simulador, bloque "Arranque desde cero": exámenes cortos y fáciles para ganar confianza. Después, la <a href="guia-integrales.html" style="color:#fff;text-decoration:underline">guía completa de integrales</a>.</span></a>
+
+  <button class="done-btn" data-l="chuleta">Marcar como entendida</button>
+</section>
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">11</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Modo APB · Integrales paso a paso.</b> Antes: <a href="guia-apb-derivadas.html">Derivadas APB</a>.</p>
+  <p style="font-size:13px;margin-top:6px;">Versión completa (nivel parcial): <a href="guia-integrales.html">guía de Integrales</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+integral:{t:"Integral",sym:"∫ f(x) dx",def:"La operación inversa de derivar: buscar la función de la que vino f. Si lleva números arriba y abajo, da el área bajo la curva.",ej:"∫ 2x dx = x² + C; ∫₀² x² dx = 8/3.",rel:["constante"]},
+  constante:{t:"Constante C",def:"El número desconocido que se suma al resultado de una integral, porque al derivar los números sueltos desaparecen.",ej:"x² + C incluye x², x² + 5, x² − 1…",rel:["integral"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+familia: G.plot({x:[-3,3],y:[-4,7],fns:[{f:function(x){return x*x;},c:G.C.red,label:'x²',lx:2.2},{f:function(x){return x*x+2;},c:G.C.navy,label:'x² + 2',lx:1.7,ldx:-52},{f:function(x){return x*x-3;},c:G.C.teal,label:'x² − 3',lx:2.5,ldy:16}]}),
+  area: G.plot({x:[-.5,2.6],y:[-.5,5],polys:[{pts:G.area(function(x){return x*x;},0,2),c:G.C.teal,op:.35,stroke:G.C.teal}],fns:[{f:function(x){return x*x;},c:G.C.red,dom:[-.5,2.25],label:'y = x²',lx:1.3,ldx:-60}],texts:[{x:1.45,y:.6,s:'8/3',b:true,c:G.C.teal,a:'middle',fs:14}]}),
+  entre: G.plot({x:[-.3,1.4],y:[-.3,1.5],step:.5,tickStep:.5,polys:[{pts:G.between(function(x){return x;},function(x){return x*x;},0,1),c:G.C.teal,op:.35,stroke:'none'}],fns:[{f:function(x){return x;},c:G.C.navy,label:'y = x (techo)',lx:1.2,ldx:-112},{f:function(x){return x*x;},c:G.C.red,label:'y = x² (piso)',lx:1.15,ldy:22,ldx:-30}]})
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+
+/* ===================== MODO APB: "probá vos" ===================== */
+(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+  function norm(s){
+    s=String(s).toLowerCase().trim();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g,function(c){return SUP[c];});
+    s=s.replace(/\|/g,'').replace(/−|–/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[·*×^]/g,'');
+    if(s.indexOf('=')>=0) s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/\+c$/,'');
+    s=s.replace(/^\+/,'');
+    return s;
+  }
+  document.querySelectorAll('.try').forEach(function(t){
+    var inp=t.querySelector('input'),fb=t.querySelector('.tfb');
+    var answers=(t.dataset.ans||'').split('|').map(norm);
+    var shown=t.dataset.show||t.dataset.ans.split('|')[0];
+    function check(){
+      var v=norm(inp.value);
+      if(!v){fb.className='tfb no';fb.innerHTML='Escribí algo primero 🙂';return;}
+      if(answers.indexOf(v)>=0){fb.className='tfb ok';fb.innerHTML='<b>¡Bien ahí! ✓</b> '+(t.dataset.why||'');}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> Revisá los pasos o abrí la pista. Si querés, tocá "Ver respuesta".';}
+    }
+    t.querySelector('.chk').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    var sh=t.querySelector('.shw');
+    if(sh)sh.addEventListener('click',function(){fb.className='tfb ok';fb.innerHTML='<b>Respuesta:</b> '+shown+'. '+(t.dataset.why||'');});
+  });
+  /* progreso ("Lo entendí") — se guarda solo en este navegador */
+  var key='apb:'+location.pathname;
+  var done={};try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var btns=document.querySelectorAll('.done-btn');
+  function paint(){
+    var n=0;btns.forEach(function(b){var on=!!done[b.dataset.l];b.classList.toggle('on',on);b.textContent=on?'✓ Lección entendida':'Marcar como entendida';if(on)n++;});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(btns.length?100*n/btns.length:0)+'%';t.textContent=n+' de '+btns.length+' lecciones entendidas';}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){done[b.dataset.l]=!done[b.dataset.l];try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}paint();});});
+  paint();
+})();
+</script>
+</body>
+</html>
