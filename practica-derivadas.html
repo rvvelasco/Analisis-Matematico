@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica de derivadas · con corrección</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+
+  /* ---------- MODO APB ---------- */
+  body{font-size:18px;}
+  .apb-badge{display:inline-block;background:#5F8A2E;color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+  .progress{position:sticky;top:57px;z-index:35;background:var(--paper);padding:8px 0 10px;}
+  .progress .bar{height:9px;background:var(--line);border-radius:10px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#5F8A2E,var(--teal));transition:width .4s;}
+  .progress .ptxt{font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:var(--mono);}
+  .lesson-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;}
+  .lesson-meta .time{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;}
+  .lesson-meta .goal{font-size:15px;color:var(--navy);}
+  .done-btn{display:block;margin:26px auto 0;background:#fff;border:2px solid #5F8A2E;color:#4C6E21;border-radius:30px;padding:10px 22px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;}
+  .done-btn.on{background:#5F8A2E;color:#fff;}
+  .steps{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:18px 0;box-shadow:var(--shadow);}
+  .steps .st-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:12px 0 2px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line-strong);}
+  .steps .st-title + .step{border-top:none;}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+  .step .c{flex:1;}
+  .step .c .m{font-family:var(--mono);font-size:17px;color:var(--navy-deep);background:var(--paper);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px;}
+  .step.result .n{background:var(--teal);}
+  .hl{background:#FFE9A8;border-radius:4px;padding:0 3px;}
+  .hl2{background:#CDE7F5;border-radius:4px;padding:0 3px;}
+  .hl3{background:#F7D3D6;border-radius:4px;padding:0 3px;}
+  .big{font-family:var(--mono);font-size:21px;text-align:center;background:#fff;border:2px solid var(--navy);border-radius:14px;padding:16px;margin:18px 0;color:var(--navy-deep);}
+  .big small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-soft);margin-top:6px;}
+  .try{background:#F3F0FA;border:1px solid #D9CDEE;border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:18px 0;}
+  .try .tt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#6B3FA0;text-transform:uppercase;margin-bottom:8px;}
+  .try .tq{margin-bottom:10px;}
+  .try .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .try input{font-family:var(--mono);font-size:17px;padding:8px 12px;border:1.5px solid var(--line-strong);border-radius:9px;min-width:160px;flex:1;max-width:280px;}
+  .try input:focus{outline:none;border-color:#6B3FA0;}
+  .try .chk{background:#6B3FA0;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-family:var(--body);cursor:pointer;}
+  .try .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;border-radius:9px;padding:8px 12px;font-weight:600;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .try .tfb{margin-top:10px;font-size:15px;display:none;border-radius:9px;padding:9px 12px;}
+  .try .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .try .tfb.no{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .try details{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+  .try details summary{cursor:pointer;color:#6B3FA0;font-weight:600;}
+  .tipkb{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  @media(max-width:620px){.vs{grid-template-columns:1fr;}}
+  .vs > div{border-radius:12px;padding:12px 14px;font-size:15.5px;}
+  .vs .bad{background:var(--red-soft);border:1px solid #F1CFD1;}
+  .vs .good{background:var(--teal-soft);border:1px solid #C4E2DB;}
+  .vs b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+  .vs .bad b{color:var(--red);} .vs .good b{color:var(--teal);}
+  .next{display:block;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:16px;padding:20px 22px;margin:40px 0 0;text-decoration:none;}
+  .next b{font-family:var(--display);font-size:22px;display:block;margin-bottom:4px;}
+  .next span{color:rgba(255,255,255,.85);font-size:15px;}
+
+  .ej{background:#fff;border:1px solid var(--line);border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:16px 0;box-shadow:var(--shadow);}
+  .ej.done{border-left-color:var(--teal);}
+  .ej-h{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
+  .ej-id{font-family:var(--mono);font-weight:700;color:#fff;background:#6B3FA0;border-radius:7px;padding:2px 9px;font-size:13px;}
+  .ej.done .ej-id{background:var(--teal);}
+  .ej.done .ej-id::after{content:" ✓";}
+  .ej-lv{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:2px 9px;}
+  .ej-lv.l1{background:var(--teal-soft);color:var(--teal);} .ej-lv.l2{background:var(--gold-soft);color:var(--gold);} .ej-lv.l3{background:var(--red-soft);color:var(--red);}
+  .ej-q{font-family:var(--mono);font-size:21px;color:var(--navy-deep);margin:6px 0 12px;}
+  .ej .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .ej input{font-family:var(--mono);font-size:17px;padding:9px 12px;border:1.5px solid var(--line-strong);border-radius:9px;flex:1;min-width:200px;}
+  .ej input:focus{outline:none;border-color:#6B3FA0;}
+  .ej button{border-radius:9px;padding:9px 14px;font-weight:700;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .ej .chk{background:#6B3FA0;color:#fff;border:none;}
+  .ej .hnt,.ej .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;}
+  .ej .prev{font-size:12.5px;margin-top:5px;min-height:16px;font-family:var(--mono);}
+  .ej .prev.okp{color:var(--teal);} .ej .prev.bad{color:var(--gold);}
+  .ej .tfb{display:none;margin-top:10px;font-size:15px;border-radius:10px;padding:10px 13px;line-height:1.55;}
+  .ej .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .ej .tfb.no{display:block;background:var(--red-soft);color:var(--navy-deep);border:1px solid #F1CFD1;}
+  .ej .tfb.sy{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .ej .hint{display:none;margin-top:10px;background:#FFF8E1;border-radius:10px;padding:9px 13px;font-size:15px;}
+  .ej .hint.show{display:block;}
+  .ej .pasos{display:none;margin-top:12px;background:var(--paper);border:1px dashed var(--line-strong);border-radius:10px;padding:10px 14px;}
+  .ej .pasos.show{display:block;}
+  .ej .pasos .pt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+  .ej .pasos ol{margin:6px 0 6px 20px;padding:0;} .ej .pasos li{margin:6px 0;font-size:15.5px;}
+  .ej .pasos .res{font-weight:700;color:var(--teal);}
+  .tagbk{font-family:var(--body);font-size:11px;font-weight:700;background:var(--navy);color:#fff;border-radius:20px;padding:2px 8px;vertical-align:middle;}
+  .book{background:#FBFAF6;border:1px solid var(--line-strong);border-radius:14px;padding:4px 16px 8px;margin:16px 0;}
+  .book .bt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);padding-top:10px;}
+  .syn td:first-child{font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Práctica · <b>Derivadas</b></span>
+    <nav class="topnav">
+      <a href="#como-escribir">Cómo escribir</a>
+      <a href="#saber">Lo que hay que saber</a>
+      <a href="#potencias">Potencias</a>
+      <a href="#sumas">Sumas</a>
+      <a href="#producto">Producto</a>
+      <a href="#cociente">Cociente</a>
+      <a href="#cadena">Cadena</a>
+      <a href="#mezcla">Mezclados</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <span class="apb-badge">PRÁCTICA CON CORRECCIÓN AUTOMÁTICA</span>
+  <h1>Derivadas: <span class="u">practicá y corregí</span></h1>
+  <p class="lead"><strong>34 ejercicios</strong> ordenados por regla (potencias, sumas, producto, cociente, cadena y mezclados), con un ejemplo resuelto de cada tipo. Escribís la derivada, el corrector la compara matemáticamente con la correcta y, si está mal, te dice qué regla se te escapó y te muestra la resolución.</p>
+  <div class="howto">
+    <h4>Cómo funciona la corrección</h4>
+    <p>Acepta cualquier forma equivalente: <span class="mono">2x·eˣ + x²·eˣ</span> o <span class="mono">eˣ(x² + 2x)</span> están las dos bien. Si te equivocás, detecta errores típicos: te faltó multiplicar por la derivada de adentro (cadena), invertiste el orden del cociente, derivaste los factores por separado, signo del coseno… Si te falta base: <a href="guia-apb-derivadas.html">Derivadas APB</a>.</p>
+  </div>
+</header>
+
+<main>
+<div class="progress"><div class="bar"><div class="fill"></div></div><div class="ptxt"></div></div><section class="section" id="como-escribir">
+  <div class="section-head"><span class="section-num">01</span><h2>Cómo escribir tus respuestas</h2></div>
+
+  <table class="data syn">
+    <tr><th>Querés escribir</th><th>Tipeá (cualquiera sirve)</th></tr>
+    <tr><td>x² , x³</td><td><b>x^2</b> &nbsp;o&nbsp; x² · <b>x^3</b></td></tr>
+    <tr><td>x^(3/2) , x⁻²</td><td><b>x^(3/2)</b> (¡con paréntesis!) · <b>x^-2</b></td></tr>
+    <tr><td>√x , ∛x</td><td><b>sqrt(x)</b> o √x · <b>x^(1/3)</b> o ∛x</td></tr>
+    <tr><td>fracciones</td><td><b>x^3/3</b> · <b>(2/3)x^(3/2)</b> · <b>-1/(2x^2)</b></td></tr>
+    <tr><td>multiplicar</td><td><b>2x</b> · <b>3(x+1)^2</b> · <b>x*e^x</b> (el * es opcional)</td></tr>
+    <tr><td>ln, e, trigonométricas</td><td><b>ln|x|</b> o ln(x) · <b>e^x</b> · <b>e^(3x)</b> · <b>sen(x)</b> · <b>cos(x)</b></td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">El error de tipeo más común</span><p><b>x^3/2</b> se lee como (x³)/2. Si querés x elevado a 3/2, escribí <b>x^(3/2)</b>. Mientras escribís, abajo del casillero aparece "✓ Lo entiendo" si la expresión se puede leer.</p></div>
+
+  <p>En derivadas <b>no</b> va + C. Escribí solo la derivada (sin "f′(x) =", aunque si lo ponés también lo entiende).</p>
+</section>
+<section class="section" id="saber">
+  <div class="section-head"><span class="section-num">02</span><h2>Todo lo que necesitás saber</h2></div>
+  <table class="data">
+    <tr><th style="width:24%">Regla</th><th>Fórmula</th><th>En criollo</th></tr>
+    <tr><td><b>Número solo</b></td><td class="mono">(k)′ = 0</td><td>No cambia: da 0</td></tr>
+    <tr><td><b>Potencia</b></td><td class="mono">(xⁿ)′ = n·xⁿ⁻¹</td><td>Baja el exponente y le restás 1</td></tr>
+    <tr><td><b>Número por función</b></td><td class="mono">(k·f)′ = k·f′</td><td>El número espera afuera</td></tr>
+    <tr><td><b>Suma</b></td><td class="mono">(f ± g)′ = f′ ± g′</td><td>Cada término por separado</td></tr>
+    <tr><td><b>Producto</b></td><td class="mono">(f·g)′ = f′·g + f·g′</td><td>Derivo el 1° y copio el 2° + copio el 1° y derivo el 2°</td></tr>
+    <tr><td><b>Cociente</b></td><td class="mono">(f/g)′ = (f′·g − f·g′)/g²</td><td>De arriba por abajo, menos arriba por de abajo, sobre abajo²</td></tr>
+    <tr><td><b>Cadena</b></td><td class="mono">[f(g(x))]′ = f′(g(x))·g′(x)</td><td>Derivo afuera sin tocar adentro, por la derivada de adentro</td></tr>
+  </table>
+  <table class="data">
+    <tr><th>Función</th><td class="mono">eˣ</td><td class="mono">ln x</td><td class="mono">sen x</td><td class="mono">cos x</td><td class="mono">√x</td><td class="mono">1/x</td></tr>
+    <tr><th>Derivada</th><td class="mono">eˣ</td><td class="mono">1/x</td><td class="mono">cos x</td><td class="mono">−sen x</td><td class="mono">1/(2√x)</td><td class="mono">−1/x²</td></tr>
+  </table>
+</section>
+<section class="section" id="potencias">
+  <div class="section-head"><span class="section-num">03</span><h2>Tipo 1 · Potencias y raíces</h2></div>
+<div class="book"><div class="bt">📘 Ejemplo resuelto · f(x) = 1/∛x</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Disfrazo: 1/∛x = x^(−1/3).</div></div><div class="step"><span class="n">2</span><div class="c">Baja el −1/3: −(1/3)·x^(−1/3 − 1).</div></div><div class="step"><span class="n">3</span><div class="c">−1/3 − 1 = −4/3.</div></div><div class="step result"><span class="n">✓</span><div class="c">f′(x) = <b>−(1/3)·x^(−4/3)</b> = −1/(3x∛x)</div></div></div></div><h3>Ahora vos</h3><div class="ej" data-id="A1"></div>
+<div class="ej" data-id="A2"></div>
+<div class="ej" data-id="A3"></div>
+<div class="ej" data-id="A4"></div>
+<div class="ej" data-id="A5"></div>
+<div class="ej" data-id="A6"></div>
+</section>
+<section class="section" id="sumas">
+  <div class="section-head"><span class="section-num">04</span><h2>Tipo 2 · Sumas y polinomios</h2></div>
+<div class="book"><div class="bt">📘 Ejemplo resuelto · f(x) = 2x³ − 5x² + 3x − 8</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">2x³ → 6x² ; −5x² → −10x ; 3x → 3 ; −8 → 0.</div></div><div class="step result"><span class="n">✓</span><div class="c">f′(x) = <b>6x² − 10x + 3</b></div></div></div></div><h3>Ahora vos</h3><div class="ej" data-id="B1"></div>
+<div class="ej" data-id="B2"></div>
+<div class="ej" data-id="B3"></div>
+</section>
+<section class="section" id="producto">
+  <div class="section-head"><span class="section-num">05</span><h2>Tipo 3 · Producto</h2></div>
+  <p><b>Cuándo:</b> dos factores <strong>con x</strong> multiplicándose (si uno es solo un número, no hace falta).</p>
+<div class="book"><div class="bt">📘 Ejemplo resuelto · f(x) = x²·ln x</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">1° = x² (derivada 2x); 2° = ln x (derivada 1/x).</div></div><div class="step"><span class="n">2</span><div class="c">2x·ln x + x²·(1/x).</div></div><div class="step"><span class="n">3</span><div class="c">x²·(1/x) = x.</div></div><div class="step result"><span class="n">✓</span><div class="c">f′(x) = <b>2x·ln x + x</b></div></div></div></div><div class="vs"><div class="bad"><b>✗ Error típico</b>(x²·ln x)′ = 2x·(1/x) = 2</div><div class="good"><b>✓ Bien</b>2x·ln x + x</div></div><h3>Ahora vos</h3><div class="ej" data-id="C1"></div>
+<div class="ej" data-id="C2"></div>
+<div class="ej" data-id="C3"></div>
+<div class="ej" data-id="C4"></div>
+<div class="ej" data-id="C5"></div>
+</section>
+<section class="section" id="cociente">
+  <div class="section-head"><span class="section-num">06</span><h2>Tipo 4 · Cociente</h2></div>
+<div class="book"><div class="bt">📘 Ejemplo resuelto · f(x) = (2x + 1)/(x − 3)</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Arriba 2x + 1 (derivada 2); abajo x − 3 (derivada 1).</div></div><div class="step"><span class="n">2</span><div class="c">[2·(x − 3) − (2x + 1)·1]/(x − 3)².</div></div><div class="step"><span class="n">3</span><div class="c">Numerador: 2x − 6 − 2x − 1 = −7.</div></div><div class="step result"><span class="n">✓</span><div class="c">f′(x) = <b>−7/(x − 3)²</b></div></div></div></div><div class="callout c-tip"><span class="tag">Atajo</span><p>Si abajo hay un solo término (x, x²), muchas veces es más fácil <b>dividir primero</b> y derivar potencias. Ej.: (x² + 1)/x = x + x⁻¹ → 1 − 1/x².</p></div><h3>Ahora vos</h3><div class="ej" data-id="D1"></div>
+<div class="ej" data-id="D2"></div>
+<div class="ej" data-id="D3"></div>
+<div class="ej" data-id="D4"></div>
+<div class="ej" data-id="D5"></div>
+</section>
+<section class="section" id="cadena">
+  <div class="section-head"><span class="section-num">07</span><h2>Tipo 5 · Regla de la cadena</h2></div>
+  <p><b>Cuándo:</b> en lugar de una x sola hay una <strong>cuenta</strong> adentro de un paréntesis elevado, una raíz, un seno, un ln o en el exponente de e. Es "lo opuesto" a la sustitución de integrales.</p>
+<div class="book"><div class="bt">📘 Ejemplo resuelto · f(x) = (x³ + 2)^(3/2) &nbsp;(como en el ejercicio 9 del libro, pero derivando)</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Afuera: "algo a la 3/2". Adentro: x³ + 2 (derivada 3x²).</div></div><div class="step"><span class="n">2</span><div class="c">Derivo afuera sin tocar adentro: (3/2)(x³ + 2)^(1/2).</div></div><div class="step"><span class="n">3</span><div class="c">Multiplico por la derivada de adentro: ·3x².</div></div><div class="step result"><span class="n">✓</span><div class="c">f′(x) = <b>(9/2)x²·(x³ + 2)^(1/2)</b></div></div></div></div><div class="callout c-criollo"><span class="tag">Fijate la conexión</span><p>En integrales, el 9(b) daba ∫ (x³ + 2)^(1/2)·x² dx = (2/9)(x³ + 2)^(3/2). Si derivás (2/9)(x³ + 2)^(3/2) con la cadena: (2/9)·(9/2)x²(x³ + 2)^(1/2) = x²(x³ + 2)^(1/2) ✓. <strong>La cadena y la sustitución son la misma regla, una al derecho y otra al revés.</strong></p></div><h3>Ahora vos</h3><div class="ej" data-id="E1"></div>
+<div class="ej" data-id="E2"></div>
+<div class="ej" data-id="E3"></div>
+<div class="ej" data-id="E4"></div>
+<div class="ej" data-id="E5"></div>
+<div class="ej" data-id="E6"></div>
+<div class="ej" data-id="E7"></div>
+<div class="ej" data-id="E8"></div>
+<div class="ej" data-id="E9"></div>
+</section>
+<section class="section" id="mezcla">
+  <div class="section-head"><span class="section-num">08</span><h2>Mezclados (varias reglas a la vez)</h2></div>
+  <p>Primero mirá <b>la operación de más afuera</b>: si todo es un producto, arrancás con producto (y adentro de cada factor puede haber cadena). Si todo es un ln de algo, arrancás con cadena (y quizás conviene simplificar con propiedades del ln antes).</p>
+<div class="ej" data-id="F1"></div>
+<div class="ej" data-id="F2"></div>
+<div class="ej" data-id="F3"></div>
+<div class="ej" data-id="F4"></div>
+<div class="ej" data-id="F5"></div>
+<div class="ej" data-id="F6"></div>
+  <a class="next" href="practica-integrales.html"><b>¿Querés practicar integrales? →</b><span>Los ejercicios del libro y 42 parecidos, con la misma corrección.</span></a>
+</section>
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">09</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Práctica de derivadas con corrección automática.</b> Teoría: <a href="guia-apb-derivadas.html">Derivadas APB</a> · <a href="guia-derivadas.html">Derivadas (completa)</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+cadena:{t:"Regla de la cadena",def:"Para derivar una función compuesta: se deriva la de afuera dejando la de adentro igual, y se multiplica por la derivada de la de adentro.",ej:"((x³ + 2)⁴)′ = 4(x³ + 2)³·3x².",rel:["producto"]},
+  producto:{t:"Regla del producto",def:"(f·g)′ = f′·g + f·g′.",ej:"(x²·eˣ)′ = 2x·eˣ + x²·eˣ.",rel:["cadena"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+
+/* ===================== MODO APB: "probá vos" ===================== */
+(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+  function norm(s){
+    s=String(s).toLowerCase().trim();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g,function(c){return SUP[c];});
+    s=s.replace(/\|/g,'').replace(/−|–/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[·*×^]/g,'');
+    if(s.indexOf('=')>=0) s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/\+c$/,'');
+    s=s.replace(/^\+/,'');
+    return s;
+  }
+  document.querySelectorAll('.try').forEach(function(t){
+    var inp=t.querySelector('input'),fb=t.querySelector('.tfb');
+    var answers=(t.dataset.ans||'').split('|').map(norm);
+    var shown=t.dataset.show||t.dataset.ans.split('|')[0];
+    function check(){
+      var v=norm(inp.value);
+      if(!v){fb.className='tfb no';fb.innerHTML='Escribí algo primero 🙂';return;}
+      if(answers.indexOf(v)>=0){fb.className='tfb ok';fb.innerHTML='<b>¡Bien ahí! ✓</b> '+(t.dataset.why||'');}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> Revisá los pasos o abrí la pista. Si querés, tocá "Ver respuesta".';}
+    }
+    t.querySelector('.chk').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    var sh=t.querySelector('.shw');
+    if(sh)sh.addEventListener('click',function(){fb.className='tfb ok';fb.innerHTML='<b>Respuesta:</b> '+shown+'. '+(t.dataset.why||'');});
+  });
+  /* progreso ("Lo entendí") — se guarda solo en este navegador */
+  var key='apb:'+location.pathname;
+  var done={};try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var btns=document.querySelectorAll('.done-btn');
+  function paint(){
+    var n=0;btns.forEach(function(b){var on=!!done[b.dataset.l];b.classList.toggle('on',on);b.textContent=on?'✓ Lección entendida':'Marcar como entendida';if(on)n++;});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(btns.length?100*n/btns.length:0)+'%';t.textContent=n+' de '+btns.length+' lecciones entendidas';}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){done[b.dataset.l]=!done[b.dataset.l];try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}paint();});});
+  paint();
+})();
+var EJ={"A1": {"m": "D", "lv": 1, "q": "f(x) = x⁷ &nbsp;→ f′(x) = ?", "v": "x", "f": "x^7", "F": "7*x^6", "R": "7x⁶", "hint": "El exponente baja adelante y al exponente se le resta 1.", "steps": ["Bajo el 7 adelante: 7·x⁷.", "Al exponente le resto 1: 7 − 1 = 6.", "f′(x) = 7x⁶."], "mist": [["x^8/8", "Eso es <b>integrar</b>. Para derivar: el exponente <b>baja</b> y se le <b>resta</b> 1."], ["7*x^7", "Bajaste el 7 pero te faltó <b>restarle 1</b> al exponente."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A2": {"m": "D", "lv": 1, "q": "f(x) = 1/x³", "v": "x", "f": "1/x^3", "F": "-3/x^4", "R": "−3/x⁴", "hint": "Disfrazá: 1/x³ = x⁻³. Después baja el −3 y −3 − 1 = −4.", "steps": ["Disfrazo: 1/x³ = x⁻³.", "Baja el −3: −3·x⁻³.", "Resto 1 al exponente: −3 − 1 = <b>−4</b> (restar a un negativo lo hace más negativo).", "f′(x) = −3x⁻⁴ = −3/x⁴."], "mist": [["-3/x^2", "Al exponente −3 le <b>sumaste</b> 1 (dio −2). Para derivar se <b>resta</b>: −3 − 1 = −4."], ["1/(3*x^2)", "No se deriva \"dando vuelta\" la potencia de abajo. Disfrazá: x⁻³ y aplicá la regla."], ["3/x^4", "Te falta el <b>signo menos</b>: baja el exponente −3."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A3": {"m": "D", "lv": 1, "q": "f(x) = √x", "v": "x", "f": "sqrt(x)", "F": "1/(2*sqrt(x))", "R": "1/(2√x)", "hint": "√x = x^(1/2). Baja el 1/2 y 1/2 − 1 = −1/2.", "steps": ["Disfrazo: x^(1/2).", "Baja el 1/2: (1/2)x^(1/2 − 1) = (1/2)x^(−1/2).", "Saco el disfraz: x^(−1/2) = 1/√x → f′(x) = 1/(2√x)."], "mist": [["(1/2)*sqrt(x)", "Bajaste el 1/2 pero no le restaste 1 al exponente: 1/2 − 1 = −1/2."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A4": {"m": "D", "lv": 2, "q": "f(x) = ∛(x²)", "v": "x", "f": "x^(2/3)", "F": "(2/3)*x^(-1/3)", "R": "(2/3)·x^(−1/3) = 2/(3∛x)", "hint": "∛(x²) = x^(2/3). Baja el 2/3 y 2/3 − 1 = −1/3.", "steps": ["Disfrazo: x^(2/3).", "Baja el 2/3: (2/3)x^(2/3 − 1).", "2/3 − 1 = −1/3 → f′(x) = (2/3)x^(−1/3) = 2/(3∛x)."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A5": {"m": "D", "lv": 2, "q": "f(x) = 1/√x", "v": "x", "f": "1/sqrt(x)", "F": "-1/(2*x^(3/2))", "R": "−1/(2x^(3/2))", "hint": "1/√x = x^(−1/2). Baja el −1/2 y −1/2 − 1 = −3/2.", "steps": ["Disfrazo: x^(−1/2).", "Baja el −1/2: −(1/2)x^(−3/2).", "f′(x) = −1/(2x^(3/2)) = −1/(2x√x)."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A6": {"m": "D", "lv": 2, "q": "f(t) = t·√t", "v": "t", "f": "t*sqrt(t)", "F": "(3/2)*sqrt(t)", "R": "(3/2)√t", "hint": "Juntá primero: t·t^(1/2) = t^(3/2).", "steps": ["Junto: t·√t = t^(3/2).", "Baja el 3/2 y 3/2 − 1 = 1/2.", "f′(t) = (3/2)t^(1/2) = (3/2)√t."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B1": {"m": "D", "lv": 1, "q": "f(x) = 3x⁴ − 5x² + 7x − 2", "v": "x", "f": "3*x^4-5*x^2+7*x-2", "F": "12*x^3-10*x+7", "R": "12x³ − 10x + 7", "hint": "Cada término por separado. El número suelto desaparece.", "steps": ["3x⁴ → 12x³.", "−5x² → −10x.", "7x → 7.", "−2 → 0.", "f′(x) = 12x³ − 10x + 7."], "mist": [["12*x^3-10*x+7-2", "El número suelto (−2) tiene derivada <b>0</b>: desaparece."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B2": {"m": "D", "lv": 1, "q": "f(x) = x³/3 − x²/2 + 6", "v": "x", "f": "x^3/3-x^2/2+6", "F": "x^2-x", "R": "x² − x", "hint": "El 1/3 y el 1/2 esperan afuera.", "steps": ["x³/3 → (1/3)·3x² = x².", "−x²/2 → −(1/2)·2x = −x.", "6 → 0.", "f′(x) = x² − x."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B3": {"m": "D", "lv": 2, "q": "f(x) = 4√x − 2/x", "v": "x", "f": "4*sqrt(x)-2/x", "F": "2/sqrt(x)+2/x^2", "R": "2/√x + 2/x²", "hint": "4x^(1/2) − 2x⁻¹.", "steps": ["4x^(1/2) → 4·(1/2)x^(−1/2) = 2/√x.", "−2x⁻¹ → −2·(−1)x⁻² = +2/x².", "f′(x) = 2/√x + 2/x²."], "mist": [["2/sqrt(x)-2/x^2", "Error de signo: −2 por −1 da <b>+2</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C1": {"m": "D", "lv": 1, "q": "f(x) = x²·eˣ", "v": "x", "f": "x^2*e^x", "F": "2*x*e^x+x^2*e^x", "R": "2x·eˣ + x²·eˣ = eˣ(x² + 2x)", "hint": "Producto: (primero)′·segundo + primero·(segundo)′.", "steps": ["Primero = x² (derivada 2x). Segundo = eˣ (derivada eˣ).", "2x·eˣ + x²·eˣ.", "Sacando factor común: eˣ(x² + 2x)."], "mist": [["2*x*e^x", "Derivaste los dos factores y los multiplicaste. La regla del producto tiene <b>dos términos</b>: f′·g + f·g′."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C2": {"m": "D", "lv": 1, "q": "f(x) = x·ln x", "v": "x", "f": "x*ln(x)", "F": "ln(x)+1", "R": "ln x + 1", "hint": "Primero x (derivada 1), segundo ln x (derivada 1/x).", "steps": ["1·ln x + x·(1/x).", "x·(1/x) = 1.", "f′(x) = ln x + 1."], "mist": [["1/x", "Derivaste los dos factores y los multiplicaste (1·1/x). Es f′·g + f·g′ = ln x + 1."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C3": {"m": "D", "lv": 2, "q": "f(x) = x³·sen x", "v": "x", "f": "x^3*sen(x)", "F": "3*x^2*sen(x)+x^3*cos(x)", "R": "3x²·sen x + x³·cos x", "hint": "Primero x³ (derivada 3x²), segundo sen x (derivada cos x).", "steps": ["3x²·sen x + x³·cos x."], "mist": [["3*x^2*cos(x)", "Derivaste cada factor y los multiplicaste. Son dos términos: 3x²·sen x + x³·cos x."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C4": {"m": "D", "lv": 2, "q": "f(x) = (x² + 1)(x − 2)", "v": "x", "f": "(x^2+1)*(x-2)", "F": "3*x^2-4*x+1", "R": "3x² − 4x + 1", "hint": "Podés usar producto o multiplicar primero: x³ − 2x² + x − 2.", "steps": ["Producto: 2x·(x − 2) + (x² + 1)·1 = 2x² − 4x + x² + 1.", "Simplifico: 3x² − 4x + 1.", "(Multiplicando primero: x³ − 2x² + x − 2 → 3x² − 4x + 1. Mismo resultado.)"], "mist": [["2*x", "Derivaste cada paréntesis y multiplicaste: 2x·1. Es producto: f′·g + f·g′."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C5": {"m": "D", "lv": 3, "q": "f(x) = eˣ·cos x", "v": "x", "f": "e^x*cos(x)", "F": "e^x*cos(x)-e^x*sen(x)", "R": "eˣ(cos x − sen x)", "hint": "Ojo con el signo de la derivada del coseno.", "steps": ["eˣ·cos x + eˣ·(−sen x).", "f′(x) = eˣ(cos x − sen x)."], "mist": [["e^x*cos(x)+e^x*sen(x)", "La derivada de cos x es <b>−sen x</b>: falta el menos."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D1": {"m": "D", "lv": 1, "q": "f(x) = (x + 1)/(x − 1)", "v": "x", "f": "(x+1)/(x-1)", "F": "-2/(x-1)^2", "R": "−2/(x − 1)²", "hint": "(derivada de arriba · abajo − arriba · derivada de abajo) / abajo².", "steps": ["Arriba x + 1 (derivada 1), abajo x − 1 (derivada 1).", "[1·(x − 1) − (x + 1)·1]/(x − 1)².", "Numerador: x − 1 − x − 1 = −2.", "f′(x) = −2/(x − 1)²."], "mist": [["2/(x-1)^2", "Invertiste el orden del numerador. Es <b>(derivada de arriba)·abajo − arriba·(derivada de abajo)</b>."], ["1", "Derivaste arriba y abajo por separado (1/1). Para un cociente hay que usar la regla del cociente."]], "pts": [1.4, 1.8, 2.3, 2.9, 3.6, 4.4]}, "D2": {"m": "D", "lv": 2, "q": "f(x) = x/(x² + 1)", "v": "x", "f": "x/(x^2+1)", "F": "(1-x^2)/(x^2+1)^2", "R": "(1 − x²)/(x² + 1)²", "hint": "Arriba x (derivada 1), abajo x² + 1 (derivada 2x).", "steps": ["[1·(x² + 1) − x·2x]/(x² + 1)².", "Numerador: x² + 1 − 2x² = 1 − x².", "f′(x) = (1 − x²)/(x² + 1)²."], "mist": [["(x^2-1)/(x^2+1)^2", "Signo invertido: el orden es derivada de arriba · abajo <b>menos</b> arriba · derivada de abajo."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D3": {"m": "D", "lv": 2, "q": "f(x) = x²/(x + 3)", "v": "x", "f": "x^2/(x+3)", "F": "(x^2+6*x)/(x+3)^2", "R": "(x² + 6x)/(x + 3)²", "hint": "Arriba x² (derivada 2x), abajo x + 3 (derivada 1).", "steps": ["[2x(x + 3) − x²·1]/(x + 3)².", "2x² + 6x − x² = x² + 6x.", "f′(x) = (x² + 6x)/(x + 3)²."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D4": {"m": "D", "lv": 2, "q": "f(x) = ln x / x", "v": "x", "f": "ln(x)/x", "F": "(1-ln(x))/x^2", "R": "(1 − ln x)/x²", "hint": "Arriba ln x (derivada 1/x), abajo x (derivada 1).", "steps": ["[(1/x)·x − ln x·1]/x².", "(1/x)·x = 1.", "f′(x) = (1 − ln x)/x²."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D5": {"m": "D", "lv": 3, "q": "f(x) = eˣ/x", "v": "x", "f": "e^x/x", "F": "e^x*(x-1)/x^2", "R": "eˣ(x − 1)/x²", "hint": "Arriba eˣ (derivada eˣ), abajo x (derivada 1).", "steps": ["[eˣ·x − eˣ·1]/x².", "Factor común eˣ: eˣ(x − 1)/x²."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E1": {"m": "D", "lv": 1, "q": "f(x) = (3x + 1)⁵", "v": "x", "f": "(3*x+1)^5", "F": "15*(3*x+1)^4", "R": "15(3x + 1)⁴", "hint": "Afuera \"algo a la 5\", adentro 3x + 1 (derivada 3).", "steps": ["Derivo afuera sin tocar adentro: 5(3x + 1)⁴.", "Multiplico por la derivada de adentro: ·3.", "f′(x) = 15(3x + 1)⁴."], "mist": [["5*(3*x+1)^4", "Te faltó multiplicar por la <b>derivada de lo de adentro</b> (3x + 1)′ = 3."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E2": {"m": "D", "lv": 2, "q": "f(x) = (x³ + 2)⁴ &nbsp;<span class=\"tagbk\">estilo libro</span>", "v": "x", "f": "(x^3+2)^4", "F": "12*x^2*(x^3+2)^3", "R": "12x²(x³ + 2)³", "hint": "Adentro x³ + 2 (derivada 3x²).", "steps": ["4(x³ + 2)³ · 3x².", "4·3 = 12 → f′(x) = 12x²(x³ + 2)³."], "mist": [["4*(x^3+2)^3", "Falta multiplicar por la derivada de adentro: (x³ + 2)′ = <b>3x²</b>."], ["4*(3*x^2)^3", "Derivaste lo de adentro y lo pusiste en lugar del paréntesis. Afuera se deriva <b>dejando lo de adentro igual</b>, y recién después se multiplica por la derivada de adentro."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E3": {"m": "D", "lv": 2, "q": "f(x) = √(x² + 1)", "v": "x", "f": "sqrt(x^2+1)", "F": "x/sqrt(x^2+1)", "R": "x/√(x² + 1)", "hint": "√u → u′/(2√u). Acá u = x² + 1.", "steps": ["(x² + 1)^(1/2) → (1/2)(x² + 1)^(−1/2) · 2x.", "(1/2)·2x = x.", "f′(x) = x/√(x² + 1)."], "mist": [["1/(2*sqrt(x^2+1))", "Falta multiplicar por la derivada de adentro, <b>2x</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E4": {"m": "D", "lv": 1, "q": "f(x) = e^(x²)", "v": "x", "f": "e^(x^2)", "F": "2*x*e^(x^2)", "R": "2x·e^(x²)", "hint": "e^u → e^u · u′.", "steps": ["La exponencial queda igual: e^(x²).", "Por la derivada del exponente: 2x.", "f′(x) = 2x·e^(x²)."], "mist": [["e^(x^2)", "Falta multiplicar por la derivada del exponente, <b>2x</b>."], ["x^2*e^(x^2-1)", "e^(x²) no es una potencia de x: la base es e. Se usa (e^u)′ = e^u·u′."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E5": {"m": "D", "lv": 1, "q": "f(x) = sen(3x)", "v": "x", "f": "sen(3*x)", "F": "3*cos(3*x)", "R": "3·cos(3x)", "hint": "Afuera seno, adentro 3x.", "steps": ["sen → cos (de lo mismo): cos(3x).", "Por la derivada de 3x: 3.", "f′(x) = 3cos(3x)."], "mist": [["cos(3*x)", "Falta el <b>3</b> (derivada de lo de adentro)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E6": {"m": "D", "lv": 2, "q": "f(x) = ln(x² + 4)", "v": "x", "f": "ln(x^2+4)", "F": "2*x/(x^2+4)", "R": "2x/(x² + 4)", "hint": "ln u → u′/u.", "steps": ["1/(x² + 4) · 2x.", "f′(x) = 2x/(x² + 4)."], "mist": [["1/(x^2+4)", "Falta multiplicar por la derivada de adentro, <b>2x</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E7": {"m": "D", "lv": 2, "q": "f(x) = cos(x³)", "v": "x", "f": "cos(x^3)", "F": "-3*x^2*sen(x^3)", "R": "−3x²·sen(x³)", "hint": "cos → −sen, por la derivada de x³.", "steps": ["−sen(x³) · 3x².", "f′(x) = −3x²·sen(x³)."], "mist": [["3*x^2*sen(x^3)", "La derivada del coseno es <b>−sen</b>: falta el menos."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E8": {"m": "D", "lv": 3, "q": "f(x) = 1/(x³ + 2)² &nbsp;<span class=\"tagbk\">estilo libro</span>", "v": "x", "f": "1/(x^3+2)^2", "F": "-6*x^2/(x^3+2)^3", "R": "−6x²/(x³ + 2)³", "hint": "Disfrazá: (x³ + 2)⁻². Baja el −2 y −2 − 1 = −3, por 3x².", "steps": ["Disfrazo: (x³ + 2)⁻².", "−2(x³ + 2)⁻³ · 3x².", "f′(x) = −6x²(x³ + 2)⁻³ = −6x²/(x³ + 2)³."], "mist": [["-2/(x^3+2)^3", "Falta multiplicar por la derivada de adentro, <b>3x²</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E9": {"m": "D", "lv": 3, "q": "f(x) = sen³(2x)", "v": "x", "f": "sen(2*x)^3", "F": "6*sen(2*x)^2*cos(2*x)", "R": "6·sen²(2x)·cos(2x)", "hint": "Tres capas: (…)³, sen y 2x.", "steps": ["sen³(2x) = [sen(2x)]³.", "Capa 1: 3[sen(2x)]². Capa 2: cos(2x). Capa 3: 2.", "f′(x) = 3·sen²(2x)·cos(2x)·2 = 6 sen²(2x) cos(2x)."], "mist": [["3*sen(2*x)^2*cos(2*x)", "Te faltó la última capa: la derivada de 2x, que es <b>2</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F1": {"m": "D", "lv": 2, "q": "f(x) = x²·e^(3x)", "v": "x", "f": "x^2*e^(3*x)", "F": "2*x*e^(3*x)+3*x^2*e^(3*x)", "R": "e^(3x)(2x + 3x²)", "hint": "Producto, y adentro del segundo factor hay cadena.", "steps": ["2x·e^(3x) + x²·(e^(3x))′.", "(e^(3x))′ = 3e^(3x).", "f′(x) = 2x·e^(3x) + 3x²·e^(3x) = e^(3x)(2x + 3x²)."], "mist": [["2*x*e^(3*x)+x^2*e^(3*x)", "Falta la cadena: (e^(3x))′ = <b>3</b>e^(3x)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F2": {"m": "D", "lv": 2, "q": "f(x) = ln(√x)", "v": "x", "f": "ln(sqrt(x))", "F": "1/(2*x)", "R": "1/(2x)", "hint": "Tip: simplificá antes con propiedades del ln: ln(√x) = ½ ln x.", "steps": ["ln(√x) = ln(x^(1/2)) = ½ ln x.", "f′(x) = ½ · 1/x = 1/(2x)."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F3": {"m": "D", "lv": 3, "q": "f(x) = x·√(x² + 1)", "v": "x", "f": "x*sqrt(x^2+1)", "F": "(2*x^2+1)/sqrt(x^2+1)", "R": "(2x² + 1)/√(x² + 1)", "hint": "Producto: x por √(x² + 1); la raíz necesita cadena.", "steps": ["1·√(x² + 1) + x·x/√(x² + 1).", "Común denominador: [(x² + 1) + x²]/√(x² + 1).", "f′(x) = (2x² + 1)/√(x² + 1)."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F4": {"m": "D", "lv": 2, "q": "f(x) = (x + 1)²/x", "v": "x", "f": "(x+1)^2/x", "F": "(x^2-1)/x^2", "R": "(x² − 1)/x² = 1 − 1/x²", "hint": "Más fácil: desarrollá y dividí antes: x + 2 + 1/x.", "steps": ["(x + 1)²/x = (x² + 2x + 1)/x = x + 2 + x⁻¹.", "Derivo: 1 + 0 − x⁻² = 1 − 1/x².", "= (x² − 1)/x²."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F5": {"m": "D", "lv": 3, "q": "f(x) = e^(−x)·sen x", "v": "x", "f": "e^(-x)*sen(x)", "F": "e^(-x)*(cos(x)-sen(x))", "R": "e^(−x)(cos x − sen x)", "hint": "Producto; (e^(−x))′ = −e^(−x).", "steps": ["(e^(−x))′·sen x + e^(−x)·cos x = −e^(−x)·sen x + e^(−x)·cos x.", "f′(x) = e^(−x)(cos x − sen x)."], "mist": [["e^(-x)*(cos(x)+sen(x))", "(e^(−x))′ = <b>−</b>e^(−x): la derivada de −x es −1."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F6": {"m": "D", "lv": 3, "q": "f(x) = ln[(x + 1)/(x − 1)]", "v": "x", "f": "ln((x+1)/(x-1))", "F": "-2/(x^2-1)", "R": "−2/(x² − 1)", "hint": "Separá con propiedades: ln(x + 1) − ln(x − 1).", "steps": ["f(x) = ln(x + 1) − ln(x − 1).", "f′(x) = 1/(x + 1) − 1/(x − 1).", "Común denominador: [(x − 1) − (x + 1)]/(x² − 1) = −2/(x² − 1)."], "mist": [], "pts": [1.4, 1.8, 2.3, 2.9, 3.6, 4.4]}};
+/* ===================== CORRECTOR DE INTEGRALES =====================
+   Lee lo que escribe el estudiante (x^2, x², √x, ln|x|, 2x(x+1), sen x…),
+   lo convierte en función y lo compara con la primitiva correcta en varios
+   puntos: si la diferencia es constante, es correcto (por el + C).
+   Si está mal, intenta diagnosticar el error y muestra la resolución. */
+var CORR=(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁄':'/','ᐟ':'/'};
+  var FUN={sen:Math.sin,sin:Math.sin,cos:Math.cos,tg:Math.tan,tan:Math.tan,ln:Math.log,log:function(v){return Math.log(v)/Math.LN10;},
+    sqrt:Math.sqrt,raiz:Math.sqrt,exp:Math.exp,abs:Math.abs,arctg:Math.atan,arctan:Math.atan,arcsen:Math.asin,arcsin:Math.asin};
+  var WORDS=['arcsen','arcsin','arctg','arctan','sqrt','raiz','sen','sin','cos','tan','tg','exp','abs','ln','log','pi'];
+
+  function prep(s){
+    s=String(s).toLowerCase();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁄ᐟ]+/g,function(m){return '^('+m.split('').map(function(c){return SUP[c];}).join('')+')';});
+    s=s.replace(/[−–—]/g,'-').replace(/[·×∙]/g,'*').replace(/,/g,'.').replace(/÷/g,'/').replace(/π/g,'pi').replace(/raíz/g,'raiz');
+    if(s.indexOf('=')>=0)s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/d[a-z]\s*$/,'');                 // "… dx" al final
+    s=s.replace(/[+-]\s*[ck]\s*$/,'');             // "+ C" al final
+    return s.trim();
+  }
+  function tokenize(s,v){
+    var t=[],i=0,m;
+    while(i<s.length){
+      var c=s[i];
+      if(/\s/.test(c)){i++;continue;}
+      if((m=/^(\d+\.?\d*|\.\d+)/.exec(s.slice(i)))){t.push({k:'n',v:parseFloat(m[1])});i+=m[1].length;continue;}
+      if(/[a-záéíóúñ]/.test(c)){
+        var run=/^[a-záéíóúñ]+/.exec(s.slice(i))[0],j=0;
+        while(j<run.length){
+          var w=null;for(var q=0;q<WORDS.length;q++){if(run.substr(j,WORDS[q].length)===WORDS[q]){w=WORDS[q];break;}}
+          if(w){t.push(w==='pi'?{k:'n',v:Math.PI}:{k:'f',v:w});j+=w.length;continue;}
+          var L=run[j];
+          if(L===v)t.push({k:'v'});
+          else if(L==='e')t.push({k:'n',v:Math.E});
+          else if(L==='c'||L==='k')t.push({k:'n',v:0});
+          else throw {msg:'Apareció la letra "'+L+'". En este ejercicio la variable es <b>'+v+'</b>.'};
+          j++;
+        }
+        i+=run.length;continue;
+      }
+      if('+-*/^()|√∛∜'.indexOf(c)>=0){t.push({k:c});i++;continue;}
+      if(c==='['||c==='{'){t.push({k:'('});i++;continue;}
+      if(c===']'||c==='}'){t.push({k:')'});i++;continue;}
+      throw {msg:'No entiendo el símbolo "'+c+'".'};
+    }
+    return t;
+  }
+  function parse(src,v){
+    var T=tokenize(prep(src),v),p=0,abs=0;
+    if(!T.length)throw {msg:'Escribí una respuesta.'};
+    function pk(){return T[p];}
+    function eat(k){if(!T[p]||T[p].k!==k)throw {msg:'Falta cerrar un paréntesis o una barra |.'};p++;}
+    function startsPrimary(x){return x&&(x.k==='n'||x.k==='v'||x.k==='f'||x.k==='('||x.k==='√'||x.k==='∛'||x.k==='∜'||(x.k==='|'&&abs===0));}
+    function expr(){var a=term();while(pk()&&(pk().k==='+'||pk().k==='-')){var o=T[p++].k,b=term();a=(function(a,b,o){return o==='+'?function(x){return a(x)+b(x);}:function(x){return a(x)-b(x);};})(a,b,o);}return a;}
+    function term(){var a=unary();
+      while(pk()){
+        if(pk().k==='*'||pk().k==='/'){var o=T[p++].k,b=unary();a=(function(a,b,o){return o==='*'?function(x){return a(x)*b(x);}:function(x){return a(x)/b(x);};})(a,b,o);}
+        else if(startsPrimary(pk())){var b2=power();a=(function(a,b){return function(x){return a(x)*b(x);};})(a,b2);}
+        else break;
+      }return a;}
+    function unary(){if(pk()&&pk().k==='-'){p++;var a=unary();return function(x){return -a(x);};}if(pk()&&pk().k==='+'){p++;return unary();}return power();}
+    function power(){var a=primary();if(pk()&&pk().k==='^'){p++;var b=unary();return function(x){return pw(a(x),b(x));};}return a;}
+    function pw(a,b){if(a<0&&Math.abs(b*3-Math.round(b*3))<1e-9&&Math.round(b*3)%3!==0){var r=Math.pow(-a,b);var d=Math.round(b*3);return (d%2!==0)?-r:r;}return Math.pow(a,b);}
+    function primary(){
+      var x=T[p];if(!x)throw {msg:'La expresión quedó incompleta.'};
+      if(x.k==='n'){p++;return function(){return x.v;};}
+      if(x.k==='v'){p++;return function(z){return z;};}
+      if(x.k==='('){p++;var a=expr();eat(')');return a;}
+      if(x.k==='|'){p++;abs++;var b=expr();abs--;eat('|');return function(z){return Math.abs(b(z));};}
+      if(x.k==='√'||x.k==='∛'||x.k==='∜'){p++;var r=primary(),n=x.k==='√'?2:x.k==='∛'?3:4;return function(z){var q=r(z);return n===3?Math.cbrt(q):Math.pow(q,1/n);};}
+      if(x.k==='f'){p++;var f=FUN[x.v],arg;
+        if(pk()&&pk().k==='^'){p++;var ex=unary();arg=power();return function(z){return Math.pow(f(arg(z)),ex(z));};}
+        arg=(pk()&&pk().k==='(')?primary():power();return function(z){return f(arg(z));};}
+      throw {msg:'Hay un operador fuera de lugar (revisá dos signos seguidos o un paréntesis vacío).'};
+    }
+    var F=expr();if(p<T.length)throw {msg:'Sobra algo al final ("'+(T[p].k==='n'?T[p].v:T[p].k==='f'?T[p].v:T[p].k)+'"). Revisá paréntesis y barras.'};
+    return F;
+  }
+  function vals(F,pts){return pts.map(function(x){try{return F(x);}catch(e){return NaN;}});}
+  function constDiff(A,B,pts){
+    var a=vals(A,pts),b=vals(B,pts),d=[],sc=1;
+    for(var i=0;i<pts.length;i++){if(isFinite(a[i])&&isFinite(b[i])){d.push(a[i]-b[i]);sc=Math.max(sc,Math.abs(a[i]),Math.abs(b[i]));}}
+    if(d.length<3)return null;
+    for(var j=1;j<d.length;j++)if(Math.abs(d[j]-d[0])>1e-6*sc)return false;
+    return true;
+  }
+  function sameFn(A,B,pts){
+    var a=vals(A,pts),b=vals(B,pts),n=0;
+    for(var i=0;i<pts.length;i++){if(isFinite(a[i])&&isFinite(b[i])){n++;if(Math.abs(a[i]-b[i])>1e-6*Math.max(1,Math.abs(a[i]),Math.abs(b[i])))return false;}}
+    return n>=3?true:null;
+  }
+  function deriv(F){var h=1e-5;return function(x){return (F(x+h)-F(x-h))/(2*h);};}
+  function frac(k){for(var den=1;den<=24;den++){var num=Math.round(k*den);if(Math.abs(num/den-k)<1e-4)return den===1?String(num):num+'/'+den;}return k.toFixed(3).replace('.',',');}
+  function fmt(n){if(!isFinite(n))return '—';var r=Math.round(n*1000)/1000;return String(r).replace('.',',');}
+
+  /* Diagnóstico de errores típicos */
+  function diagnose(U,ej,f,F){
+    var pts=ej.pts,dU=deriv(U),dF=deriv(f);
+    if(constDiff(U,f,pts))return 'Escribiste la <b>misma función que había que integrar</b>. Integrar es encontrar la función que, al derivarla, da esa.';
+    if(constDiff(U,dF,pts))return 'Parece que <b>derivaste en vez de integrar</b>. Para integrar potencias se <b>suma</b> 1 al exponente y se <b>divide</b> por el exponente nuevo (al revés que derivar).';
+    if(constDiff(U,function(x){return -F(x);},pts))return 'Tenés un <b>error de signo</b>: tu resultado es el correcto pero con el signo cambiado. Revisá los exponentes negativos (al dividir por un número negativo cambia el signo) y los "menos" del enunciado.';
+    var ks=[];for(var i=0;i<pts.length;i++){var fv=f(pts[i]),g=dU(pts[i]);if(isFinite(fv)&&isFinite(g)&&Math.abs(fv)>1e-6)ks.push(g/fv);}
+    if(ks.length>=3){var ok=true;for(var j=1;j<ks.length;j++)if(Math.abs(ks[j]-ks[0])>1e-4*Math.max(1,Math.abs(ks[0])))ok=false;
+      if(ok&&Math.abs(ks[0]-1)>1e-4)return 'Vas bien encaminado: tu resultado está <b>multiplicado por '+frac(ks[0])+'</b> respecto del correcto. Eso casi siempre pasa por <b>olvidarte de dividir por el exponente nuevo</b> o por <b>no compensar el número que aparece en du</b> (por ejemplo, si du = 3x² dx y en la integral solo hay x² dx, falta un factor 1/3).';}
+    var x0=pts[1];
+    return 'No coincide. <b>Comprobalo derivando tu resultado:</b> si estuviera bien, su derivada daría la función a integrar. En '+ej.v+' = '+fmt(x0)+', la derivada de tu respuesta vale '+fmt(dU(x0))+', pero la función a integrar vale '+fmt(f(x0))+'.';
+  }
+
+  function diagnoseD(U,ej,f,D){
+    var pts=ej.pts;
+    if(sameFn(U,f,pts))return 'Escribiste la <b>misma función</b> del enunciado: falta derivarla.';
+    if(sameFn(U,function(x){return -D(x);},pts))return 'Tenés un <b>error de signo</b>. Revisá: la derivada de cos es −sen, los exponentes negativos, y en el cociente el orden es (derivada de arriba)·abajo <b>menos</b> arriba·(derivada de abajo).';
+    if(constDiff(U,D,pts))return 'Tu resultado difiere del correcto en un número suelto. Acordate: la derivada de una constante es 0 (y en derivadas no va + C).';
+    var ks=[];for(var i=0;i<pts.length;i++){var d=D(pts[i]),u=U(pts[i]);if(isFinite(d)&&isFinite(u)&&Math.abs(d)>1e-6)ks.push(u/d);}
+    if(ks.length>=3){var ok=true;for(var j=1;j<ks.length;j++)if(Math.abs(ks[j]-ks[0])>1e-4*Math.max(1,Math.abs(ks[0])))ok=false;
+      if(ok&&Math.abs(ks[0]-1)>1e-4)return 'Casi: tu resultado está <b>multiplicado por '+frac(ks[0])+'</b> respecto del correcto. Lo más común es <b>olvidarse de multiplicar por la derivada de lo de adentro</b> (regla de la cadena) o por el exponente que baja.';}
+    var x0=pts[1];
+    return 'No coincide. En '+ej.v+' = '+fmt(x0)+' tu derivada vale '+fmt(U(x0))+' y la correcta vale '+fmt(D(x0))+'. Mirá la resolución para ver qué regla corresponde.';
+  }
+  function check(ej,input){
+    if(ej.m==='D')return checkD(ej,input);
+    var U;
+    try{U=parse(input,ej.v);}catch(e){return {st:'syntax',msg:e.msg||'No pude leer la expresión.'};}
+    var F=parse(ej.F,ej.v),f=parse(ej.f,ej.v);
+    var c=constDiff(U,F,ej.pts);
+    if(c===null)return {st:'syntax',msg:'Tu expresión no se puede evaluar para estos valores (¿una raíz de un negativo o una división por cero?). Revisá paréntesis.'};
+    if(c){
+      var noC=!/[ck]\s*$/i.test(String(input).trim());
+      return {st:'ok',msg:noC?'Acordate de escribir <b>+ C</b> al final en el examen (en una integral indefinida siempre va).':''};
+    }
+    for(var i=0;i<(ej.mist||[]).length;i++){
+      try{var M=parse(ej.mist[i][0],ej.v);if(constDiff(U,M,ej.pts))return {st:'no',msg:ej.mist[i][1]};}catch(e){}
+    }
+    return {st:'no',msg:diagnose(U,ej,f,F)};
+  }
+  function checkD(ej,input){
+    var U;
+    try{U=parse(input,ej.v);}catch(e){return {st:'syntax',msg:e.msg||'No pude leer la expresión.'};}
+    var D=parse(ej.F,ej.v),f=parse(ej.f,ej.v);
+    var c=sameFn(U,D,ej.pts);
+    if(c===null)return {st:'syntax',msg:'Tu expresión no se puede evaluar para estos valores. Revisá paréntesis.'};
+    if(c)return {st:'ok',msg:''};
+    for(var i=0;i<(ej.mist||[]).length;i++){
+      try{var M=parse(ej.mist[i][0],ej.v);if(sameFn(U,M,ej.pts))return {st:'no',msg:ej.mist[i][1]};}catch(e){}
+    }
+    return {st:'no',msg:diagnoseD(U,ej,f,D)};
+  }
+  return {check:check,parse:parse};
+})();
+
+/* ===================== RENDER DE LOS EJERCICIOS ===================== */
+(function(){
+  document.querySelectorAll('.ej[data-id]').forEach(function(box){
+    var ej=EJ[box.dataset.id];if(!ej)return;
+    var lv={1:'Fácil',2:'Medio',3:'Difícil'}[ej.lv||1];
+    box.innerHTML='<div class="ej-h"><span class="ej-id">'+box.dataset.id+'</span><span class="ej-lv l'+(ej.lv||1)+'">'+lv+'</span></div>'+
+      '<div class="ej-q">'+ej.q+'</div>'+
+      '<div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="'+(ej.m==='D'?'tu derivada, ej: 3x^2 + 2':'tu resultado, ej: x^3/3 + C')+'"><button class="chk">Corregir</button><button class="hnt">Pista</button><button class="shw">Ver resolución</button></div>'+
+      '<div class="prev"></div><div class="tfb"></div><div class="hint">💡 '+ej.hint+'</div>'+
+      '<div class="pasos"><div class="pt">Resolución paso a paso</div><ol>'+ej.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol><div class="res">Resultado: <span class="mono">'+ej.R+'</span></div></div>';
+    var inp=box.querySelector('input'),fb=box.querySelector('.tfb'),pasos=box.querySelector('.pasos'),hint=box.querySelector('.hint'),prev=box.querySelector('.prev');
+    function go(){
+      var r=CORR.check(ej,inp.value);
+      if(r.st==='ok'){fb.className='tfb ok';fb.innerHTML='<b>¡Correcto! ✓</b> '+r.msg;box.classList.add('done');}
+      else if(r.st==='syntax'){fb.className='tfb sy';fb.innerHTML='<b>No pude leer tu respuesta.</b> '+r.msg+' <a href="#como-escribir">Ver cómo escribir</a>.';}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> '+r.msg+'<br>Abajo tenés la resolución completa para ver dónde se separa tu cuenta.';pasos.classList.add('show');}
+    }
+    box.querySelector('.chk').addEventListener('click',go);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+    box.querySelector('.hnt').addEventListener('click',function(){hint.classList.toggle('show');});
+    box.querySelector('.shw').addEventListener('click',function(){pasos.classList.toggle('show');});
+    inp.addEventListener('input',function(){
+      if(!inp.value.trim()){prev.textContent='';return;}
+      try{CORR.parse(inp.value,ej.v);prev.innerHTML='✓ Lo entiendo';prev.className='prev okp';}catch(e){prev.innerHTML='… '+(e.msg||'');prev.className='prev bad';}
+    });
+  });
+})();
+
+/* progreso de ejercicios resueltos (solo en este navegador) */
+(function(){
+  var key='prac:'+location.pathname,done={};
+  try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var boxes=document.querySelectorAll('.ej[data-id]');
+  function paint(){
+    var n=0;boxes.forEach(function(b){if(done[b.dataset.id]){if(!b.classList.contains('done'))b.classList.add('done');n++;}});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(100*n/boxes.length)+'%';t.textContent=n+' de '+boxes.length+' ejercicios resueltos';}
+  }
+  new MutationObserver(function(){boxes.forEach(function(b){if(b.classList.contains('done')&&!done[b.dataset.id]){done[b.dataset.id]=1;try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}}});paint();})
+    .observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
+  paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica de integrales · con corrección</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F1;
+    --card:#FFFFFF;
+    --ink:#1E2A32;
+    --ink-soft:#51616B;
+    --navy:#153A5B;
+    --navy-deep:#0D2942;
+    --red:#C42430;
+    --red-soft:#FBEBEC;
+    --gold:#B8791F;
+    --gold-soft:#FAF1DF;
+    --teal:#177567;
+    --teal-soft:#E4F1EE;
+    --line:#E2E3DB;
+    --line-strong:#CBCDC2;
+    --shadow:0 1px 2px rgba(13,41,66,.05), 0 8px 30px rgba(13,41,66,.07);
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(244,245,241,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px;}
+  .brand{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy-deep);letter-spacing:-.01em;white-space:nowrap;}
+  .brand b{color:var(--red);}
+  .topnav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;}
+  .topnav a{
+    font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 10px;border-radius:8px;
+    font-weight:500;transition:background .15s,color .15s;white-space:nowrap;
+  }
+  .topnav a:hover{background:#fff;color:var(--navy);}
+  @media (max-width:860px){.topnav{display:none;}}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  main{max-width:820px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:70px 24px 46px;max-width:900px;margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--red);font-weight:500;margin-bottom:18px;
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:600;font-size:clamp(38px,7vw,68px);line-height:1.02;
+    letter-spacing:-.025em;color:var(--navy-deep);margin:0 0 22px;
+  }
+  .hero h1 .u{color:var(--red);font-style:italic;}
+  .hero .lead{font-size:20px;color:var(--ink-soft);max-width:640px;line-height:1.55;margin:0;}
+
+  .howto{
+    margin:38px auto 0;max-width:900px;
+    background:linear-gradient(180deg,#fff, #fff);
+    border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  .howto h4{margin:0 0 8px;font-family:var(--display);font-size:18px;color:var(--navy-deep);}
+  .howto p{margin:0;font-size:15.5px;color:var(--ink-soft);}
+  .howto .term-demo{margin-top:2px;}
+
+  /* ---------- sections ---------- */
+  .section{padding-top:64px;}
+  .section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:8px;border-bottom:2px solid var(--navy);padding-bottom:14px;}
+  .section-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--red);letter-spacing:.05em;}
+  .section-head h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,4.4vw,38px);letter-spacing:-.02em;color:var(--navy-deep);margin:0;line-height:1.1;}
+  .section > p{margin:18px 0;}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;color:var(--navy-deep);margin:34px 0 10px;letter-spacing:-.01em;}
+  h4{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:22px 0 8px;}
+  strong{font-weight:600;color:var(--navy-deep);}
+  em{color:var(--ink);}
+
+  /* ---------- clickable term ---------- */
+  .term{
+    color:var(--red);font-weight:600;cursor:pointer;
+    border-bottom:1.5px dotted var(--red);padding-bottom:.5px;
+    transition:background .15s;border-radius:3px;white-space:nowrap;
+  }
+  .term:hover,.term:focus-visible{background:var(--red-soft);outline:none;}
+  .term::after{content:"›";font-weight:700;font-size:.85em;margin-left:2px;opacity:.6;}
+
+  /* ---------- callouts ---------- */
+  .callout{border-radius:14px;padding:18px 20px 18px 22px;margin:22px 0;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;}
+  .callout .tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;display:inline-block;margin-bottom:8px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout p:first-of-type{margin-top:0;}
+  .c-calc{background:var(--gold-soft);border-color:#EAD9B3;border-left:4px solid var(--gold);}
+  .c-calc .tag{color:var(--gold);}
+  .c-tip{background:var(--teal-soft);border-color:#C4E2DB;border-left:4px solid var(--teal);}
+  .c-tip .tag{color:var(--teal);}
+  .c-warn{background:var(--red-soft);border-color:#F1CFD1;border-left:4px solid var(--red);}
+  .c-warn .tag{color:var(--red);}
+  .c-criollo{background:#EEF3E4;border-color:#CFE0AC;border-left:4px solid #5F8A2E;}
+  .c-criollo .tag{color:#4C6E21;}
+  .c-criollo p{color:#33421C;}
+  .dual{display:grid;grid-template-columns:1fr;gap:0;}
+  .dtag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+  .dtag.acc{background:var(--teal-soft);color:var(--teal);}
+  .dtag.libro{background:var(--red-soft);color:var(--red);}
+
+  /* ---------- math bits ---------- */
+  .mono,.set{font-family:var(--mono);}
+  .set{background:#fff;border:1px solid var(--line-strong);border-radius:7px;padding:2px 8px;font-size:.94em;color:var(--navy-deep);white-space:nowrap;}
+  .fbox{background:#fff;border:1px solid var(--line-strong);border-radius:10px;font-family:var(--mono);font-size:16px;padding:14px 18px;display:inline-block;color:var(--navy-deep);margin:6px 0;box-shadow:var(--shadow);}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1.05;}
+  .frac .n{border-bottom:1.5px solid currentColor;padding:0 5px;}
+  .frac .d{padding:0 5px;}
+
+  /* ---------- matrices ---------- */
+  .mtx{display:inline-grid;grid-auto-flow:row;gap:5px 18px;padding:7px 15px;position:relative;font-family:var(--mono);font-size:15px;vertical-align:middle;margin:4px 7px;color:var(--navy-deep);line-height:1.15;}
+  .mtx::before,.mtx::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2.5px solid var(--navy);}
+  .mtx::before{left:0;border-right:0;border-radius:4px 0 0 4px;}
+  .mtx::after{right:0;border-left:0;border-radius:0 4px 4px 0;}
+  .mtx>span{text-align:center;min-width:1.05em;}
+  .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:16px 0;font-family:var(--mono);font-size:17px;color:var(--navy-deep);}
+  .mrow .eq{margin:0 4px;color:var(--red);font-weight:700;}
+  .det-bar{border-left:2.5px solid var(--navy);border-right:2.5px solid var(--navy);border-radius:0;}
+  .det-bar::before,.det-bar::after{display:none;}
+
+  /* ---------- reference table ---------- */
+  .symgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0;}
+  @media(max-width:620px){.symgrid{grid-template-columns:1fr;}}
+  .symrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+  .symrow .s{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--navy);min-width:34px;text-align:center;}
+  .symrow .m{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- generic table ---------- */
+  table.data{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  table.data th{background:var(--navy);color:#fff;text-align:left;padding:12px 14px;font-weight:600;font-size:13px;letter-spacing:.02em;font-family:var(--body);}
+  table.data td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;}
+  table.data tr:nth-child(even) td{background:#FAFBF8;}
+  table.data code,td .set{font-size:13.5px;}
+
+  /* ---------- venn ---------- */
+  .venn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:24px 0;}
+  .venn-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);text-align:center;}
+  .venn-card h4{margin:0 0 4px;font-size:16px;}
+  .venn-card .op{font-family:var(--mono);color:var(--red);font-size:15px;font-weight:700;margin-bottom:10px;}
+  .venn-card svg{width:100%;height:auto;max-width:210px;}
+  .venn-card p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0;text-align:left;}
+
+  /* ---------- nested number sets (signature) ---------- */
+  .numsets{margin:28px 0;}
+  .nest{position:relative;font-family:var(--mono);}
+  .ring{
+    border:2px solid var(--line-strong);border-radius:18px;padding:20px 18px 16px;position:relative;cursor:pointer;
+    transition:border-color .2s, box-shadow .2s, background .2s;background:rgba(255,255,255,.35);
+  }
+  .ring + .ring-inner-space{}
+  .ring .rlabel{
+    position:absolute;top:-13px;left:20px;background:var(--paper);padding:0 10px;font-weight:700;font-size:15px;color:var(--navy);
+    transition:color .2s;
+  }
+  .ring:hover,.ring.active{border-color:var(--red);background:var(--red-soft);box-shadow:0 0 0 2px var(--red-soft);}
+  .ring:hover > .rlabel,.ring.active > .rlabel{color:var(--red);background:#fbebec;}
+  .ring-C{border-color:#B9CBD9;}
+  .split{display:flex;gap:14px;flex-wrap:wrap;}
+  .split > .ring{flex:1;min-width:200px;}
+  .setinfo{
+    margin-top:18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);min-height:64px;
+  }
+  .setinfo h4{margin:0 0 4px;color:var(--navy-deep);}
+  .setinfo .sym{font-family:var(--mono);color:var(--red);font-weight:700;}
+  .setinfo p{margin:6px 0 0;font-size:15px;}
+
+  /* ---------- reveal / spoiler ---------- */
+  .ex{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);}
+  .ex .q{display:flex;gap:12px;align-items:flex-start;}
+  .ex .badge{font-family:var(--mono);font-weight:700;color:#fff;background:var(--navy);border-radius:7px;padding:3px 9px;font-size:13px;flex-shrink:0;margin-top:2px;}
+  .ex .consigna{font-family:var(--mono);font-size:15px;color:var(--ink);}
+  .reveal-btn{
+    margin-top:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:8px 15px;
+    font-family:var(--body);font-weight:600;font-size:13.5px;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;
+  }
+  .reveal-btn:hover{background:var(--navy-deep);}
+  .reveal-btn .ic{font-size:15px;}
+  .sol{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line-strong);}
+  .sol.open{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .sol .ans{font-family:var(--mono);font-size:15px;background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:9px;padding:10px 13px;margin:10px 0;color:var(--navy-deep);}
+  .sol .why{font-size:14.5px;color:var(--ink-soft);}
+
+  /* ---------- quiz ---------- */
+  .quiz{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0;box-shadow:var(--shadow);}
+  .quiz .qz-q{font-weight:600;color:var(--navy-deep);margin-bottom:12px;font-size:16px;}
+  .quiz .opt{display:block;width:100%;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:7px 0;cursor:pointer;font-family:var(--body);font-size:15px;color:var(--ink);transition:all .12s;}
+  .quiz .opt:hover{border-color:var(--navy);}
+  .quiz .opt.correct{background:var(--teal-soft);border-color:var(--teal);color:var(--navy-deep);font-weight:600;}
+  .quiz .opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .quiz .fb{margin-top:10px;font-size:14.5px;display:none;padding:10px 13px;border-radius:9px;}
+  .quiz .fb.show{display:block;}
+  .quiz .fb.ok{background:var(--teal-soft);color:var(--navy-deep);}
+  .quiz .fb.no{background:var(--gold-soft);color:var(--navy-deep);}
+
+  /* ---------- glossary index ---------- */
+  .glossary{columns:2;column-gap:28px;margin:20px 0;}
+  @media(max-width:620px){.glossary{columns:1;}}
+  .glossary button{
+    display:block;background:none;border:none;color:var(--red);font-family:var(--body);font-weight:500;
+    font-size:15px;cursor:pointer;text-align:left;padding:5px 0;break-inside:avoid;border-bottom:1px dotted transparent;
+  }
+  .glossary button:hover{border-bottom-color:var(--red);}
+
+  /* ---------- side panel (definitions) ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(13,41,66,.32);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(440px,92vw);background:var(--card);z-index:70;
+    box-shadow:-10px 0 40px rgba(13,41,66,.18);transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:22px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .panel-head .pkicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:6px;}
+  .panel-head h3{font-family:var(--display);margin:0;font-size:25px;color:var(--navy-deep);line-height:1.1;}
+  .panel-head .psym{font-family:var(--mono);color:var(--red);font-weight:700;font-size:16px;margin-top:6px;}
+  .pclose{background:var(--paper);border:1px solid var(--line);border-radius:9px;width:36px;height:36px;flex-shrink:0;cursor:pointer;font-size:20px;color:var(--ink-soft);line-height:1;transition:all .15s;}
+  .pclose:hover{background:var(--red-soft);color:var(--red);border-color:var(--red);}
+  .panel-body{padding:20px 24px 40px;overflow-y:auto;}
+  .panel-body .block{margin-bottom:18px;}
+  .panel-body .block .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .panel-body .lbl.def{color:var(--navy);}
+  .panel-body .lbl.calc{color:var(--gold);}
+  .panel-body .lbl.ej{color:var(--teal);}
+  .panel-body p{margin:0 0 8px;font-size:15.5px;line-height:1.6;}
+  .panel-body .calc-box{background:var(--gold-soft);border:1px solid #EAD9B3;border-radius:10px;padding:12px 14px;font-size:15px;}
+  .panel-body .ej-box{background:var(--teal-soft);border:1px solid #C4E2DB;border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--mono);color:var(--navy-deep);}
+  .panel-body .rel{margin-top:6px;display:flex;flex-wrap:wrap;gap:8px;}
+  .panel-body .rel button{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--red);font-weight:600;cursor:pointer;font-family:var(--body);}
+  .panel-body .rel button:hover{background:var(--red-soft);border-color:var(--red);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 24px 70px;text-align:center;color:var(--ink-soft);font-size:14.5px;max-width:820px;margin:0 auto;}
+  footer b{color:var(--navy-deep);}
+
+  ul.clean{list-style:none;padding-left:0;}
+  ul.clean li{padding-left:26px;position:relative;margin:8px 0;}
+  ul.clean li::before{content:"›";position:absolute;left:6px;color:var(--red);font-weight:700;}
+  ul.tick li::before{content:"✓";color:var(--teal);}
+  ::selection{background:#F6D5A9;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+
+  /* ---------- figuras (graficos.js) ---------- */
+  .fig{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;box-shadow:var(--shadow);}
+  .fig .cap{font-size:13.5px;color:var(--ink-soft);text-align:center;margin-top:8px;}
+  .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0;}
+  .figrow .fig{margin:0;}
+  .figrow .fig h4{margin:0 0 6px;font-size:15px;text-align:center;}
+  .topnav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;max-width:72vw;}
+  .unit-pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--navy);border-radius:20px;padding:3px 10px;margin-left:10px;vertical-align:middle;}
+
+  /* ---------- MODO APB ---------- */
+  body{font-size:18px;}
+  .apb-badge{display:inline-block;background:#5F8A2E;color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;border-radius:20px;padding:4px 12px;margin-bottom:14px;}
+  .progress{position:sticky;top:57px;z-index:35;background:var(--paper);padding:8px 0 10px;}
+  .progress .bar{height:9px;background:var(--line);border-radius:10px;overflow:hidden;}
+  .progress .fill{height:100%;width:0;background:linear-gradient(90deg,#5F8A2E,var(--teal));transition:width .4s;}
+  .progress .ptxt{font-size:13px;color:var(--ink-soft);margin-top:4px;font-family:var(--mono);}
+  .lesson-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;}
+  .lesson-meta .time{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:20px;padding:3px 10px;}
+  .lesson-meta .goal{font-size:15px;color:var(--navy);}
+  .done-btn{display:block;margin:26px auto 0;background:#fff;border:2px solid #5F8A2E;color:#4C6E21;border-radius:30px;padding:10px 22px;font-family:var(--body);font-weight:700;font-size:15px;cursor:pointer;}
+  .done-btn.on{background:#5F8A2E;color:#fff;}
+  .steps{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:18px 0;box-shadow:var(--shadow);}
+  .steps .st-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:12px 0 2px;}
+  .step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px dashed var(--line-strong);}
+  .steps .st-title + .step{border-top:none;}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+  .step .c{flex:1;}
+  .step .c .m{font-family:var(--mono);font-size:17px;color:var(--navy-deep);background:var(--paper);border-radius:8px;padding:6px 10px;display:inline-block;margin-top:6px;}
+  .step.result .n{background:var(--teal);}
+  .hl{background:#FFE9A8;border-radius:4px;padding:0 3px;}
+  .hl2{background:#CDE7F5;border-radius:4px;padding:0 3px;}
+  .hl3{background:#F7D3D6;border-radius:4px;padding:0 3px;}
+  .big{font-family:var(--mono);font-size:21px;text-align:center;background:#fff;border:2px solid var(--navy);border-radius:14px;padding:16px;margin:18px 0;color:var(--navy-deep);}
+  .big small{display:block;font-family:var(--body);font-size:14px;color:var(--ink-soft);margin-top:6px;}
+  .try{background:#F3F0FA;border:1px solid #D9CDEE;border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:18px 0;}
+  .try .tt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.12em;color:#6B3FA0;text-transform:uppercase;margin-bottom:8px;}
+  .try .tq{margin-bottom:10px;}
+  .try .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .try input{font-family:var(--mono);font-size:17px;padding:8px 12px;border:1.5px solid var(--line-strong);border-radius:9px;min-width:160px;flex:1;max-width:280px;}
+  .try input:focus{outline:none;border-color:#6B3FA0;}
+  .try .chk{background:#6B3FA0;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-family:var(--body);cursor:pointer;}
+  .try .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;border-radius:9px;padding:8px 12px;font-weight:600;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .try .tfb{margin-top:10px;font-size:15px;display:none;border-radius:9px;padding:9px 12px;}
+  .try .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .try .tfb.no{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .try details{margin-top:8px;font-size:14.5px;color:var(--ink-soft);}
+  .try details summary{cursor:pointer;color:#6B3FA0;font-weight:600;}
+  .tipkb{font-size:13px;color:var(--ink-soft);margin-top:6px;}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  @media(max-width:620px){.vs{grid-template-columns:1fr;}}
+  .vs > div{border-radius:12px;padding:12px 14px;font-size:15.5px;}
+  .vs .bad{background:var(--red-soft);border:1px solid #F1CFD1;}
+  .vs .good{background:var(--teal-soft);border:1px solid #C4E2DB;}
+  .vs b{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+  .vs .bad b{color:var(--red);} .vs .good b{color:var(--teal);}
+  .next{display:block;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;border-radius:16px;padding:20px 22px;margin:40px 0 0;text-decoration:none;}
+  .next b{font-family:var(--display);font-size:22px;display:block;margin-bottom:4px;}
+  .next span{color:rgba(255,255,255,.85);font-size:15px;}
+
+  .ej{background:#fff;border:1px solid var(--line);border-left:4px solid #6B3FA0;border-radius:14px;padding:16px 18px;margin:16px 0;box-shadow:var(--shadow);}
+  .ej.done{border-left-color:var(--teal);}
+  .ej-h{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
+  .ej-id{font-family:var(--mono);font-weight:700;color:#fff;background:#6B3FA0;border-radius:7px;padding:2px 9px;font-size:13px;}
+  .ej.done .ej-id{background:var(--teal);}
+  .ej.done .ej-id::after{content:" ✓";}
+  .ej-lv{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:2px 9px;}
+  .ej-lv.l1{background:var(--teal-soft);color:var(--teal);} .ej-lv.l2{background:var(--gold-soft);color:var(--gold);} .ej-lv.l3{background:var(--red-soft);color:var(--red);}
+  .ej-q{font-family:var(--mono);font-size:21px;color:var(--navy-deep);margin:6px 0 12px;}
+  .ej .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .ej input{font-family:var(--mono);font-size:17px;padding:9px 12px;border:1.5px solid var(--line-strong);border-radius:9px;flex:1;min-width:200px;}
+  .ej input:focus{outline:none;border-color:#6B3FA0;}
+  .ej button{border-radius:9px;padding:9px 14px;font-weight:700;font-family:var(--body);cursor:pointer;font-size:14px;}
+  .ej .chk{background:#6B3FA0;color:#fff;border:none;}
+  .ej .hnt,.ej .shw{background:#fff;color:#6B3FA0;border:1.5px solid #6B3FA0;}
+  .ej .prev{font-size:12.5px;margin-top:5px;min-height:16px;font-family:var(--mono);}
+  .ej .prev.okp{color:var(--teal);} .ej .prev.bad{color:var(--gold);}
+  .ej .tfb{display:none;margin-top:10px;font-size:15px;border-radius:10px;padding:10px 13px;line-height:1.55;}
+  .ej .tfb.ok{display:block;background:var(--teal-soft);color:var(--navy-deep);}
+  .ej .tfb.no{display:block;background:var(--red-soft);color:var(--navy-deep);border:1px solid #F1CFD1;}
+  .ej .tfb.sy{display:block;background:var(--gold-soft);color:var(--navy-deep);}
+  .ej .hint{display:none;margin-top:10px;background:#FFF8E1;border-radius:10px;padding:9px 13px;font-size:15px;}
+  .ej .hint.show{display:block;}
+  .ej .pasos{display:none;margin-top:12px;background:var(--paper);border:1px dashed var(--line-strong);border-radius:10px;padding:10px 14px;}
+  .ej .pasos.show{display:block;}
+  .ej .pasos .pt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+  .ej .pasos ol{margin:6px 0 6px 20px;padding:0;} .ej .pasos li{margin:6px 0;font-size:15.5px;}
+  .ej .pasos .res{font-weight:700;color:var(--teal);}
+  .tagbk{font-family:var(--body);font-size:11px;font-weight:700;background:var(--navy);color:#fff;border-radius:20px;padding:2px 8px;vertical-align:middle;}
+  .book{background:#FBFAF6;border:1px solid var(--line-strong);border-radius:14px;padding:4px 16px 8px;margin:16px 0;}
+  .book .bt{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);padding-top:10px;}
+  .syn td:first-child{font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand"><a href="index.html" style="text-decoration:none;color:var(--ink-soft);font-family:var(--body);font-weight:600;font-size:14px;margin-right:6px;">‹ Inicio</a> Práctica · <b>Integrales</b></span>
+    <nav class="topnav">
+      <a href="#como-escribir">Cómo escribir</a>
+      <a href="#saber">Lo que hay que saber</a>
+      <a href="#potencias">Potencias</a>
+      <a href="#sumas">Sumas</a>
+      <a href="#operar">Operar</a>
+      <a href="#dividir">Dividir</a>
+      <a href="#sustitucion">Sustitución</a>
+      <a href="#fracciones">Fracciones simples</a>
+      <a href="#mezcla">Mezclados</a>
+      <a href="#glosario">Glosario</a>
+      <a href="simulador-examenes.html" style="color:var(--red);font-weight:600;">Simulador</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <span class="apb-badge">PRÁCTICA CON CORRECCIÓN AUTOMÁTICA</span>
+  <h1>Integrales: <span class="u">practicá y corregí</span></h1>
+  <p class="lead">Los ejercicios del libro (Schaum, "Problemas resueltos" de integración inmediata, el 9 con sustitución y ∫ dx/(x² − 4)) resueltos paso a paso, y <strong>42 ejercicios parecidos</strong> para que hagas vos. Escribís tu resultado y el corrector te dice si está bien. Si no, te explica qué error cometiste y te muestra la resolución.</p>
+  <div class="howto">
+    <h4>Cómo funciona la corrección</h4>
+    <p>No compara letras: <strong>compara matemáticamente</strong>. Si tu respuesta es equivalente a la correcta (aunque esté escrita de otra forma, o le falte la C), la toma como buena. Si está mal, prueba si cometiste un error típico (te faltó dividir por un número, signo cambiado, derivaste en vez de integrar…) y te lo dice. Antes de empezar, leé <a href="#como-escribir">cómo escribir</a>. Si te falta base: <a href="guia-apb-integrales.html">Integrales APB</a>.</p>
+  </div>
+</header>
+
+<main>
+<div class="progress"><div class="bar"><div class="fill"></div></div><div class="ptxt"></div></div><section class="section" id="como-escribir">
+  <div class="section-head"><span class="section-num">01</span><h2>Cómo escribir tus respuestas</h2></div>
+
+  <table class="data syn">
+    <tr><th>Querés escribir</th><th>Tipeá (cualquiera sirve)</th></tr>
+    <tr><td>x² , x³</td><td><b>x^2</b> &nbsp;o&nbsp; x² · <b>x^3</b></td></tr>
+    <tr><td>x^(3/2) , x⁻²</td><td><b>x^(3/2)</b> (¡con paréntesis!) · <b>x^-2</b></td></tr>
+    <tr><td>√x , ∛x</td><td><b>sqrt(x)</b> o √x · <b>x^(1/3)</b> o ∛x</td></tr>
+    <tr><td>fracciones</td><td><b>x^3/3</b> · <b>(2/3)x^(3/2)</b> · <b>-1/(2x^2)</b></td></tr>
+    <tr><td>multiplicar</td><td><b>2x</b> · <b>3(x+1)^2</b> · <b>x*e^x</b> (el * es opcional)</td></tr>
+    <tr><td>ln, e, trigonométricas</td><td><b>ln|x|</b> o ln(x) · <b>e^x</b> · <b>e^(3x)</b> · <b>sen(x)</b> · <b>cos(x)</b></td></tr>
+  </table>
+  <div class="callout c-warn"><span class="tag">El error de tipeo más común</span><p><b>x^3/2</b> se lee como (x³)/2. Si querés x elevado a 3/2, escribí <b>x^(3/2)</b>. Mientras escribís, abajo del casillero aparece "✓ Lo entiendo" si la expresión se puede leer.</p></div>
+
+  <p>La <b>+ C</b> podés ponerla o no (el corrector te va a recordar que en el examen va). La variable es la del enunciado: x, t, z o s.</p>
+</section>
+<section class="section" id="saber">
+  <div class="section-head"><span class="section-num">02</span><h2>Todo lo que necesitás saber para estos ejercicios</h2></div>
+  <table class="data">
+    <tr><th style="width:30%">Herramienta</th><th>Qué dice</th><th>Ejemplo</th></tr>
+    <tr><td><b>Regla de la potencia</b></td><td class="mono">∫ xⁿ dx = xⁿ⁺¹/(n + 1) + C &nbsp;(n ≠ −1)</td><td class="mono">∫ x⁵ dx = x⁶/6 + C</td></tr>
+    <tr><td><b>Excepción</b></td><td class="mono">∫ dx/x = ln|x| + C</td><td class="mono">∫ 5/x dx = 5 ln|x| + C</td></tr>
+    <tr><td><b>Números y sumas</b></td><td>El número sale afuera; cada término por separado</td><td class="mono">∫ (2x² − 5x + 3) dx</td></tr>
+    <tr><td><b>Disfraz de raíces</b></td><td class="mono">ⁿ√(xᵐ) = x^(m/n) &nbsp;·&nbsp; 1/xⁿ = x⁻ⁿ</td><td class="mono">∛z = z^(1/3) · 1/∛(x²) = x^(−2/3)</td></tr>
+    <tr><td><b>Misma base</b></td><td class="mono">xᵃ·xᵇ = xᵃ⁺ᵇ &nbsp;·&nbsp; xᵃ/xᵇ = xᵃ⁻ᵇ</td><td class="mono">x·√x = x^(3/2)</td></tr>
+    <tr><td><b>Cuadrado de un binomio</b></td><td class="mono">(a + b)² = a² + 2ab + b²</td><td class="mono">(3s + 4)² = 9s² + 24s + 16</td></tr>
+    <tr><td><b>Dividir por x²</b></td><td>Cada término de arriba se divide por separado</td><td class="mono">(x³ + 5x² − 4)/x² = x + 5 − 4x⁻²</td></tr>
+    <tr><td><b>Sustitución</b></td><td>u = lo de adentro; du = u′ dx; si falta un número, se compensa afuera</td><td class="mono">u = x³ + 2, du = 3x² dx</td></tr>
+    <tr><td><b>Fracciones simples</b></td><td>Factorizar abajo y separar en A/(x − a) + B/(x − b)</td><td class="mono">1/(x² − 4) = ¼/(x − 2) − ¼/(x + 2)</td></tr>
+  </table>
+  <div class="callout c-criollo"><span class="tag">Dividir por una fracción</span><p>Te va a pasar todo el tiempo: x^(4/3) dividido 4/3. <strong>Dividir por una fracción es multiplicar por la fracción dada vuelta</strong>: x^(4/3)/(4/3) = (3/4)·x^(4/3).</p></div>
+  <div class="callout c-tip"><span class="tag">La gran verificación</span><p>Derivá tu resultado: si te da la función que estaba adentro de la integral, está bien. El corrector hace exactamente eso.</p></div>
+</section>
+<section class="section" id="potencias">
+  <div class="section-head"><span class="section-num">03</span><h2>Tipo 1 · Potencias, raíces y x abajo <span class="unit-pill">libro 1 a 4</span></h2></div>
+  <p><b>Qué necesitás:</b> la regla de la potencia y saber disfrazar raíces y fracciones de potencia.</p>
+<div class="book"><div class="bt">📘 Libro · ejercicio 3 · ∫ ∛z dz</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Disfrazo la raíz: ∛z = z^(1/3).</div></div><div class="step"><span class="n">2</span><div class="c">Sumo 1 al exponente: 1/3 + 1 = 4/3.</div></div><div class="step"><span class="n">3</span><div class="c">Divido por 4/3, que es multiplicar por 3/4.</div></div><div class="step result"><span class="n">✓</span><div class="c">∫ ∛z dz = <b>(3/4)·z^(4/3) + C</b></div></div></div></div><div class="book"><div class="bt">📘 Libro · ejercicio 4 · ∫ dx/∛(x²)</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">La raíz está abajo: 1/∛(x²) = 1/x^(2/3) = x^(−2/3) (sube con el signo cambiado).</div></div><div class="step"><span class="n">2</span><div class="c">Sumo 1: −2/3 + 1 = 1/3.</div></div><div class="step"><span class="n">3</span><div class="c">Divido por 1/3, que es multiplicar por 3.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>3x^(1/3) + C</b> = 3∛x + C</div></div></div></div><div class="book"><div class="bt">📘 Libro · ejercicio 2 · ∫ dx/x²</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">1/x² = x⁻².</div></div><div class="step"><span class="n">2</span><div class="c">Sumo 1: −2 + 1 = −1 → x⁻¹/(−1).</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>−1/x + C</b></div></div></div></div><h3>Ahora vos</h3><div class="ej" data-id="A1"></div>
+<div class="ej" data-id="A2"></div>
+<div class="ej" data-id="A3"></div>
+<div class="ej" data-id="A4"></div>
+<div class="ej" data-id="A5"></div>
+<div class="ej" data-id="A6"></div>
+<div class="ej" data-id="A7"></div>
+</section>
+<section class="section" id="sumas">
+  <div class="section-head"><span class="section-num">04</span><h2>Tipo 2 · Sumas y números multiplicando <span class="unit-pill">libro 5</span></h2></div>
+  <p><b>Qué necesitás:</b> la integral de una suma es la suma de las integrales, y los números que multiplican salen afuera.</p>
+<div class="book"><div class="bt">📘 Libro · ejercicio 5 · ∫ (2x² − 5x + 3) dx</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Separo: 2∫x² dx − 5∫x dx + 3∫dx.</div></div><div class="step"><span class="n">2</span><div class="c">2·x³/3 − 5·x²/2 + 3x.</div></div><div class="step"><span class="n">3</span><div class="c">Una sola C al final.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>2x³/3 − 5x²/2 + 3x + C</b></div></div></div></div><h3>Ahora vos</h3><div class="ej" data-id="B1"></div>
+<div class="ej" data-id="B2"></div>
+<div class="ej" data-id="B3"></div>
+<div class="ej" data-id="B4"></div>
+<div class="ej" data-id="B5"></div>
+</section>
+<section class="section" id="operar">
+  <div class="section-head"><span class="section-num">05</span><h2>Tipo 3 · Primero operar (multiplicar o desarrollar) <span class="unit-pill">libro 6 y 7</span></h2></div>
+  <p><b>Qué necesitás:</b> no existe "regla del producto" para integrar. Si hay un producto o un cuadrado, <strong>primero lo hacés</strong> (distributiva, cuadrado de un binomio) y después integrás término a término.</p>
+<div class="book"><div class="bt">📘 Libro · ejercicio 6 · ∫ (1 − x)√x dx</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Distribuyo: (1 − x)·x^(1/2) = x^(1/2) − x^(3/2).</div></div><div class="step"><span class="n">2</span><div class="c">x^(1/2) → (2/3)x^(3/2).</div></div><div class="step"><span class="n">3</span><div class="c">x^(3/2) → (2/5)x^(5/2).</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>(2/3)x^(3/2) − (2/5)x^(5/2) + C</b></div></div></div></div><div class="book"><div class="bt">📘 Libro · ejercicio 7 · ∫ (3s + 4)² ds</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Desarrollo el cuadrado: 9s² + 24s + 16.</div></div><div class="step"><span class="n">2</span><div class="c">9·s³/3 + 24·s²/2 + 16s.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>3s³ + 12s² + 16s + C</b></div></div></div></div><div class="callout c-warn"><span class="tag">Error clásico</span><p>(3s + 4)² ≠ 9s² + 16. ¡Falta el doble producto 2·3s·4 = 24s!</p></div><h3>Ahora vos</h3><div class="ej" data-id="C1"></div>
+<div class="ej" data-id="C2"></div>
+<div class="ej" data-id="C3"></div>
+<div class="ej" data-id="C4"></div>
+<div class="ej" data-id="C5"></div>
+<div class="ej" data-id="C6"></div>
+</section>
+<section class="section" id="dividir">
+  <div class="section-head"><span class="section-num">06</span><h2>Tipo 4 · Primero dividir <span class="unit-pill">libro 8</span></h2></div>
+  <p><b>Qué necesitás:</b> si abajo hay <strong>un solo término</strong> (x, x², √x), dividís cada término de arriba por separado y te quedan potencias.</p>
+<div class="book"><div class="bt">📘 Libro · ejercicio 8 · ∫ (x³ + 5x² − 4)/x² dx</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Divido cada término: x³/x² + 5x²/x² − 4/x² = x + 5 − 4x⁻².</div></div><div class="step"><span class="n">2</span><div class="c">x → x²/2 ; 5 → 5x ; −4x⁻² → −4·x⁻¹/(−1) = +4/x.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>x²/2 + 5x + 4/x + C</b></div></div></div></div><div class="callout c-warn"><span class="tag">Ojo</span><p>Esto solo funciona si abajo hay un único término. (x + 1)/(x² − 4) NO se separa así: eso es fracciones simples.</p></div><h3>Ahora vos</h3><div class="ej" data-id="D1"></div>
+<div class="ej" data-id="D2"></div>
+<div class="ej" data-id="D3"></div>
+<div class="ej" data-id="D4"></div>
+</section>
+<section class="section" id="sustitucion">
+  <div class="section-head"><span class="section-num">07</span><h2>Tipo 5 · Sustitución <span class="unit-pill">libro 9</span></h2></div>
+  <p><b>Qué necesitás:</b> si adentro de una potencia o raíz hay una cuenta (x³ + 2) y <strong>afuera está su derivada</strong> (x², salvo un número), llamás u a lo de adentro.</p>
+  <div class="big">u = lo de adentro &nbsp;→&nbsp; du = (derivada)·dx &nbsp;→&nbsp; todo en u &nbsp;→&nbsp; integrás &nbsp;→&nbsp; volvés a x</div>
+  <p>En el ejercicio 9 del libro: <b>u = x³ + 2</b>, entonces <b>du = 3x² dx</b>. Si en la integral hay 3x² dx, se reemplaza directo por du. Si hay solo x² dx, es <b>du/3</b> (el 1/3 sale afuera).</p>
+<div class="book"><div class="bt">📘 Libro · 9(a) · ∫ (x³ + 2)²·3x² dx</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">u = x³ + 2, du = 3x² dx: el 3x² dx está completo.</div></div><div class="step"><span class="n">2</span><div class="c">∫ u² du = u³/3.</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>(x³ + 2)³/3 + C</b></div></div></div></div><div class="book"><div class="bt">📘 Libro · 9(b) · ∫ (x³ + 2)^(1/2)·x² dx</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">u = x³ + 2. Hay x² dx (falta el 3): x² dx = du/3.</div></div><div class="step"><span class="n">2</span><div class="c">(1/3)∫ u^(1/2) du = (1/3)·u^(3/2)/(3/2) = (1/3)(2/3)u^(3/2).</div></div><div class="step result"><span class="n">✓</span><div class="c"><b>(2/9)(x³ + 2)^(3/2) + C</b></div></div></div></div><p>Los incisos <b>(c)</b> y <b>(d)</b> del libro te los dejo a vos (son E1 y E2):</p><h3>Ahora vos</h3><div class="ej" data-id="E1"></div>
+<div class="ej" data-id="E2"></div>
+<div class="ej" data-id="E3"></div>
+<div class="ej" data-id="E4"></div>
+<div class="ej" data-id="E5"></div>
+<div class="ej" data-id="E6"></div>
+<div class="ej" data-id="E7"></div>
+<div class="ej" data-id="E8"></div>
+</section>
+<section class="section" id="fracciones">
+  <div class="section-head"><span class="section-num">08</span><h2>Tipo 6 · Fracciones simples <span class="unit-pill">libro: hallar ∫ dx/(x² − 4)</span></h2></div>
+  <p><b>Qué necesitás:</b> cuando abajo hay un polinomio que se puede factorizar (x² − 4, x² − 9, x² − x − 2…) y arriba <strong>no</strong> está su derivada, se separa en fracciones más simples que dan logaritmos.</p>
+  <div class="callout c-calc"><span class="tag">Datos que vas a usar</span>
+    <p><b>Diferencia de cuadrados:</b> x² − a² = (x − a)(x + a). Ej.: x² − 4 = (x − 2)(x + 2).</p>
+    <p><b>Factor común:</b> x² − 4x = x(x − 4).</p>
+    <p><b>Trinomio:</b> x² − x − 2 = (x − 2)(x + 1): dos números que sumen −1 y multipliquen −2.</p>
+    <p><b>Integral clave:</b> ∫ A/(x − a) dx = A·ln|x − a|.</p>
+    <p><b>Propiedad del ln:</b> ln a − ln b = ln(a/b).</p>
+  </div>
+<div class="book"><div class="bt">📘 Libro · Hallar ∫ dx/(x² − 4)</div><div class="steps" style="box-shadow:none;margin:6px 0"><div class="step"><span class="n">1</span><div class="c">Factorizo abajo: x² − 4 = (x − 2)(x + 2).</div></div><div class="step"><span class="n">2</span><div class="c">Planteo: 1/[(x − 2)(x + 2)] = A/(x − 2) + B/(x + 2).</div></div><div class="step"><span class="n">3</span><div class="c">Multiplico todo por (x − 2)(x + 2): 1 = A(x + 2) + B(x − 2).</div></div><div class="step"><span class="n">4</span><div class="c">Con x = 2 (se anula lo de B): 1 = 4A → A = 1/4.</div></div><div class="step"><span class="n">5</span><div class="c">Con x = −2 (se anula lo de A): 1 = −4B → B = −1/4.</div></div><div class="step"><span class="n">6</span><div class="c">Integro: (1/4)∫ dx/(x − 2) − (1/4)∫ dx/(x + 2) = (1/4)ln|x − 2| − (1/4)ln|x + 2|.</div></div><div class="step"><span class="n">7</span><div class="c">Junto con la propiedad del ln: (1/4)ln|(x − 2)/(x + 2)|.</div></div><div class="step result"><span class="n">✓</span><div class="c">∫ dx/(x² − 4) = <b>(1/4)·ln|(x − 2)/(x + 2)| + C</b></div></div></div></div><div class="callout c-tip"><span class="tag">Fórmula que sale de acá</span><p><span class="mono">∫ dx/(x² − a²) = (1/(2a))·ln|(x − a)/(x + a)| + C</span>. Con a = 2 da el 1/4 del libro.</p></div><div class="callout c-warn"><span class="tag">¿Cuándo NO son fracciones simples?</span><p>Si arriba está la derivada de abajo, es sustitución y da un ln directo: ∫ 2x/(x² − 4) dx = ln|x² − 4| + C.</p></div><h3>Ahora vos</h3><div class="ej" data-id="F1"></div>
+<div class="ej" data-id="F2"></div>
+<div class="ej" data-id="F3"></div>
+<div class="ej" data-id="F4"></div>
+<div class="ej" data-id="F5"></div>
+<div class="ej" data-id="F6"></div>
+</section>
+<section class="section" id="mezcla">
+  <div class="section-head"><span class="section-num">09</span><h2>Mezclados: ¿qué método uso?</h2></div>
+  <p>En el parcial no te dicen el método. Antes de hacer cuentas, preguntate:</p>
+  <ul class="clean">
+    <li>¿Es una potencia o una raíz suelta? → <b>Tipo 1</b> (disfraz + potencia).</li>
+    <li>¿Hay un producto o un cuadrado que se puede desarrollar? → <b>Tipo 3</b> (operar).</li>
+    <li>¿Abajo hay un solo término? → <b>Tipo 4</b> (dividir).</li>
+    <li>¿Hay algo adentro y su derivada afuera? → <b>Tipo 5</b> (sustitución).</li>
+    <li>¿Abajo hay un polinomio que se factoriza y arriba no está su derivada? → <b>Tipo 6</b> (fracciones simples).</li>
+  </ul>
+<div class="ej" data-id="G1"></div>
+<div class="ej" data-id="G2"></div>
+<div class="ej" data-id="G3"></div>
+<div class="ej" data-id="G4"></div>
+<div class="ej" data-id="G5"></div>
+<div class="ej" data-id="G6"></div>
+  <a class="next" href="practica-derivadas.html"><b>¿Querés practicar derivadas? →</b><span>Misma dinámica: escribís, se corrige y te explica el error.</span></a>
+</section>
+
+<section class="section" id="glosario">
+  <div class="section-head"><span class="section-num">10</span><h2>Glosario · todos los términos</h2></div>
+  <p>Índice completo. Tocá cualquiera para abrir su definición.</p>
+  <div class="glossary" id="glossary-list"></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Práctica de integrales con corrección automática.</b> Teoría: <a href="guia-apb-integrales.html">Integrales APB</a> · <a href="guia-integrales.html">Integrales (completa)</a>.</p>
+</footer>
+
+<!-- ============ PANEL DE DEFINICIONES ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Definición">
+  <div class="panel-head">
+    <div>
+      <div class="pkicker">Definición</div>
+      <h3 id="p-title">—</h3>
+      <div class="psym" id="p-sym"></div>
+    </div>
+    <button class="pclose" id="p-close" aria-label="Cerrar">×</button>
+  </div>
+  <div class="panel-body" id="p-body"></div>
+</aside>
+
+<script src="graficos.js"></script>
+<script>
+/* ===================== DICCIONARIO DE DEFINICIONES ===================== */
+const D={
+sustitucion:{t:"Sustitución",def:"Método para integrar cuando aparece una función y su derivada: u = lo de adentro, du = u′ dx.",ej:"u = x³ + 2, du = 3x² dx.",rel:["fracciones"]},
+  fracciones:{t:"Fracciones simples",def:"Separar un cociente de polinomios en suma de fracciones A/(x − a) que se integran como logaritmos.",ej:"1/(x² − 4) = ¼/(x − 2) − ¼/(x + 2).",rel:["sustitucion"]}
+};
+
+/* ===================== FIGURAS ===================== */
+const FIGS={
+
+};
+document.querySelectorAll('.fig[data-fig]').forEach(function(el){
+  const k=el.dataset.fig; if(!FIGS[k]) return;
+  const cap=el.dataset.cap;
+  el.innerHTML=FIGS[k]+(cap?'<div class="cap">'+cap+'</div>':'');
+});
+document.querySelectorAll('[data-figin]').forEach(function(el){ if(FIGS[el.dataset.figin]) el.innerHTML=FIGS[el.dataset.figin]; });
+
+/* ===================== PANEL ===================== */
+const panel=document.getElementById('panel');
+const backdrop=document.getElementById('backdrop');
+const pTitle=document.getElementById('p-title');
+const pSym=document.getElementById('p-sym');
+const pBody=document.getElementById('p-body');
+
+function openDef(key){
+  const d=D[key]; if(!d) return;
+  pTitle.textContent=d.t;
+  pSym.textContent=d.sym||'';
+  pSym.style.display=d.sym?'block':'none';
+  let html='';
+  html+='<div class="block"><div class="lbl def">◆ Qué es</div><p>'+d.def+'</p></div>';
+  if(d.calc){html+='<div class="block"><div class="lbl calc">∑ Cómo se calcula / cómo se hace</div><div class="calc-box">'+d.calc+'</div></div>';}
+  if(d.ej){html+='<div class="block"><div class="lbl ej">▸ Ejemplo</div><div class="ej-box">'+d.ej+'</div></div>';}
+  if(d.rel&&d.rel.length){
+    html+='<div class="block"><div class="lbl def">↔ Conceptos relacionados</div><div class="rel">';
+    d.rel.forEach(function(r){ if(D[r]) html+='<button data-jump="'+r+'">'+D[r].t+'</button>'; });
+    html+='</div></div>';
+  }
+  pBody.innerHTML=html;
+  pBody.scrollTop=0;
+  panel.classList.add('open');
+  backdrop.classList.add('open');
+}
+function closeDef(){panel.classList.remove('open');backdrop.classList.remove('open');}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('.term');
+  if(t){openDef(t.dataset.def);return;}
+  const jump=e.target.closest('[data-jump]');
+  if(jump){openDef(jump.dataset.jump);return;}
+  const gl=e.target.closest('[data-gloss]');
+  if(gl){openDef(gl.dataset.gloss);return;}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeDef();
+  if((e.key==='Enter'||e.key===' ')&&document.activeElement.classList.contains('term')){
+    e.preventDefault();openDef(document.activeElement.dataset.def);
+  }
+});
+document.getElementById('p-close').addEventListener('click',closeDef);
+backdrop.addEventListener('click',closeDef);
+
+/* ===================== GLOSARIO ===================== */
+const gl=document.getElementById('glossary-list');
+Object.keys(D).map(k=>({k,t:D[k].t})).sort((a,b)=>a.t.localeCompare(b.t,'es'))
+  .forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.dataset.gloss=o.k;gl.appendChild(b);});
+
+/* ===================== REVEAL SOLUCIONES ===================== */
+document.querySelectorAll('.reveal-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const sol=btn.nextElementSibling;
+    const open=sol.classList.toggle('open');
+    btn.querySelector('.ic').textContent=open?'↑':'↓';
+    btn.childNodes[1].textContent=open?' Ocultar solución':' Ver solución';
+  });
+});
+
+/* ===================== QUIZ ===================== */
+document.querySelectorAll('.quiz').forEach(function(q){
+  const correct=q.dataset.correct;
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      if(q.dataset.done)return;
+      q.dataset.done='1';
+      const chosen=opt.dataset.k;
+      q.querySelectorAll('.opt').forEach(function(o){
+        if(o.dataset.k===correct)o.classList.add('correct');
+      });
+      if(chosen===correct){fb.textContent='¡Correcto! 🎯';fb.className='fb show ok';}
+      else{opt.classList.add('wrong');fb.textContent='Casi. La respuesta correcta está marcada en verde.';fb.className='fb show no';}
+    });
+  });
+});
+
+
+/* ===================== MODO APB: "probá vos" ===================== */
+(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-'};
+  function norm(s){
+    s=String(s).toLowerCase().trim();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g,function(c){return SUP[c];});
+    s=s.replace(/\|/g,'').replace(/−|–/g,'-').replace(/,/g,'.').replace(/\s+/g,'').replace(/[·*×^]/g,'');
+    if(s.indexOf('=')>=0) s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/\+c$/,'');
+    s=s.replace(/^\+/,'');
+    return s;
+  }
+  document.querySelectorAll('.try').forEach(function(t){
+    var inp=t.querySelector('input'),fb=t.querySelector('.tfb');
+    var answers=(t.dataset.ans||'').split('|').map(norm);
+    var shown=t.dataset.show||t.dataset.ans.split('|')[0];
+    function check(){
+      var v=norm(inp.value);
+      if(!v){fb.className='tfb no';fb.innerHTML='Escribí algo primero 🙂';return;}
+      if(answers.indexOf(v)>=0){fb.className='tfb ok';fb.innerHTML='<b>¡Bien ahí! ✓</b> '+(t.dataset.why||'');}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> Revisá los pasos o abrí la pista. Si querés, tocá "Ver respuesta".';}
+    }
+    t.querySelector('.chk').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    var sh=t.querySelector('.shw');
+    if(sh)sh.addEventListener('click',function(){fb.className='tfb ok';fb.innerHTML='<b>Respuesta:</b> '+shown+'. '+(t.dataset.why||'');});
+  });
+  /* progreso ("Lo entendí") — se guarda solo en este navegador */
+  var key='apb:'+location.pathname;
+  var done={};try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var btns=document.querySelectorAll('.done-btn');
+  function paint(){
+    var n=0;btns.forEach(function(b){var on=!!done[b.dataset.l];b.classList.toggle('on',on);b.textContent=on?'✓ Lección entendida':'Marcar como entendida';if(on)n++;});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(btns.length?100*n/btns.length:0)+'%';t.textContent=n+' de '+btns.length+' lecciones entendidas';}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){done[b.dataset.l]=!done[b.dataset.l];try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}paint();});});
+  paint();
+})();
+var EJ={"A1": {"m": "I", "lv": 1, "q": "∫ x⁷ dx", "v": "x", "f": "x^7", "F": "x^8/8", "R": "x⁸/8 + C", "hint": "Regla de la potencia: al exponente sumale 1 y dividí por el exponente nuevo.", "steps": ["Exponente 7 → le sumo 1 → 8.", "Divido por el exponente nuevo: x⁸/8.", "Agrego la constante: + C."], "mist": [["x^8", "Te faltó <b>dividir por el exponente nuevo</b> (8). Fijate: si derivás x⁸ te da 8x⁷, no x⁷."], ["7*x^6", "Eso es la <b>derivada</b> de x⁷. Para integrar se <b>suma</b> 1 al exponente y se <b>divide</b>."], ["x^8/7", "Dividiste por el exponente viejo (7). Hay que dividir por el <b>nuevo</b> (8)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A2": {"m": "I", "lv": 1, "q": "∫ dx/x³", "v": "x", "f": "1/x^3", "F": "-1/(2*x^2)", "R": "−1/(2x²) + C", "hint": "Primero disfrazá: 1/x³ = x⁻³. Después, regla de la potencia (−3 + 1 = −2).", "steps": ["Disfrazo de potencia: 1/x³ = x⁻³.", "Sumo 1 al exponente: −3 + 1 = <b>−2</b> (no −4: sumar 1 a un negativo lo acerca al 0).", "Divido por −2: x⁻²/(−2).", "Saco el disfraz: x⁻² = 1/x², así que queda −1/(2x²) + C."], "mist": [["x^(-4)/(-4)", "Al exponente −3 le <b>restaste</b> 1 (dio −4). Para integrar se <b>suma</b>: −3 + 1 = −2."], ["ln(abs(x^3))", "ln solo aparece con 1/x (exponente −1). Acá el exponente es −3: se usa la regla de la potencia."], ["1/(2*x^2)", "Te falta el <b>signo menos</b>: al dividir por −2 el resultado queda negativo."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A3": {"m": "I", "lv": 1, "q": "∫ √x dx", "v": "x", "f": "sqrt(x)", "F": "(2/3)*x^(3/2)", "R": "(2/3)·x^(3/2) + C", "hint": "√x = x^(1/2). Sumale 1 al exponente: 1/2 + 1 = 3/2.", "steps": ["Disfrazo: √x = x^(1/2).", "Sumo 1: 1/2 + 1 = 3/2 → x^(3/2).", "Dividir por 3/2 es multiplicar por 2/3: (2/3)x^(3/2) + C.", "También se puede escribir (2/3)·√(x³) o (2/3)x√x."], "mist": [["x^3/2", "Escribiste <b>x^3/2</b>, que se lee (x³)/2. Para el exponente 3/2 usá paréntesis: <b>x^(3/2)</b>. Y además hay que dividir por 3/2 (multiplicar por 2/3)."], ["x^(3/2)", "Falta dividir por el exponente nuevo, 3/2 (o sea, multiplicar por 2/3)."], ["(3/2)*x^(3/2)", "Multiplicaste por 3/2. Dividir por 3/2 es multiplicar por <b>2/3</b> (das vuelta la fracción)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A4": {"m": "I", "lv": 2, "q": "∫ ∛(x²) dx", "v": "x", "f": "x^(2/3)", "F": "(3/5)*x^(5/3)", "R": "(3/5)·x^(5/3) + C", "hint": "Raíz cúbica de x² = x^(2/3) (el índice de la raíz va abajo, el exponente arriba).", "steps": ["Disfrazo: ∛(x²) = x^(2/3).", "Sumo 1: 2/3 + 1 = 5/3.", "Divido por 5/3 = multiplico por 3/5: (3/5)x^(5/3) + C."], "mist": [["(3/2)*x^(3/2)", "Usaste x^(1/2), pero ∛(x²) es x^(<b>2/3</b>): el índice de la raíz (3) va en el denominador."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A5": {"m": "I", "lv": 2, "q": "∫ dx/√x", "v": "x", "f": "1/sqrt(x)", "F": "2*sqrt(x)", "R": "2√x + C", "hint": "1/√x = x^(−1/2). Sumale 1: −1/2 + 1 = 1/2.", "steps": ["Disfrazo: 1/√x = x^(−1/2) (sube y cambia el signo).", "Sumo 1: −1/2 + 1 = 1/2 → x^(1/2).", "Divido por 1/2 = multiplico por 2: 2x^(1/2) = 2√x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A6": {"m": "I", "lv": 2, "q": "∫ t·√t dt", "v": "t", "f": "t*sqrt(t)", "F": "(2/5)*t^(5/2)", "R": "(2/5)·t^(5/2) + C", "hint": "Antes de integrar, juntá en una sola potencia: t·t^(1/2) = t^(3/2) (misma base: se suman los exponentes).", "steps": ["Junto: t·√t = t¹·t^(1/2) = t^(3/2).", "Sumo 1: 3/2 + 1 = 5/2.", "Divido por 5/2 = multiplico por 2/5: (2/5)t^(5/2) + C."], "mist": [["(t^2/2)*(2/3)*t^(3/2)", "Integraste cada factor por separado y multiplicaste. ¡Eso no vale! Primero hay que juntar t·√t en una sola potencia."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "A7": {"m": "I", "lv": 3, "q": "∫ dz/∜z", "v": "z", "f": "1/z^(1/4)", "F": "(4/3)*z^(3/4)", "R": "(4/3)·z^(3/4) + C", "hint": "1/∜z = z^(−1/4).", "steps": ["Disfrazo: 1/∜z = z^(−1/4).", "Sumo 1: −1/4 + 1 = 3/4.", "Divido por 3/4 = multiplico por 4/3: (4/3)z^(3/4) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B1": {"m": "I", "lv": 1, "q": "∫ (3x² + 4x − 1) dx", "v": "x", "f": "3*x^2+4*x-1", "F": "x^3+2*x^2-x", "R": "x³ + 2x² − x + C", "hint": "Integrá cada término por separado. El número que multiplica espera afuera.", "steps": ["3x² → 3·x³/3 = x³.", "4x → 4·x²/2 = 2x².", "−1 → −x.", "Junto todo y pongo una sola C: x³ + 2x² − x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B2": {"m": "I", "lv": 1, "q": "∫ (x⁴ − 2x³ + 6) dx", "v": "x", "f": "x^4-2*x^3+6", "F": "x^5/5-x^4/2+6*x", "R": "x⁵/5 − x⁴/2 + 6x + C", "hint": "Cada término por separado; el 6 suelto se vuelve 6x.", "steps": ["x⁴ → x⁵/5.", "−2x³ → −2·x⁴/4 = −x⁴/2.", "6 → 6x.", "Resultado: x⁵/5 − x⁴/2 + 6x + C."], "mist": [["x^5/5-x^4/2+6", "El 6 suelto no queda igual: ∫ 6 dx = <b>6x</b> (le agregás la x)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B3": {"m": "I", "lv": 2, "q": "∫ (5 − 3/x²) dx", "v": "x", "f": "5-3/x^2", "F": "5*x+3/x", "R": "5x + 3/x + C", "hint": "3/x² = 3x⁻². Cuidado con los signos: −3·(x⁻¹/(−1)) = +3/x.", "steps": ["5 → 5x.", "−3/x² = −3x⁻² → −3·x⁻¹/(−1) = +3x⁻¹ = +3/x.", "Resultado: 5x + 3/x + C."], "mist": [["5*x-3/x", "Error de signo en el segundo término: −3 dividido −1 da <b>+3</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B4": {"m": "I", "lv": 2, "q": "∫ (4√x − 2/√x) dx", "v": "x", "f": "4*sqrt(x)-2/sqrt(x)", "F": "(8/3)*x^(3/2)-4*sqrt(x)", "R": "(8/3)x^(3/2) − 4√x + C", "hint": "Disfrazá las dos raíces: x^(1/2) y x^(−1/2).", "steps": ["4x^(1/2) → 4·(2/3)x^(3/2) = (8/3)x^(3/2).", "−2x^(−1/2) → −2·2x^(1/2) = −4√x.", "Resultado: (8/3)x^(3/2) − 4√x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "B5": {"m": "I", "lv": 2, "q": "∫ (6x² − 2/x) dx", "v": "x", "f": "6*x^2-2/x", "F": "2*x^3-2*ln(abs(x))", "R": "2x³ − 2 ln|x| + C", "hint": "Ojo: 1/x es la excepción. ∫ 1/x dx = ln|x|.", "steps": ["6x² → 6·x³/3 = 2x³.", "−2/x → −2·ln|x| (la excepción del exponente −1).", "Resultado: 2x³ − 2 ln|x| + C."], "mist": [["2*x^3+2/x^2", "Para 1/x <b>no</b> se usa la regla de la potencia (daría dividir por 0): se usa ∫ 1/x dx = ln|x|."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C1": {"m": "I", "lv": 1, "q": "∫ x(x + 2) dx", "v": "x", "f": "x*(x+2)", "F": "x^3/3+x^2", "R": "x³/3 + x² + C", "hint": "Primero aplicá la distributiva: x(x + 2) = x² + 2x.", "steps": ["Distribuyo: x(x + 2) = x² + 2x.", "x² → x³/3 ; 2x → x².", "Resultado: x³/3 + x² + C."], "mist": [["(x^2/2)*(x^2/2+2*x)", "Integraste cada factor por separado y los multiplicaste. ∫ (f·g) ≠ ∫f · ∫g: primero hay que <b>multiplicar</b> (distributiva)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C2": {"m": "I", "lv": 1, "q": "∫ (x + 1)² dx", "v": "x", "f": "(x+1)^2", "F": "x^3/3+x^2+x", "R": "x³/3 + x² + x + C", "hint": "Desarrollá el cuadrado: (x + 1)² = x² + 2x + 1. (O sustitución u = x + 1.)", "steps": ["(x + 1)² = x² + 2x + 1 (cuadrado de un binomio: primero² + 2·primero·segundo + segundo²).", "Integro: x³/3 + x² + x + C.", "Otra forma válida: (x + 1)³/3 + C (difiere solo en una constante)."], "mist": [["x^3/3+1", "(x + 1)² <b>no</b> es x² + 1: falta el doble producto 2x. (x + 1)² = x² + 2x + 1."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C3": {"m": "I", "lv": 2, "q": "∫ (2x − 3)² dx", "v": "x", "f": "(2*x-3)^2", "F": "(4/3)*x^3-6*x^2+9*x", "R": "(4/3)x³ − 6x² + 9x + C", "hint": "(2x − 3)² = 4x² − 12x + 9.", "steps": ["Desarrollo: (2x)² − 2·2x·3 + 3² = 4x² − 12x + 9.", "Integro: 4x³/3 − 6x² + 9x + C.", "También vale (2x − 3)³/6 + C (por sustitución)."], "mist": [["(2*x-3)^3/3", "Si lo hacés por sustitución, u = 2x − 3 y du = 2 dx: falta dividir por <b>2</b>. Queda (2x − 3)³/6."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C4": {"m": "I", "lv": 2, "q": "∫ (1 + x)√x dx", "v": "x", "f": "(1+x)*sqrt(x)", "F": "(2/3)*x^(3/2)+(2/5)*x^(5/2)", "R": "(2/3)x^(3/2) + (2/5)x^(5/2) + C", "hint": "Distribuí: (1 + x)·x^(1/2) = x^(1/2) + x^(3/2). Es igual al ejercicio 6 del libro, con +.", "steps": ["Distribuyo: x^(1/2) + x·x^(1/2) = x^(1/2) + x^(3/2).", "x^(1/2) → (2/3)x^(3/2).", "x^(3/2) → (2/5)x^(5/2).", "Resultado: (2/3)x^(3/2) + (2/5)x^(5/2) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C5": {"m": "I", "lv": 3, "q": "∫ (x² + 1)(x − 2) dx", "v": "x", "f": "(x^2+1)*(x-2)", "F": "x^4/4-(2/3)*x^3+x^2/2-2*x", "R": "x⁴/4 − 2x³/3 + x²/2 − 2x + C", "hint": "Multiplicá todo con todo: (x² + 1)(x − 2) = x³ − 2x² + x − 2.", "steps": ["Multiplico: x²·x − x²·2 + 1·x − 1·2 = x³ − 2x² + x − 2.", "Integro término a término: x⁴/4 − 2x³/3 + x²/2 − 2x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "C6": {"m": "I", "lv": 3, "q": "∫ (2 − √x)² dx", "v": "x", "f": "(2-sqrt(x))^2", "F": "4*x-(8/3)*x^(3/2)+x^2/2", "R": "4x − (8/3)x^(3/2) + x²/2 + C", "hint": "(2 − √x)² = 4 − 4√x + x.", "steps": ["Desarrollo: 2² − 2·2·√x + (√x)² = 4 − 4√x + x.", "4 → 4x ; −4x^(1/2) → −4·(2/3)x^(3/2) = −(8/3)x^(3/2) ; x → x²/2.", "Resultado: 4x − (8/3)x^(3/2) + x²/2 + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D1": {"m": "I", "lv": 1, "q": "∫ (x² + 3x)/x dx", "v": "x", "f": "(x^2+3*x)/x", "F": "x^2/2+3*x", "R": "x²/2 + 3x + C", "hint": "Dividí cada término de arriba por x: x²/x + 3x/x.", "steps": ["Separo: x²/x + 3x/x = x + 3.", "Integro: x²/2 + 3x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D2": {"m": "I", "lv": 2, "q": "∫ (x³ − 2x + 1)/x dx", "v": "x", "f": "(x^3-2*x+1)/x", "F": "x^3/3-2*x+ln(abs(x))", "R": "x³/3 − 2x + ln|x| + C", "hint": "Separá: x² − 2 + 1/x. El último da ln.", "steps": ["Divido cada término: x³/x − 2x/x + 1/x = x² − 2 + 1/x.", "Integro: x³/3 − 2x + ln|x| + C."], "mist": [["x^3/3-2*x", "Te olvidaste del último término: 1/x → <b>ln|x|</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D3": {"m": "I", "lv": 2, "q": "∫ (4x³ + x² − 6)/x² dx", "v": "x", "f": "(4*x^3+x^2-6)/x^2", "F": "2*x^2+x+6/x", "R": "2x² + x + 6/x + C", "hint": "Separá en tres fracciones. El −6/x² es −6x⁻². Es como el ejercicio 8 del libro.", "steps": ["Divido: 4x³/x² + x²/x² − 6/x² = 4x + 1 − 6x⁻².", "4x → 2x² ; 1 → x ; −6x⁻² → −6·x⁻¹/(−1) = 6/x.", "Resultado: 2x² + x + 6/x + C."], "mist": [["2*x^2+x-6/x", "Error de signo: −6 dividido −1 da <b>+6</b>."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "D4": {"m": "I", "lv": 3, "q": "∫ (x + 1)/√x dx", "v": "x", "f": "(x+1)/sqrt(x)", "F": "(2/3)*x^(3/2)+2*sqrt(x)", "R": "(2/3)x^(3/2) + 2√x + C", "hint": "Separá: x/√x + 1/√x = x^(1/2) + x^(−1/2).", "steps": ["x/√x = x¹/x^(1/2) = x^(1/2) (se restan los exponentes).", "1/√x = x^(−1/2).", "Integro: (2/3)x^(3/2) + 2x^(1/2) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E1": {"m": "I", "lv": 2, "q": "∫ 8x²/(x³ + 2)³ dx &nbsp;<span class=\"tagbk\">libro 9(c)</span>", "v": "x", "f": "8*x^2/(x^3+2)^3", "F": "-4/(3*(x^3+2)^2)", "R": "−4/[3(x³ + 2)²] + C", "hint": "u = x³ + 2, du = 3x² dx. Entonces x² dx = du/3, y queda (8/3)∫ u⁻³ du.", "steps": ["u = x³ + 2 → du = 3x² dx → x² dx = du/3.", "Reemplazo: ∫ 8·(du/3)/u³ = (8/3)∫ u⁻³ du.", "Integro: (8/3)·u⁻²/(−2) = −(4/3)u⁻².", "Vuelvo a x: −4/[3(x³ + 2)²] + C."], "mist": [["-4/(x^3+2)^2", "Te faltó el <b>1/3</b> que sale de du = 3x² dx (en la integral solo hay x² dx)."], ["-2/(x^3+2)^4", "Al exponente −3 le restaste 1. Al integrar se <b>suma</b>: −3 + 1 = −2."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E2": {"m": "I", "lv": 3, "q": "∫ x²/∜(x³ + 2) dx &nbsp;<span class=\"tagbk\">libro 9(d)</span>", "v": "x", "f": "x^2/(x^3+2)^(1/4)", "F": "(4/9)*(x^3+2)^(3/4)", "R": "(4/9)(x³ + 2)^(3/4) + C", "hint": "u = x³ + 2. La raíz cuarta abajo es u^(−1/4).", "steps": ["u = x³ + 2 → x² dx = du/3.", "∫ x² dx/∜(x³ + 2) = (1/3)∫ u^(−1/4) du.", "Sumo 1: −1/4 + 1 = 3/4 → (1/3)·u^(3/4)/(3/4) = (1/3)(4/3)u^(3/4) = (4/9)u^(3/4).", "Resultado: (4/9)(x³ + 2)^(3/4) + C."], "mist": [["(4/3)*(x^3+2)^(3/4)", "Te faltó multiplicar por el <b>1/3</b> de du = 3x² dx."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E3": {"m": "I", "lv": 1, "q": "∫ (x² + 1)³·2x dx", "v": "x", "f": "(x^2+1)^3*2*x", "F": "(x^2+1)^4/4", "R": "(x² + 1)⁴/4 + C", "hint": "u = x² + 1 y du = 2x dx: ¡el 2x dx ya está!", "steps": ["u = x² + 1 → du = 2x dx.", "Queda ∫ u³ du = u⁴/4.", "Resultado: (x² + 1)⁴/4 + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E4": {"m": "I", "lv": 2, "q": "∫ x(x² − 4)⁵ dx", "v": "x", "f": "x*(x^2-4)^5", "F": "(x^2-4)^6/12", "R": "(x² − 4)⁶/12 + C", "hint": "u = x² − 4, du = 2x dx → x dx = du/2.", "steps": ["u = x² − 4 → x dx = du/2.", "(1/2)∫ u⁵ du = (1/2)·u⁶/6 = u⁶/12.", "Resultado: (x² − 4)⁶/12 + C."], "mist": [["(x^2-4)^6/6", "Falta el <b>1/2</b> de du = 2x dx: en la integral hay x dx, no 2x dx."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E5": {"m": "I", "lv": 2, "q": "∫ x²√(x³ − 1) dx", "v": "x", "f": "x^2*sqrt(x^3-1)", "F": "(2/9)*(x^3-1)^(3/2)", "R": "(2/9)(x³ − 1)^(3/2) + C", "hint": "Igual que el 9(b) del libro: u = x³ − 1, x² dx = du/3.", "steps": ["u = x³ − 1 → x² dx = du/3.", "(1/3)∫ u^(1/2) du = (1/3)·(2/3)u^(3/2) = (2/9)u^(3/2).", "Resultado: (2/9)(x³ − 1)^(3/2) + C."], "mist": [], "pts": [1.4, 1.8, 2.3, 2.9, 3.6, 4.4]}, "E6": {"m": "I", "lv": 2, "q": "∫ 6x/(x² + 5)² dx", "v": "x", "f": "6*x/(x^2+5)^2", "F": "-3/(x^2+5)", "R": "−3/(x² + 5) + C", "hint": "u = x² + 5, du = 2x dx → 6x dx = 3 du.", "steps": ["u = x² + 5 → 6x dx = 3·(2x dx) = 3 du.", "3∫ u⁻² du = 3·u⁻¹/(−1) = −3/u.", "Resultado: −3/(x² + 5) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E7": {"m": "I", "lv": 1, "q": "∫ (2x + 3)⁴ dx", "v": "x", "f": "(2*x+3)^4", "F": "(2*x+3)^5/10", "R": "(2x + 3)⁵/10 + C", "hint": "u = 2x + 3, du = 2 dx → dx = du/2.", "steps": ["u = 2x + 3 → dx = du/2.", "(1/2)∫ u⁴ du = (1/2)·u⁵/5 = u⁵/10.", "Resultado: (2x + 3)⁵/10 + C."], "mist": [["(2*x+3)^5/5", "Falta dividir por <b>2</b>: la derivada de lo de adentro (2x + 3) es 2."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "E8": {"m": "I", "lv": 2, "q": "∫ x/(x² + 1) dx", "v": "x", "f": "x/(x^2+1)", "F": "(1/2)*ln(x^2+1)", "R": "½ ln(x² + 1) + C", "hint": "u = x² + 1. Queda (1/2)∫ du/u, que da ln.", "steps": ["u = x² + 1 → x dx = du/2.", "(1/2)∫ du/u = (1/2) ln|u|.", "Como x² + 1 siempre es positivo, no hace falta el valor absoluto: ½ ln(x² + 1) + C."], "mist": [["ln(x^2+1)", "Falta el <b>1/2</b> (du = 2x dx y solo hay x dx)."]], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "F1": {"m": "I", "lv": 2, "q": "∫ dx/(x² − 9)", "v": "x", "f": "1/(x^2-9)", "F": "(1/6)*ln(abs((x-3)/(x+3)))", "R": "(1/6) ln|(x − 3)/(x + 3)| + C", "hint": "x² − 9 = (x − 3)(x + 3). Planteá A/(x − 3) + B/(x + 3).", "steps": ["Factorizo: x² − 9 = (x − 3)(x + 3) (diferencia de cuadrados).", "1 = A(x + 3) + B(x − 3). Con x = 3: 1 = 6A → A = 1/6. Con x = −3: 1 = −6B → B = −1/6.", "∫ [(1/6)/(x − 3) − (1/6)/(x + 3)] dx = (1/6)ln|x − 3| − (1/6)ln|x + 3|.", "Juntando: (1/6) ln|(x − 3)/(x + 3)| + C."], "mist": [["(1/6)*ln(abs((x+3)/(x-3)))", "Te quedó la fracción dada vuelta (signo cambiado). Arriba va x − 3, porque A (el de x − 3) es el positivo."], ["ln(abs(x^2-9))", "∫ du/u = ln|u| solo sirve si arriba está la derivada de abajo (2x). Acá arriba hay un 1: van fracciones simples."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "F2": {"m": "I", "lv": 1, "q": "∫ dx/(x² − 1)", "v": "x", "f": "1/(x^2-1)", "F": "(1/2)*ln(abs((x-1)/(x+1)))", "R": "½ ln|(x − 1)/(x + 1)| + C", "hint": "x² − 1 = (x − 1)(x + 1). Con x = 1 sale A, con x = −1 sale B.", "steps": ["1 = A(x + 1) + B(x − 1).", "x = 1 → A = 1/2. x = −1 → B = −1/2.", "½ ln|x − 1| − ½ ln|x + 1| = ½ ln|(x − 1)/(x + 1)| + C."], "mist": [["ln(abs(x^2-1))", "∫ du/u = ln|u| solo sirve si <b>arriba está la derivada de abajo</b>. Acá no pasa, así que hay que separar en <b>fracciones simples</b>: factorizá el denominador y buscá A y B."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "F3": {"m": "I", "lv": 2, "q": "∫ dx/[x(x − 2)]", "v": "x", "f": "1/(x*(x-2))", "F": "(1/2)*ln(abs((x-2)/x))", "R": "½ ln|(x − 2)/x| + C", "hint": "A/x + B/(x − 2). Probá x = 0 y x = 2.", "steps": ["1 = A(x − 2) + Bx.", "x = 0 → 1 = −2A → A = −1/2. x = 2 → 1 = 2B → B = 1/2.", "−½ ln|x| + ½ ln|x − 2| = ½ ln|(x − 2)/x| + C."], "mist": [["ln(abs(x*(x-2)))", "∫ du/u = ln|u| solo sirve si <b>arriba está la derivada de abajo</b>. Acá no pasa, así que hay que separar en <b>fracciones simples</b>: factorizá el denominador y buscá A y B."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "F4": {"m": "I", "lv": 2, "q": "∫ (x + 5)/[(x − 1)(x + 2)] dx", "v": "x", "f": "(x+5)/((x-1)*(x+2))", "F": "2*ln(abs(x-1))-ln(abs(x+2))", "R": "2 ln|x − 1| − ln|x + 2| + C", "hint": "x + 5 = A(x + 2) + B(x − 1).", "steps": ["x = 1 → 6 = 3A → A = 2.", "x = −2 → 3 = −3B → B = −1.", "∫ [2/(x − 1) − 1/(x + 2)] dx = 2 ln|x − 1| − ln|x + 2| + C."], "mist": [["ln(abs((x-1)*(x+2)))", "∫ du/u = ln|u| solo sirve si <b>arriba está la derivada de abajo</b>. Acá no pasa, así que hay que separar en <b>fracciones simples</b>: factorizá el denominador y buscá A y B."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "F5": {"m": "I", "lv": 3, "q": "∫ (2x + 1)/(x² − x − 2) dx", "v": "x", "f": "(2*x+1)/(x^2-x-2)", "F": "(5/3)*ln(abs(x-2))+(1/3)*ln(abs(x+1))", "R": "(5/3) ln|x − 2| + (1/3) ln|x + 1| + C", "hint": "Factorizá abajo: x² − x − 2 = (x − 2)(x + 1) (buscá dos números que sumen −1 y multipliquen −2).", "steps": ["x² − x − 2 = (x − 2)(x + 1).", "2x + 1 = A(x + 1) + B(x − 2). x = 2 → 5 = 3A → A = 5/3. x = −1 → −1 = −3B → B = 1/3.", "Resultado: (5/3) ln|x − 2| + (1/3) ln|x + 1| + C.", "Ojo: arriba no está la derivada de abajo (sería 2x − 1), por eso no sirve ln directo."], "mist": [["ln(abs(x^2-x-2))", "La derivada de x² − x − 2 es 2x − <b>1</b>, y arriba hay 2x + <b>1</b>: no es u′/u. Hay que hacer fracciones simples."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "F6": {"m": "I", "lv": 2, "q": "∫ dx/(x² − 4x)", "v": "x", "f": "1/(x^2-4*x)", "F": "(1/4)*ln(abs((x-4)/x))", "R": "¼ ln|(x − 4)/x| + C", "hint": "Sacá factor común abajo: x² − 4x = x(x − 4).", "steps": ["x² − 4x = x(x − 4).", "1 = A(x − 4) + Bx. x = 0 → A = −1/4. x = 4 → B = 1/4.", "¼ ln|x − 4| − ¼ ln|x| = ¼ ln|(x − 4)/x| + C."], "mist": [["ln(abs(x^2-4*x))", "∫ du/u = ln|u| solo sirve si <b>arriba está la derivada de abajo</b>. Acá no pasa, así que hay que separar en <b>fracciones simples</b>: factorizá el denominador y buscá A y B."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "G1": {"m": "I", "lv": 1, "q": "∫ (x² − 1)/x² dx", "v": "x", "f": "(x^2-1)/x^2", "F": "x+1/x", "R": "x + 1/x + C", "hint": "Dividí: 1 − x⁻².", "steps": ["(x² − 1)/x² = 1 − 1/x² = 1 − x⁻².", "1 → x ; −x⁻² → −x⁻¹/(−1) = +1/x.", "Resultado: x + 1/x + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "G2": {"m": "I", "lv": 2, "q": "∫ x²(x³ + 1)⁴ dx", "v": "x", "f": "x^2*(x^3+1)^4", "F": "(x^3+1)^5/15", "R": "(x³ + 1)⁵/15 + C", "hint": "Sustitución u = x³ + 1 (x² dx = du/3).", "steps": ["u = x³ + 1 → x² dx = du/3.", "(1/3)∫ u⁴ du = (1/3)·u⁵/5 = u⁵/15.", "Resultado: (x³ + 1)⁵/15 + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "G3": {"m": "I", "lv": 2, "q": "∫ dx/(x² − 16)", "v": "x", "f": "1/(x^2-16)", "F": "(1/8)*ln(abs((x-4)/(x+4)))", "R": "(1/8) ln|(x − 4)/(x + 4)| + C", "hint": "Fracciones simples con (x − 4)(x + 4).", "steps": ["1 = A(x + 4) + B(x − 4). x = 4 → A = 1/8. x = −4 → B = −1/8.", "Resultado: (1/8) ln|(x − 4)/(x + 4)| + C.", "Patrón: ∫ dx/(x² − a²) = (1/(2a)) ln|(x − a)/(x + a)| + C."], "mist": [["ln(abs(x^2-16))", "∫ du/u = ln|u| solo sirve si <b>arriba está la derivada de abajo</b>. Acá no pasa, así que hay que separar en <b>fracciones simples</b>: factorizá el denominador y buscá A y B."]], "pts": [4.4, 5.1, 6.3, 7.7, 9.2, 11.5]}, "G4": {"m": "I", "lv": 3, "q": "∫ ∛x·(x + 1) dx", "v": "x", "f": "x^(1/3)*(x+1)", "F": "(3/7)*x^(7/3)+(3/4)*x^(4/3)", "R": "(3/7)x^(7/3) + (3/4)x^(4/3) + C", "hint": "Distribuí: x^(4/3) + x^(1/3).", "steps": ["x^(1/3)·x = x^(4/3) ; x^(1/3)·1 = x^(1/3).", "x^(4/3) → x^(7/3)/(7/3) = (3/7)x^(7/3).", "x^(1/3) → x^(4/3)/(4/3) = (3/4)x^(4/3).", "Resultado: (3/7)x^(7/3) + (3/4)x^(4/3) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "G5": {"m": "I", "lv": 2, "q": "∫ 3x²/(x³ + 2)² dx", "v": "x", "f": "3*x^2/(x^3+2)^2", "F": "-1/(x^3+2)", "R": "−1/(x³ + 2) + C", "hint": "u = x³ + 2, du = 3x² dx (ya está completo).", "steps": ["u = x³ + 2 → du = 3x² dx.", "∫ u⁻² du = −u⁻¹.", "Resultado: −1/(x³ + 2) + C."], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}, "G6": {"m": "I", "lv": 3, "q": "∫ (3s + 4)² ds &nbsp;<span class=\"tagbk\">libro 7</span>", "v": "s", "f": "(3*s+4)^2", "F": "3*s^3+12*s^2+16*s", "R": "3s³ + 12s² + 16s + C", "hint": "Desarrollá: 9s² + 24s + 16. (Ojo: la variable es s.)", "steps": ["(3s + 4)² = 9s² + 24s + 16.", "9s² → 3s³ ; 24s → 12s² ; 16 → 16s.", "Resultado: 3s³ + 12s² + 16s + C. (Por sustitución: (3s + 4)³/9 + C, que es lo mismo salvo una constante.)"], "mist": [], "pts": [0.6, 1.3, 1.9, 2.7, 3.4, 4.6]}};
+/* ===================== CORRECTOR DE INTEGRALES =====================
+   Lee lo que escribe el estudiante (x^2, x², √x, ln|x|, 2x(x+1), sen x…),
+   lo convierte en función y lo compara con la primitiva correcta en varios
+   puntos: si la diferencia es constante, es correcto (por el + C).
+   Si está mal, intenta diagnosticar el error y muestra la resolución. */
+var CORR=(function(){
+  var SUP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁄':'/','ᐟ':'/'};
+  var FUN={sen:Math.sin,sin:Math.sin,cos:Math.cos,tg:Math.tan,tan:Math.tan,ln:Math.log,log:function(v){return Math.log(v)/Math.LN10;},
+    sqrt:Math.sqrt,raiz:Math.sqrt,exp:Math.exp,abs:Math.abs,arctg:Math.atan,arctan:Math.atan,arcsen:Math.asin,arcsin:Math.asin};
+  var WORDS=['arcsen','arcsin','arctg','arctan','sqrt','raiz','sen','sin','cos','tan','tg','exp','abs','ln','log','pi'];
+
+  function prep(s){
+    s=String(s).toLowerCase();
+    s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁄ᐟ]+/g,function(m){return '^('+m.split('').map(function(c){return SUP[c];}).join('')+')';});
+    s=s.replace(/[−–—]/g,'-').replace(/[·×∙]/g,'*').replace(/,/g,'.').replace(/÷/g,'/').replace(/π/g,'pi').replace(/raíz/g,'raiz');
+    if(s.indexOf('=')>=0)s=s.slice(s.lastIndexOf('=')+1);
+    s=s.replace(/d[a-z]\s*$/,'');                 // "… dx" al final
+    s=s.replace(/[+-]\s*[ck]\s*$/,'');             // "+ C" al final
+    return s.trim();
+  }
+  function tokenize(s,v){
+    var t=[],i=0,m;
+    while(i<s.length){
+      var c=s[i];
+      if(/\s/.test(c)){i++;continue;}
+      if((m=/^(\d+\.?\d*|\.\d+)/.exec(s.slice(i)))){t.push({k:'n',v:parseFloat(m[1])});i+=m[1].length;continue;}
+      if(/[a-záéíóúñ]/.test(c)){
+        var run=/^[a-záéíóúñ]+/.exec(s.slice(i))[0],j=0;
+        while(j<run.length){
+          var w=null;for(var q=0;q<WORDS.length;q++){if(run.substr(j,WORDS[q].length)===WORDS[q]){w=WORDS[q];break;}}
+          if(w){t.push(w==='pi'?{k:'n',v:Math.PI}:{k:'f',v:w});j+=w.length;continue;}
+          var L=run[j];
+          if(L===v)t.push({k:'v'});
+          else if(L==='e')t.push({k:'n',v:Math.E});
+          else if(L==='c'||L==='k')t.push({k:'n',v:0});
+          else throw {msg:'Apareció la letra "'+L+'". En este ejercicio la variable es <b>'+v+'</b>.'};
+          j++;
+        }
+        i+=run.length;continue;
+      }
+      if('+-*/^()|√∛∜'.indexOf(c)>=0){t.push({k:c});i++;continue;}
+      if(c==='['||c==='{'){t.push({k:'('});i++;continue;}
+      if(c===']'||c==='}'){t.push({k:')'});i++;continue;}
+      throw {msg:'No entiendo el símbolo "'+c+'".'};
+    }
+    return t;
+  }
+  function parse(src,v){
+    var T=tokenize(prep(src),v),p=0,abs=0;
+    if(!T.length)throw {msg:'Escribí una respuesta.'};
+    function pk(){return T[p];}
+    function eat(k){if(!T[p]||T[p].k!==k)throw {msg:'Falta cerrar un paréntesis o una barra |.'};p++;}
+    function startsPrimary(x){return x&&(x.k==='n'||x.k==='v'||x.k==='f'||x.k==='('||x.k==='√'||x.k==='∛'||x.k==='∜'||(x.k==='|'&&abs===0));}
+    function expr(){var a=term();while(pk()&&(pk().k==='+'||pk().k==='-')){var o=T[p++].k,b=term();a=(function(a,b,o){return o==='+'?function(x){return a(x)+b(x);}:function(x){return a(x)-b(x);};})(a,b,o);}return a;}
+    function term(){var a=unary();
+      while(pk()){
+        if(pk().k==='*'||pk().k==='/'){var o=T[p++].k,b=unary();a=(function(a,b,o){return o==='*'?function(x){return a(x)*b(x);}:function(x){return a(x)/b(x);};})(a,b,o);}
+        else if(startsPrimary(pk())){var b2=power();a=(function(a,b){return function(x){return a(x)*b(x);};})(a,b2);}
+        else break;
+      }return a;}
+    function unary(){if(pk()&&pk().k==='-'){p++;var a=unary();return function(x){return -a(x);};}if(pk()&&pk().k==='+'){p++;return unary();}return power();}
+    function power(){var a=primary();if(pk()&&pk().k==='^'){p++;var b=unary();return function(x){return pw(a(x),b(x));};}return a;}
+    function pw(a,b){if(a<0&&Math.abs(b*3-Math.round(b*3))<1e-9&&Math.round(b*3)%3!==0){var r=Math.pow(-a,b);var d=Math.round(b*3);return (d%2!==0)?-r:r;}return Math.pow(a,b);}
+    function primary(){
+      var x=T[p];if(!x)throw {msg:'La expresión quedó incompleta.'};
+      if(x.k==='n'){p++;return function(){return x.v;};}
+      if(x.k==='v'){p++;return function(z){return z;};}
+      if(x.k==='('){p++;var a=expr();eat(')');return a;}
+      if(x.k==='|'){p++;abs++;var b=expr();abs--;eat('|');return function(z){return Math.abs(b(z));};}
+      if(x.k==='√'||x.k==='∛'||x.k==='∜'){p++;var r=primary(),n=x.k==='√'?2:x.k==='∛'?3:4;return function(z){var q=r(z);return n===3?Math.cbrt(q):Math.pow(q,1/n);};}
+      if(x.k==='f'){p++;var f=FUN[x.v],arg;
+        if(pk()&&pk().k==='^'){p++;var ex=unary();arg=power();return function(z){return Math.pow(f(arg(z)),ex(z));};}
+        arg=(pk()&&pk().k==='(')?primary():power();return function(z){return f(arg(z));};}
+      throw {msg:'Hay un operador fuera de lugar (revisá dos signos seguidos o un paréntesis vacío).'};
+    }
+    var F=expr();if(p<T.length)throw {msg:'Sobra algo al final ("'+(T[p].k==='n'?T[p].v:T[p].k==='f'?T[p].v:T[p].k)+'"). Revisá paréntesis y barras.'};
+    return F;
+  }
+  function vals(F,pts){return pts.map(function(x){try{return F(x);}catch(e){return NaN;}});}
+  function constDiff(A,B,pts){
+    var a=vals(A,pts),b=vals(B,pts),d=[],sc=1;
+    for(var i=0;i<pts.length;i++){if(isFinite(a[i])&&isFinite(b[i])){d.push(a[i]-b[i]);sc=Math.max(sc,Math.abs(a[i]),Math.abs(b[i]));}}
+    if(d.length<3)return null;
+    for(var j=1;j<d.length;j++)if(Math.abs(d[j]-d[0])>1e-6*sc)return false;
+    return true;
+  }
+  function sameFn(A,B,pts){
+    var a=vals(A,pts),b=vals(B,pts),n=0;
+    for(var i=0;i<pts.length;i++){if(isFinite(a[i])&&isFinite(b[i])){n++;if(Math.abs(a[i]-b[i])>1e-6*Math.max(1,Math.abs(a[i]),Math.abs(b[i])))return false;}}
+    return n>=3?true:null;
+  }
+  function deriv(F){var h=1e-5;return function(x){return (F(x+h)-F(x-h))/(2*h);};}
+  function frac(k){for(var den=1;den<=24;den++){var num=Math.round(k*den);if(Math.abs(num/den-k)<1e-4)return den===1?String(num):num+'/'+den;}return k.toFixed(3).replace('.',',');}
+  function fmt(n){if(!isFinite(n))return '—';var r=Math.round(n*1000)/1000;return String(r).replace('.',',');}
+
+  /* Diagnóstico de errores típicos */
+  function diagnose(U,ej,f,F){
+    var pts=ej.pts,dU=deriv(U),dF=deriv(f);
+    if(constDiff(U,f,pts))return 'Escribiste la <b>misma función que había que integrar</b>. Integrar es encontrar la función que, al derivarla, da esa.';
+    if(constDiff(U,dF,pts))return 'Parece que <b>derivaste en vez de integrar</b>. Para integrar potencias se <b>suma</b> 1 al exponente y se <b>divide</b> por el exponente nuevo (al revés que derivar).';
+    if(constDiff(U,function(x){return -F(x);},pts))return 'Tenés un <b>error de signo</b>: tu resultado es el correcto pero con el signo cambiado. Revisá los exponentes negativos (al dividir por un número negativo cambia el signo) y los "menos" del enunciado.';
+    var ks=[];for(var i=0;i<pts.length;i++){var fv=f(pts[i]),g=dU(pts[i]);if(isFinite(fv)&&isFinite(g)&&Math.abs(fv)>1e-6)ks.push(g/fv);}
+    if(ks.length>=3){var ok=true;for(var j=1;j<ks.length;j++)if(Math.abs(ks[j]-ks[0])>1e-4*Math.max(1,Math.abs(ks[0])))ok=false;
+      if(ok&&Math.abs(ks[0]-1)>1e-4)return 'Vas bien encaminado: tu resultado está <b>multiplicado por '+frac(ks[0])+'</b> respecto del correcto. Eso casi siempre pasa por <b>olvidarte de dividir por el exponente nuevo</b> o por <b>no compensar el número que aparece en du</b> (por ejemplo, si du = 3x² dx y en la integral solo hay x² dx, falta un factor 1/3).';}
+    var x0=pts[1];
+    return 'No coincide. <b>Comprobalo derivando tu resultado:</b> si estuviera bien, su derivada daría la función a integrar. En '+ej.v+' = '+fmt(x0)+', la derivada de tu respuesta vale '+fmt(dU(x0))+', pero la función a integrar vale '+fmt(f(x0))+'.';
+  }
+
+  function diagnoseD(U,ej,f,D){
+    var pts=ej.pts;
+    if(sameFn(U,f,pts))return 'Escribiste la <b>misma función</b> del enunciado: falta derivarla.';
+    if(sameFn(U,function(x){return -D(x);},pts))return 'Tenés un <b>error de signo</b>. Revisá: la derivada de cos es −sen, los exponentes negativos, y en el cociente el orden es (derivada de arriba)·abajo <b>menos</b> arriba·(derivada de abajo).';
+    if(constDiff(U,D,pts))return 'Tu resultado difiere del correcto en un número suelto. Acordate: la derivada de una constante es 0 (y en derivadas no va + C).';
+    var ks=[];for(var i=0;i<pts.length;i++){var d=D(pts[i]),u=U(pts[i]);if(isFinite(d)&&isFinite(u)&&Math.abs(d)>1e-6)ks.push(u/d);}
+    if(ks.length>=3){var ok=true;for(var j=1;j<ks.length;j++)if(Math.abs(ks[j]-ks[0])>1e-4*Math.max(1,Math.abs(ks[0])))ok=false;
+      if(ok&&Math.abs(ks[0]-1)>1e-4)return 'Casi: tu resultado está <b>multiplicado por '+frac(ks[0])+'</b> respecto del correcto. Lo más común es <b>olvidarse de multiplicar por la derivada de lo de adentro</b> (regla de la cadena) o por el exponente que baja.';}
+    var x0=pts[1];
+    return 'No coincide. En '+ej.v+' = '+fmt(x0)+' tu derivada vale '+fmt(U(x0))+' y la correcta vale '+fmt(D(x0))+'. Mirá la resolución para ver qué regla corresponde.';
+  }
+  function check(ej,input){
+    if(ej.m==='D')return checkD(ej,input);
+    var U;
+    try{U=parse(input,ej.v);}catch(e){return {st:'syntax',msg:e.msg||'No pude leer la expresión.'};}
+    var F=parse(ej.F,ej.v),f=parse(ej.f,ej.v);
+    var c=constDiff(U,F,ej.pts);
+    if(c===null)return {st:'syntax',msg:'Tu expresión no se puede evaluar para estos valores (¿una raíz de un negativo o una división por cero?). Revisá paréntesis.'};
+    if(c){
+      var noC=!/[ck]\s*$/i.test(String(input).trim());
+      return {st:'ok',msg:noC?'Acordate de escribir <b>+ C</b> al final en el examen (en una integral indefinida siempre va).':''};
+    }
+    for(var i=0;i<(ej.mist||[]).length;i++){
+      try{var M=parse(ej.mist[i][0],ej.v);if(constDiff(U,M,ej.pts))return {st:'no',msg:ej.mist[i][1]};}catch(e){}
+    }
+    return {st:'no',msg:diagnose(U,ej,f,F)};
+  }
+  function checkD(ej,input){
+    var U;
+    try{U=parse(input,ej.v);}catch(e){return {st:'syntax',msg:e.msg||'No pude leer la expresión.'};}
+    var D=parse(ej.F,ej.v),f=parse(ej.f,ej.v);
+    var c=sameFn(U,D,ej.pts);
+    if(c===null)return {st:'syntax',msg:'Tu expresión no se puede evaluar para estos valores. Revisá paréntesis.'};
+    if(c)return {st:'ok',msg:''};
+    for(var i=0;i<(ej.mist||[]).length;i++){
+      try{var M=parse(ej.mist[i][0],ej.v);if(sameFn(U,M,ej.pts))return {st:'no',msg:ej.mist[i][1]};}catch(e){}
+    }
+    return {st:'no',msg:diagnoseD(U,ej,f,D)};
+  }
+  return {check:check,parse:parse};
+})();
+
+/* ===================== RENDER DE LOS EJERCICIOS ===================== */
+(function(){
+  document.querySelectorAll('.ej[data-id]').forEach(function(box){
+    var ej=EJ[box.dataset.id];if(!ej)return;
+    var lv={1:'Fácil',2:'Medio',3:'Difícil'}[ej.lv||1];
+    box.innerHTML='<div class="ej-h"><span class="ej-id">'+box.dataset.id+'</span><span class="ej-lv l'+(ej.lv||1)+'">'+lv+'</span></div>'+
+      '<div class="ej-q">'+ej.q+'</div>'+
+      '<div class="row"><input type="text" autocomplete="off" spellcheck="false" placeholder="'+(ej.m==='D'?'tu derivada, ej: 3x^2 + 2':'tu resultado, ej: x^3/3 + C')+'"><button class="chk">Corregir</button><button class="hnt">Pista</button><button class="shw">Ver resolución</button></div>'+
+      '<div class="prev"></div><div class="tfb"></div><div class="hint">💡 '+ej.hint+'</div>'+
+      '<div class="pasos"><div class="pt">Resolución paso a paso</div><ol>'+ej.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol><div class="res">Resultado: <span class="mono">'+ej.R+'</span></div></div>';
+    var inp=box.querySelector('input'),fb=box.querySelector('.tfb'),pasos=box.querySelector('.pasos'),hint=box.querySelector('.hint'),prev=box.querySelector('.prev');
+    function go(){
+      var r=CORR.check(ej,inp.value);
+      if(r.st==='ok'){fb.className='tfb ok';fb.innerHTML='<b>¡Correcto! ✓</b> '+r.msg;box.classList.add('done');}
+      else if(r.st==='syntax'){fb.className='tfb sy';fb.innerHTML='<b>No pude leer tu respuesta.</b> '+r.msg+' <a href="#como-escribir">Ver cómo escribir</a>.';}
+      else{fb.className='tfb no';fb.innerHTML='<b>Todavía no.</b> '+r.msg+'<br>Abajo tenés la resolución completa para ver dónde se separa tu cuenta.';pasos.classList.add('show');}
+    }
+    box.querySelector('.chk').addEventListener('click',go);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+    box.querySelector('.hnt').addEventListener('click',function(){hint.classList.toggle('show');});
+    box.querySelector('.shw').addEventListener('click',function(){pasos.classList.toggle('show');});
+    inp.addEventListener('input',function(){
+      if(!inp.value.trim()){prev.textContent='';return;}
+      try{CORR.parse(inp.value,ej.v);prev.innerHTML='✓ Lo entiendo';prev.className='prev okp';}catch(e){prev.innerHTML='… '+(e.msg||'');prev.className='prev bad';}
+    });
+  });
+})();
+
+/* progreso de ejercicios resueltos (solo en este navegador) */
+(function(){
+  var key='prac:'+location.pathname,done={};
+  try{done=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var boxes=document.querySelectorAll('.ej[data-id]');
+  function paint(){
+    var n=0;boxes.forEach(function(b){if(done[b.dataset.id]){if(!b.classList.contains('done'))b.classList.add('done');n++;}});
+    var f=document.querySelector('.progress .fill'),t=document.querySelector('.progress .ptxt');
+    if(f){f.style.width=(100*n/boxes.length)+'%';t.textContent=n+' de '+boxes.length+' ejercicios resueltos';}
+  }
+  new MutationObserver(function(){boxes.forEach(function(b){if(b.classList.contains('done')&&!done[b.dataset.id]){done[b.dataset.id]=1;try{localStorage.setItem(key,JSON.stringify(done));}catch(e){}}});paint();})
+    .observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
+  paint();
+})();
+</script>
+</body>
+</html>
