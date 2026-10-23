@@ -1,0 +1,26 @@
+self.__MV_ASSETS__ = ["./assets/Daily-Sf2grvYH.js","./assets/DerivFactory-R2lW0GWG.js","./assets/Duel-BiQjCPLN.js","./assets/ErrorHunter-HEjNkCJ5.js","./assets/Exams-BbscJSQl.js","./assets/ExerciseView-CirE1qKy.js","./assets/FunctionLab-BGkTw8ol.js","./assets/Games-BfAXTR14.js","./assets/IntegralBuilder-CtfpSsBr.js","./assets/KaTeX_AMS-Regular-BQhdFMY1.woff2","./assets/KaTeX_AMS-Regular-DMm9YOAa.woff","./assets/KaTeX_AMS-Regular-DRggAlZN.ttf","./assets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf","./assets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff","./assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2","./assets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff","./assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2","./assets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf","./assets/KaTeX_Fraktur-Bold-BdnERNNW.ttf","./assets/KaTeX_Fraktur-Bold-BsDP51OF.woff","./assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2","./assets/KaTeX_Fraktur-Regular-CB_wures.ttf","./assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2","./assets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff","./assets/KaTeX_Main-Bold-Cx986IdX.woff2","./assets/KaTeX_Main-Bold-Jm3AIy58.woff","./assets/KaTeX_Main-Bold-waoOVXN0.ttf","./assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2","./assets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf","./assets/KaTeX_Main-BoldItalic-SpSLRI95.woff","./assets/KaTeX_Main-Italic-3WenGoN9.ttf","./assets/KaTeX_Main-Italic-BMLOBm91.woff","./assets/KaTeX_Main-Italic-NWA7e6Wa.woff2","./assets/KaTeX_Main-Regular-B22Nviop.woff2","./assets/KaTeX_Main-Regular-Dr94JaBh.woff","./assets/KaTeX_Main-Regular-ypZvNtVU.ttf","./assets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf","./assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2","./assets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff","./assets/KaTeX_Math-Italic-DA0__PXp.woff","./assets/KaTeX_Math-Italic-flOr_0UB.ttf","./assets/KaTeX_Math-Italic-t53AETM-.woff2","./assets/KaTeX_SansSerif-Bold-CFMepnvq.ttf","./assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2","./assets/KaTeX_SansSerif-Bold-DbIhKOiC.woff","./assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2","./assets/KaTeX_SansSerif-Italic-DN2j7dab.woff","./assets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf","./assets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf","./assets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff","./assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2","./assets/KaTeX_Script-Regular-C5JkGWo-.ttf","./assets/KaTeX_Script-Regular-D3wIWfF6.woff2","./assets/KaTeX_Script-Regular-D5yQViql.woff","./assets/KaTeX_Size1-Regular-C195tn64.woff","./assets/KaTeX_Size1-Regular-Dbsnue_I.ttf","./assets/KaTeX_Size1-Regular-mCD8mA8B.woff2","./assets/KaTeX_Size2-Regular-B7gKUWhC.ttf","./assets/KaTeX_Size2-Regular-Dy4dx90m.woff2","./assets/KaTeX_Size2-Regular-oD1tc_U0.woff","./assets/KaTeX_Size3-Regular-CTq5MqoE.woff","./assets/KaTeX_Size3-Regular-DgpXs0kz.ttf","./assets/KaTeX_Size4-Regular-BF-4gkZK.woff","./assets/KaTeX_Size4-Regular-DWFBv043.ttf","./assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2","./assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff","./assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2","./assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf","./assets/Lab-DOlcP5HE.js","./assets/Layout-B4b5QW0j.js","./assets/MatrixArchitect-yZKGMZEz.js","./assets/Plot-CUORkQS1.js","./assets/Progress-3ViYYAsr.js","./assets/Puzzle-Bby7dxPG.js","./assets/Review-D3Yv3fKX.js","./assets/Sandbox-DygugpyH.js","./assets/Sequence-YHSEpMyu.js","./assets/Settings-BDkFqXZY.js","./assets/UnitPage-CgM_qKz3.js","./assets/Widget-CEU9Bn9V.js","./assets/adaptive-DnET9fa5.js","./assets/catalog-Bfot4gZB.js","./assets/common-BtmJNjE-.js","./assets/controls-DYX-lyvL.js","./assets/equivalence-CoAidw3E.js","./assets/expr-Pk66Vsm2.js","./assets/helpers-DtGBz217.js","./assets/index-BThKbq85.css","./assets/index-BZHmv9Y0.js","./assets/inputs-DmjbWFMB.js","./assets/linear-0EnjiEBm.js","./assets/util-x4ITsm0p.js"];
+self.__MV_VERSION__ = '3ee8b39864';
+/* MathVerse: service worker para usar la app sin conexión después de la primera visita. */
+// la lista de archivos y la versión las completa el build (vite.config.ts)
+const ASSETS = self.__MV_ASSETS__ || []
+const CACHE = 'mathverse-' + (self.__MV_VERSION__ || 'dev')
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './index.html', './favicon.svg', './manifest.webmanifest', ...ASSETS])).then(() => self.skipWaiting()))
+})
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()))
+})
+
+self.addEventListener('fetch', (e) => {
+  const req = e.request
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return
+  if (req.mode === 'navigate') {
+    // páginas: primero la red (para recibir actualizaciones), si no hay conexión, la copia guardada
+    e.respondWith(fetch(req).then((res) => { const copy = res.clone(); caches.open(CACHE).then((c) => c.put('./index.html', copy)); return res }).catch(() => caches.match('./index.html')))
+    return
+  }
+  // recursos con nombre versionado (js, css, fuentes de KaTeX): primero la copia guardada
+  e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)) } return res })))
+})
