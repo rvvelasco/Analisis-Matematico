@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="MathVerse: aprendé matemática universitaria (funciones, matrices, vectores, derivadas e integrales) explorando, practicando y jugando." />
+    <meta name="theme-color" content="#0b1020" />
+    <title>MathVerse · Aprendé matemática explorando</title>
+    <script>
+      // aplica el tema guardado antes de pintar (evita el parpadeo)
+      try {
+        var raw = localStorage.getItem('mathverse:v1');
+        var t = raw ? (JSON.parse(raw).settings || {}).theme : null;
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        else if (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme = 'light';
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="./assets/index-BZHmv9Y0.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/Layout-B4b5QW0j.js">
+    <link rel="modulepreload" crossorigin href="./assets/expr-Pk66Vsm2.js">
+    <link rel="modulepreload" crossorigin href="./assets/equivalence-CoAidw3E.js">
+    <link rel="modulepreload" crossorigin href="./assets/helpers-DtGBz217.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BThKbq85.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>MathVerse necesita JavaScript para funcionar.</noscript>
+  </body>
+</html>

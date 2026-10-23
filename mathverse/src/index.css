@@ -1,0 +1,163 @@
+@import 'katex/dist/katex.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Tokens de color (RGB) ---------- */
+:root,
+[data-theme='dark'] {
+  --bg: 10 13 24;
+  --surface: 19 23 38;
+  --surface2: 27 32 52;
+  --line: 46 53 82;
+  --ink: 232 236 248;
+  --muted: 148 158 190;
+  --brand: 129 100 255;
+  --brand2: 34 211 238;
+  --ok: 34 197 94;
+  --bad: 244 63 94;
+  --warn: 245 158 11;
+  --a-fun: 56 189 248;
+  --a-mat: 167 139 250;
+  --a-vec: 52 211 153;
+  --a-der: 251 146 60;
+  --a-int: 244 114 182;
+  --grid: 255 255 255;
+  color-scheme: dark;
+}
+[data-theme='light'] {
+  --bg: 245 246 251;
+  --surface: 255 255 255;
+  --surface2: 238 241 248;
+  --line: 218 223 235;
+  --ink: 18 22 38;
+  --muted: 84 94 120;
+  --brand: 98 64 235;
+  --brand2: 8 140 172;
+  --ok: 21 150 70;
+  --bad: 214 28 68;
+  --warn: 196 105 6;
+  --a-fun: 2 122 189;
+  --a-mat: 118 56 230;
+  --a-vec: 4 140 98;
+  --a-der: 214 82 10;
+  --a-int: 204 35 112;
+  --grid: 0 0 0;
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    font-size: calc(16px * var(--font-scale, 1));
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand2));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection {
+    background: rgb(var(--brand) / 0.35);
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line/70 bg-surface shadow-sm;
+  }
+  .card-pad {
+    @apply card p-5 sm:p-6;
+  }
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white shadow-glow hover:brightness-110 active:brightness-95;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-surface2/60 text-ink hover:border-brand/60 hover:bg-surface2;
+  }
+  .btn-soft {
+    @apply btn bg-brand/15 text-brand hover:bg-brand/25;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .input {
+    @apply w-full rounded-xl border border-line bg-surface2/70 px-3 py-2.5 font-mono text-base text-ink outline-none transition
+      placeholder:text-muted/70 focus:border-brand focus:ring-2 focus:ring-brand/30;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-surface2/70 px-2.5 py-0.5 text-xs font-medium text-muted;
+  }
+  .label {
+    @apply text-xs font-semibold uppercase tracking-wider text-muted;
+  }
+  .prose-mv p {
+    @apply my-2 leading-relaxed;
+  }
+  .prose-mv strong {
+    @apply font-semibold text-ink;
+  }
+}
+
+/* KaTeX: color heredado y desborde controlado */
+.katex {
+  font-size: 1.08em;
+}
+.katex-display {
+  margin: 0.6em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+
+/* Animaciones (se desactivan con movimiento reducido) */
+@keyframes pop {
+  0% { transform: scale(0.96); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+@keyframes slideup {
+  0% { transform: translateY(12px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.anim-pop { animation: pop 0.25s ease-out; }
+.anim-shake { animation: shake 0.3s ease-in-out; }
+.anim-up { animation: slideup 0.3s ease-out; }
+
+[data-reduced-motion='true'] *,
+[data-reduced-motion='true'] *::before,
+[data-reduced-motion='true'] *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Fondo decorativo sutil */
+.bg-aurora {
+  background:
+    radial-gradient(60rem 30rem at 10% -10%, rgb(var(--brand) / 0.14), transparent 60%),
+    radial-gradient(50rem 25rem at 100% 0%, rgb(var(--brand2) / 0.10), transparent 60%);
+}
+
+/* Scrollbars discretas */
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--line)) transparent; }

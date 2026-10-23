@@ -1,0 +1,1 @@
+function e(){return Math.floor(Math.random()*1e9)+1}export{e as t};
