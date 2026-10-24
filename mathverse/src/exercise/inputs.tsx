@@ -12,7 +12,7 @@ export type Draft = Answer
 export function emptyDraft(ex: ExerciseBody, seed = 1): Draft {
   switch (ex.kind) {
     case 'mc': return { kind: 'mc', index: -1 }
-    case 'tf': return { kind: 'tf', value: true, reason: -1 }
+    case 'tf': return { kind: 'tf', value: null, reason: -1 }
     case 'numeric': return { kind: 'numeric', text: '' }
     case 'expression': return { kind: 'expression', text: '' }
     case 'fill': return { kind: 'fill', values: {} }
@@ -37,7 +37,7 @@ function shuffledOrder(n: number, seed: number): number[] {
 export function isDraftReady(ex: ExerciseBody, d: Draft): boolean {
   switch (d.kind) {
     case 'mc': return d.index >= 0
-    case 'tf': return d.reason >= 0
+    case 'tf': return d.value !== null && d.reason >= 0
     case 'numeric': return d.text.trim() !== ''
     case 'expression': return d.text.trim() !== ''
     case 'fill': return ex.kind === 'fill' && ex.parts.every((p) => typeof p === 'string' || (d.values[p.id] ?? '').trim() !== '')

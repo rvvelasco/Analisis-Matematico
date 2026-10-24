@@ -46,7 +46,7 @@ export const VECTORES: Template[] = [
       const n = norm(v)
       const sq = dot(v, v)
       return make({
-        subtopic: 'Módulo', concepts: ['v1.modulo'], level, levelWhy: level === 1 ? 'Nivel Explorador: Pitágoras con números "redondos".' : 'Nivel Aprendiz: módulo en el espacio, el resultado puede quedar con raíz.',
+        data: { kind: 'norm', v }, subtopic: 'Módulo', concepts: ['v1.modulo'], level, levelWhy: level === 1 ? 'Nivel Explorador: Pitágoras con números "redondos".' : 'Nivel Aprendiz: módulo en el espacio, el resultado puede quedar con raíz.',
         prompt: `Calculá el módulo de $\\vec v = ${vecTeX(v)}$.${level === 2 ? ' (Podés escribir la raíz como sqrt(…).)' : ''}`,
         plot: v.length === 2 ? { vectors: [{ to: [v[0], v[1]], label: 'v' }], x: [-13, 13], y: [-13, 13] } : undefined,
         hints: ['El módulo es la longitud: teorema de Pitágoras.', `$|\\vec v| = \\sqrt{${v.map((c) => `${par(c)}^2`).join(' + ')}}$`],
@@ -148,7 +148,7 @@ export const VECTORES: Template[] = [
       const deg = angleDeg(q.u, q.v)!
       const show = (v: number[]) => vecTeX(v).replace('1{,}732', '\\sqrt3')
       return make({
-        subtopic: 'Ángulo entre vectores', concepts: ['v3.angulo'], level: 3, levelWhy: 'Nivel Analista: combinar producto escalar, módulos y arco coseno.',
+        data: { kind: 'angle', u: q.u, v: q.v }, subtopic: 'Ángulo entre vectores', concepts: ['v3.angulo'], level: 3, levelWhy: 'Nivel Analista: combinar producto escalar, módulos y arco coseno.',
         prompt: `Calculá el ángulo (en grados) entre $\\vec u = ${show(q.u)}$ y $\\vec v = ${show(q.v)}$.`,
         hints: ['$\\cos\\theta = \\dfrac{\\vec u\\cdot\\vec v}{|\\vec u|\\,|\\vec v|}$', `$\\vec u\\cdot\\vec v = ${fmt(dot(q.u, q.v))}$.`, 'Después aplicá $\\arccos$ (en grados).'],
         solution: [{ text: '', tex: `\\cos\\theta = \\frac{${fmt(dot(q.u, q.v))}}{${fmt(norm(q.u), 3)}\\cdot ${fmt(norm(q.v), 3)}} \\Rightarrow \\theta \\approx ${fmt(deg, 2)}°` }],
@@ -182,7 +182,7 @@ export const VECTORES: Template[] = [
       const scal = frac(dot(a, b), t[2])
       if (level === 3) {
         return make({
-          subtopic: 'Proyección escalar', concepts: ['v4.proyeccion'], level, levelWhy: 'Nivel Analista: la fórmula combina producto escalar y módulo.',
+          data: { kind: 'scalarProj', a, b }, subtopic: 'Proyección escalar', concepts: ['v4.proyeccion'], level, levelWhy: 'Nivel Analista: la fórmula combina producto escalar y módulo.',
           prompt: `Calculá la proyección **escalar** de $\\vec a = ${vecTeX(a)}$ sobre $\\vec b = ${vecTeX(b)}$.`,
           plot: { vectors: [{ to: [a[0], a[1]], label: 'a' }, { to: [b[0], b[1]], label: 'b' }], x: [-13, 13], y: [-13, 13] },
           hints: ['$\\operatorname{comp}_{\\vec b}\\vec a = \\dfrac{\\vec a\\cdot\\vec b}{|\\vec b|}$', `$|\\vec b| = ${t[2]}$.`],
@@ -193,7 +193,7 @@ export const VECTORES: Template[] = [
       const k = frac(dot(a, b), t[2] * t[2])
       const pv = b.map((c) => frac(c * k.n, k.d))
       return make({
-        subtopic: 'Proyección vectorial', concepts: ['v4.proyeccion'], level, levelWhy: 'Nivel Experto: fracciones y diferencia entre proyección escalar y vectorial.',
+        data: { kind: 'vectorProj', a, b }, subtopic: 'Proyección vectorial', concepts: ['v4.proyeccion'], level, levelWhy: 'Nivel Experto: fracciones y diferencia entre proyección escalar y vectorial.',
         prompt: `Calculá la proyección **vectorial** de $\\vec a = ${vecTeX(a)}$ sobre $\\vec b = ${vecTeX(b)}$.`,
         plot: { vectors: [{ to: [a[0], a[1]], label: 'a' }, { to: [b[0], b[1]], label: 'b' }], x: [-13, 13], y: [-13, 13] },
         hints: ['$\\operatorname{proy}_{\\vec b}\\vec a = \\dfrac{\\vec a\\cdot\\vec b}{|\\vec b|^2}\\,\\vec b$', `$\\vec a\\cdot\\vec b = ${dot(a, b)}$, $|\\vec b|^2 = ${t[2] * t[2]}$.`],
@@ -221,7 +221,7 @@ export const VECTORES: Template[] = [
       }
       const area = norm(c)
       return make({
-        subtopic: 'Área con producto vectorial', concepts: ['v4.vectorial', 'v1.modulo'], level, levelWhy: 'Nivel Experto: producto vectorial + módulo + interpretación geométrica.',
+        data: { kind: 'triangleArea', u, v }, subtopic: 'Área con producto vectorial', concepts: ['v4.vectorial', 'v1.modulo'], level, levelWhy: 'Nivel Experto: producto vectorial + módulo + interpretación geométrica.',
         prompt: `Calculá el área del **triángulo** determinado por $\\vec u = ${vecTeX(u)}$ y $\\vec v = ${vecTeX(v)}$ (con origen común).`,
         hints: ['Área del paralelogramo $= |\\vec u\\times\\vec v|$.', 'El triángulo es la mitad.', `$\\vec u\\times\\vec v = ${vecTeX(c)}$.`],
         solution: [{ text: '', tex: `\\frac{|${vecTeX(c)}|}{2} = \\frac{\\sqrt{${dot(c, c)}}}{2} \\approx ${fmt(area / 2, 3)}` }],
@@ -240,7 +240,7 @@ export const VECTORES: Template[] = [
       const a = r.int(-3, 3), b = r.int(-3, 3)
       const w = [a * u[0] + b * v[0], a * u[1] + b * v[1]]
       return make({
-        subtopic: 'Combinación lineal', concepts: ['v5.combinacion'], level: 3, levelWhy: 'Nivel Analista: plantear y resolver un sistema 2×2.',
+        data: { kind: 'combination', u, v, w }, subtopic: 'Combinación lineal', concepts: ['v5.combinacion'], level: 3, levelWhy: 'Nivel Analista: plantear y resolver un sistema 2×2.',
         prompt: `Hallá $\\alpha$ y $\\beta$ tales que $${vecTeX(w)} = \\alpha${vecTeX(u)} + \\beta${vecTeX(v)}$.`,
         plot: { vectors: [{ to: [u[0], u[1]], label: 'u' }, { to: [v[0], v[1]], label: 'v' }, { to: [w[0], w[1]], label: 'w', color: 'ok' }], x: [-12, 12], y: [-12, 12] },
         hints: ['Igualá componente a componente: queda un sistema de dos ecuaciones.', `$\\begin{cases}${par(u[0])}\\alpha + ${par(v[0])}\\beta = ${w[0]}\\\\ ${par(u[1])}\\alpha + ${par(v[1])}\\beta = ${w[1]}\\end{cases}$`],
@@ -319,7 +319,7 @@ export const VECTORES: Template[] = [
       const a = r.int(-4, 4), b = r.int(-4, 4)
       const w = [a * u[0] + b * v[0], a * u[1] + b * v[1]]
       return make({
-        subtopic: 'Coordenadas', concepts: ['v6.base', 'v5.combinacion'], level: 4, levelWhy: 'Nivel Experto: cambio de base, equivale a resolver un sistema (o invertir una matriz).',
+        data: { kind: 'combination', u, v, w }, subtopic: 'Coordenadas', concepts: ['v6.base', 'v5.combinacion'], level: 4, levelWhy: 'Nivel Experto: cambio de base, equivale a resolver un sistema (o invertir una matriz).',
         prompt: `Sea $B = \\{${vecTeX(u)},\\ ${vecTeX(v)}\\}$. Hallá las coordenadas de $\\vec w = ${vecTeX(w)}$ en la base $B$.`,
         hints: ['Las coordenadas son los coeficientes $(\\alpha, \\beta)$ de $\\vec w = \\alpha\\vec b_1 + \\beta\\vec b_2$.', 'Planteá el sistema o usá la inversa de la matriz con los vectores de $B$ como columnas.'],
         solution: [{ text: '', tex: `[\\vec w]_B = (${a},\\ ${b})` }],

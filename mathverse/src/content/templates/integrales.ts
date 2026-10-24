@@ -116,7 +116,7 @@ export const INTEGRALES: Template[] = [
       const h = b / n
       const pts = Array.from({ length: n }, (_, i) => (mode === 'izq' ? i * h : mode === 'der' ? (i + 1) * h : mode === 'medio' ? (i + 0.5) * h : i * h))
       return make({
-        subtopic: 'Sumas de Riemann', concepts: ['i2.riemann'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: hay que elegir bien los puntos según el método y sumar sin errores.',
+        data: { kind: 'riemann', f, a: 0, b, n, mode }, subtopic: 'Sumas de Riemann', concepts: ['i2.riemann'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: hay que elegir bien los puntos según el método y sumar sin errores.',
         prompt: `Aproximá $\\int_0^{${b}} ${T(f)}\\,dx$ con ${n} subintervalos iguales usando ${mode === 'trapecio' ? 'la regla de los **trapecios**' : `rectángulos con altura en el **${MODE_NAME[mode]}**`}.`,
         plot: { fns: [{ expr: f, label: 'f' }], shade: [{ expr: f, a: 0, b }], x: [-0.5, b + 0.5], y: [Math.min(0, ...pts.map(fn)) - 1, Math.max(...pts.map(fn), fn(b)) + 2] },
         hints: [`Ancho de cada rectángulo: $\\Delta x = \\frac{${b} - 0}{${n}} = ${fmt(h)}$.`, mode === 'trapecio' ? 'Trapecios: $\\frac{\\Delta x}{2}[f(x_0) + 2f(x_1) + \\dots + 2f(x_{n-1}) + f(x_n)]$.' : `Puntos donde se mide la altura: ${pts.map((p) => fmt(p)).join('; ')}.`, 'Suma de (altura × ancho).'],
@@ -163,16 +163,16 @@ export const INTEGRALES: Template[] = [
   {
     id: 'i3.concept', area: A, unit: 'i3', title: '¿Qué es una primitiva?', levels: [1],
     gen: (r) => {
-      const n = r.int(2, 5), k = r.int(1, 9)
+      const n = r.int(3, 6), k = r.int(1, 9)
       return make({
         subtopic: 'Primitivas', concepts: ['i3.primitiva'], level: 1, levelWhy: 'Nivel Explorador: reconocer la definición (la derivada de la primitiva es la función).',
-        prompt: `¿Cuál de estas funciones es una primitiva de $f(x) = ${n}x^{${n - 1}}$?`,
+        prompt: `¿Cuál de estas funciones es una primitiva de $f(x) = ${T(`${n}*x^${n - 1}`)}$?`,
         hints: ['$F$ es primitiva de $f$ si $F\'(x) = f(x)$.', 'Derivá cada opción y mirá cuál da $f$.'],
         solution: [{ text: `$(x^{${n}} + ${k})' = ${n}x^{${n - 1}}$. ✔` }],
         explanation: 'Integrar es "derivar al revés". Por eso siempre se puede comprobar una primitiva derivándola.',
       }, mc(r, [
         { text: `$x^{${n}} + ${k}$`, correct: true, why: 'La constante desaparece al derivar, así que también es primitiva.' },
-        { text: `$${n * (n - 1)}x^{${n - 2}}$`, why: 'Esa es la **derivada** de $f$, no su primitiva.', errorTag: 'derivo-en-vez-de-integrar' },
+        { text: `$${T(`${n * (n - 1)}*x^${n - 2}`)}$`, why: 'Esa es la **derivada** de $f$, no su primitiva.', errorTag: 'derivo-en-vez-de-integrar' },
         { text: `$${n}x^{${n}}$`, why: `Derivá: $(${n}x^{${n}})' = ${n * n}x^{${n - 1}}$, no da $f$.`, errorTag: 'factor' },
         { text: `$\\frac{${n}x^{${n}}}{${n - 1}}$`, why: 'Dividiste por el exponente viejo: se divide por el **nuevo**.', errorTag: 'exponente-viejo' },
       ]))
@@ -432,7 +432,7 @@ export const INTEGRALES: Template[] = [
         const a = r.int(-2, 1), b = a + r.int(1, 3)
         const val = polyIntEval(c, b) - polyIntEval(c, a)
         return make({
-          subtopic: 'Regla de Barrow', concepts: ['i7.barrow'], level, levelWhy: LV[2],
+          data: { kind: 'integral', f: poly(c), a, b }, subtopic: 'Regla de Barrow', concepts: ['i7.barrow'], level, levelWhy: LV[2],
           prompt: `Calculá $\\displaystyle\\int_{${a}}^{${b}} \\left(${T(poly(c))}\\right) dx$.`,
           hints: ['Buscá una primitiva $F$.', '$\\int_a^b f = F(b) - F(a)$ (arriba menos abajo).'],
           solution: [{ text: 'Primitiva:', tex: `F(x) = ${T(polyIntText(c))}` }, { text: '', tex: `F(${b}) - F(${a}) = ${fmt(polyIntEval(c, b))} - \\left(${fmt(polyIntEval(c, a))}\\right) = ${fmt(val)}` }],
@@ -450,7 +450,7 @@ export const INTEGRALES: Template[] = [
         { f: '1/(x^2)', a: '1', b: '4', av: 1, bv: 4, F: '-\\tfrac1x', val: 0.75 },
       ])
       return make({
-        subtopic: 'Regla de Barrow', concepts: ['i7.barrow', 'i4.tabla'], level, levelWhy: 'Nivel Analista: la primitiva sale de la tabla y hay que evaluar logaritmos o funciones trigonométricas.',
+        data: { kind: 'integral', f: q.f, a: q.av, b: q.bv }, subtopic: 'Regla de Barrow', concepts: ['i7.barrow', 'i4.tabla'], level, levelWhy: 'Nivel Analista: la primitiva sale de la tabla y hay que evaluar logaritmos o funciones trigonométricas.',
         prompt: `Calculá $\\displaystyle\\int_{${q.a}}^{${q.b}} ${T(q.f)}\\,dx$.`,
         hints: [`Una primitiva es $${q.F}$.`, 'Evaluá arriba menos abajo.'],
         solution: [{ text: '', tex: `\\left[${q.F}\\right]_{${q.a}}^{${q.b}} = ${fmt(q.val)}` }],
@@ -493,7 +493,7 @@ export const INTEGRALES: Template[] = [
       if (level === 3) {
         const v = g.gx(x0)
         return make({
-          subtopic: 'Teorema fundamental', concepts: ['i7.tfc'], level, levelWhy: 'Nivel Analista: usar el TFC en lugar de intentar integrar (muchas de estas funciones no tienen primitiva elemental).',
+          data: { kind: 'tfc', g: g.g, upper: 'x', x: x0 }, subtopic: 'Teorema fundamental', concepts: ['i7.tfc'], level, levelWhy: 'Nivel Analista: usar el TFC en lugar de intentar integrar (muchas de estas funciones no tienen primitiva elemental).',
           prompt: `Sea $F(x) = \\displaystyle\\int_0^x ${g.tex}\\,dt$. Calculá $F'(${x0})$.`,
           hints: ['No intentes integrar.', 'TFC: si $F(x) = \\int_a^x g(t)\\,dt$ entonces $F\'(x) = g(x)$.'],
           solution: [{ text: '', tex: `F'(x) = ${g.tex.replace(/t/g, 'x')} \\Rightarrow F'(${x0}) = ${fmt(v)}` }],
@@ -503,7 +503,7 @@ export const INTEGRALES: Template[] = [
       const x1 = r.pick([1, 2])
       const v = g.gx(x1 * x1) * 2 * x1
       return make({
-        subtopic: 'Teorema fundamental', concepts: ['i7.tfc', 'd6.cadena'], level, levelWhy: 'Nivel Experto: combina el TFC con la regla de la cadena (límite superior no lineal).',
+        data: { kind: 'tfc', g: g.g, upper: 'x^2', x: x1 }, subtopic: 'Teorema fundamental', concepts: ['i7.tfc', 'd6.cadena'], level, levelWhy: 'Nivel Experto: combina el TFC con la regla de la cadena (límite superior no lineal).',
         prompt: `Sea $G(x) = \\displaystyle\\int_0^{x^2} ${g.tex}\\,dt$. Calculá $G'(${x1})$.`,
         hints: ['$G(x) = F(x^2)$ con $F(u) = \\int_0^u g(t)\\,dt$.', 'Cadena: $G\'(x) = g(x^2)\\cdot 2x$.'],
         solution: [{ text: '', tex: `G'(x) = g(x^2)\\cdot 2x \\Rightarrow G'(${x1}) = g(${x1 * x1})\\cdot ${2 * x1} = ${fmt(v)}` }],
@@ -535,7 +535,7 @@ export const INTEGRALES: Template[] = [
         const area = ((q - p) ** 3) / 6
         const signed = -s * area
         return make({
-          subtopic: 'Áreas', concepts: ['i8.area'], level, levelWhy: 'Nivel Analista: hallar los cortes y tener en cuenta el signo.',
+          data: { kind: 'absArea', f: fe, a: p, b: q }, subtopic: 'Áreas', concepts: ['i8.area'], level, levelWhy: 'Nivel Analista: hallar los cortes y tener en cuenta el signo.',
           prompt: `Calculá el área encerrada entre $f(x) = ${T(fe)}$ y el eje $x$.`,
           plot: { fns: [{ expr: fe }], shade: [{ expr: fe, a: p, b: q }], x: [p - 2, q + 2], y: [-(area * 1.2 + 2), area * 1.2 + 2] },
           hints: [`Los cortes con el eje son $x = ${p}$ y $x = ${q}$.`, `Entre ellos la función es ${s > 0 ? 'negativa' : 'positiva'}.`, 'Área $= \\left|\\int_a^b f\\right|$ (si no cambia de signo en el medio).'],
@@ -552,7 +552,7 @@ export const INTEGRALES: Template[] = [
       const exact = (2 * c ** 3) / 3 + ((d ** 3 - c ** 3) / 3 - c * c * (d - c))
       const signed = d ** 3 / 3 - c * c * d
       return make({
-        subtopic: 'Áreas', concepts: ['i8.area'], level, levelWhy: 'Nivel Experto: la función cambia de signo dentro del intervalo; integrar de una sola vez da un resultado incorrecto.',
+        data: { kind: 'absArea', f: fe, a: 0, b: d }, subtopic: 'Áreas', concepts: ['i8.area'], level, levelWhy: 'Nivel Experto: la función cambia de signo dentro del intervalo; integrar de una sola vez da un resultado incorrecto.',
         prompt: `Calculá el área entre $f(x) = ${T(fe)}$, el eje $x$ y las rectas $x = 0$ y $x = ${d}$.`,
         plot: { fns: [{ expr: fe }], shade: [{ expr: fe, a: 0, b: d }], x: [-1, d + 1], y: [-(c * c) - 2, d * d - c * c + 2] },
         hints: ['¿La función cambia de signo en $[0, ' + d + ']$?', `Corta el eje en $x = ${c}$: partí la integral ahí.`, 'Área $= \\left|\\int_0^{' + c + '} f\\right| + \\left|\\int_{' + c + '}^{' + d + '} f\\right|$'],
@@ -570,7 +570,7 @@ export const INTEGRALES: Template[] = [
         const m = r.pick([1, 2, 3, 4])
         const area = m ** 3 / 6
         return make({
-          subtopic: 'Área entre curvas', concepts: ['i8.entre'], level, levelWhy: 'Nivel Analista: buscar intersecciones y decidir cuál función va arriba.',
+          data: { kind: 'between', f: `${m}*x`, g: 'x^2', a: 0, b: m }, subtopic: 'Área entre curvas', concepts: ['i8.entre'], level, levelWhy: 'Nivel Analista: buscar intersecciones y decidir cuál función va arriba.',
           prompt: `Calculá el área encerrada entre $y = x^2$ y $y = ${m === 1 ? '' : m}x$.`,
           plot: { fns: [{ expr: 'x^2', label: 'x²' }, { expr: `${m}*x`, label: `${m}x` }], shade: [{ expr: `${m}*x`, under: 'x^2', a: 0, b: m }], x: [-1, m + 1], y: [-1, m * m + 2] },
           hints: [`Intersecciones: $x^2 = ${m}x \\Rightarrow x = 0$ o $x = ${m}$.`, `Entre 0 y ${m}, la recta está arriba.`, `Área $= \\int_0^{${m}} (${m}x - x^2)\\,dx$.`],
@@ -582,7 +582,7 @@ export const INTEGRALES: Template[] = [
       const k = r.pick([1, 4, 9]), s = Math.sqrt(k)
       const area = (8 / 3) * k * s
       return make({
-        subtopic: 'Área entre curvas', concepts: ['i8.entre'], level, levelWhy: 'Nivel Experto: dos parábolas, simetría y cálculo con raíces.',
+        data: { kind: 'between', f: `${k} - x^2`, g: `x^2 - ${k}`, a: -s, b: s }, subtopic: 'Área entre curvas', concepts: ['i8.entre'], level, levelWhy: 'Nivel Experto: dos parábolas, simetría y cálculo con raíces.',
         prompt: `Calculá el área encerrada entre $f(x) = ${k} - x^2$ y $g(x) = x^2 - ${k}$.`,
         plot: { fns: [{ expr: `${k} - x^2` }, { expr: `x^2 - ${k}` }], shade: [{ expr: `${k} - x^2`, under: `x^2 - ${k}`, a: -s, b: s }], x: [-s - 1.5, s + 1.5], y: [-k - 2, k + 2] },
         hints: [`Intersecciones: $${k} - x^2 = x^2 - ${k} \\Rightarrow x = \\pm${s}$.`, '$f$ queda arriba.', `Área $= \\int_{-${s}}^{${s}} (${2 * k} - 2x^2)\\,dx$ (podés usar simetría: el doble de 0 a ${s}).`],
@@ -613,7 +613,7 @@ export const INTEGRALES: Template[] = [
         const a = r.int(1, 4), b = r.int(1, 6), T0 = r.int(2, 5)
         const dist = (a * T0 * T0) / 2 + b * T0
         return make({
-          subtopic: 'Movimiento', concepts: ['i9.aplicaciones', 'i1.acumulacion'], level, levelWhy: 'Nivel Analista: modelar con integrales una situación física.',
+          data: { kind: 'absArea', f: `${a}*x + ${b}`, a: 0, b: T0 }, subtopic: 'Movimiento', concepts: ['i9.aplicaciones', 'i1.acumulacion'], level, levelWhy: 'Nivel Analista: modelar con integrales una situación física.',
           prompt: `Un móvil tiene velocidad $v(t) = ${a}t + ${b}$ (m/s). ¿Cuántos metros recorre entre $t = 0$ y $t = ${T0}$?`,
           hints: ['La distancia es la integral de la velocidad (si es positiva).', `$\\int_0^{${T0}}(${a}t + ${b})\\,dt$`],
           solution: [{ text: '', tex: `\\left[\\tfrac{${a}t^2}{2} + ${b}t\\right]_0^{${T0}} = ${fmt(dist)}\\ \\text{m}` }],
@@ -624,7 +624,7 @@ export const INTEGRALES: Template[] = [
       const disp = (T0 * T0) / 2 - c * T0
       const dist = (c * c) / 2 + ((T0 - c) ** 2) / 2
       return make({
-        subtopic: 'Movimiento', concepts: ['i9.aplicaciones', 'i8.area'], level, levelWhy: 'Nivel Experto: la velocidad cambia de signo; hay que distinguir desplazamiento de distancia recorrida.',
+        data: { kind: 'absArea', f: `x - ${c}`, a: 0, b: T0 }, subtopic: 'Movimiento', concepts: ['i9.aplicaciones', 'i8.area'], level, levelWhy: 'Nivel Experto: la velocidad cambia de signo; hay que distinguir desplazamiento de distancia recorrida.',
         prompt: `Un móvil tiene velocidad $v(t) = t - ${c}$ (m/s). ¿Qué **distancia total recorrida** tiene entre $t = 0$ y $t = ${T0}$?`,
         plot: { fns: [{ expr: `x - ${c}`, label: 'v(t)' }], shade: [{ expr: `x - ${c}`, a: 0, b: T0 }], x: [-0.5, T0 + 1], y: [-c - 1, T0 - c + 1] },
         hints: [`La velocidad es negativa hasta $t = ${c}$: ahí el móvil retrocede.`, 'Distancia = $\\int |v(t)|\\,dt$. Partí en $t = ' + c + '$.'],
@@ -641,7 +641,7 @@ export const INTEGRALES: Template[] = [
       const c = [k, 0, 0]
       const mean = polyIntEval(c, b) / b
       return make({
-        subtopic: 'Valor medio', concepts: ['i9.aplicaciones'], level: 3, levelWhy: 'Nivel Analista: aplicar la fórmula del valor medio integral.',
+        data: { kind: 'mean', f: poly(c), a: 0, b }, subtopic: 'Valor medio', concepts: ['i9.aplicaciones'], level: 3, levelWhy: 'Nivel Analista: aplicar la fórmula del valor medio integral.',
         prompt: `Calculá el valor medio de $f(x) = ${T(poly(c))}$ en $[0, ${b}]$.`,
         hints: ['$\\bar f = \\dfrac{1}{b - a}\\displaystyle\\int_a^b f(x)\\,dx$', 'Es la altura de un rectángulo con la misma área que la curva.'],
         solution: [{ text: '', tex: `\\frac{1}{${b}}\\int_0^{${b}} ${T(poly(c))}\\,dx = \\frac{1}{${b}}\\cdot ${fmt(polyIntEval(c, b))} = ${fmt(mean)}` }],
@@ -656,7 +656,7 @@ export const INTEGRALES: Template[] = [
       const b = r.int(1, 3)
       const V = q.V(b)
       return make({
-        subtopic: 'Volumen de revolución', concepts: ['i9.aplicaciones'], level: 4, levelWhy: 'Nivel Experto: modelar un volumen como suma de discos.',
+        data: { kind: 'volume', f: q.f, a: 0, b }, subtopic: 'Volumen de revolución', concepts: ['i9.aplicaciones'], level: 4, levelWhy: 'Nivel Experto: modelar un volumen como suma de discos.',
         prompt: `Calculá el volumen del sólido que se obtiene al girar $y = ${q.tex}$, $0 \\le x \\le ${b}$, alrededor del eje $x$. (Podés escribir $\\pi$ como pi.)`,
         plot: { fns: [{ expr: q.f }, { expr: `-(${q.f})`, dashed: true }], shade: [{ expr: q.f, a: 0, b }], x: [-0.5, b + 1], y: [-(b * b) - 1, b * b + 1] },
         hints: ['Cada corte es un disco de radio $f(x)$.', '$V = \\pi\\displaystyle\\int_a^b f(x)^2\\,dx$'],
@@ -676,11 +676,11 @@ export const INTEGRALES: Template[] = [
         prompt: `Sea $f(x) = x^2 - ${a}x$.`,
         plot: { fns: [{ expr: f }], shade: [{ expr: f, a: 0, b: a }], x: [-1, a + 1], y: [-(a * a) / 4 - 2, a + 2] },
         hints: ['a) Integrá término a término y sumá $C$.', `b) Usá Barrow con la primitiva de (a).`, 'c) El área no puede ser negativa.'],
-        solution: [{ text: '', tex: `\\text{a) } \\frac{x^3}{3} - \\frac{${a}x^2}{2} + C` }, { text: '', tex: `\\text{b) } \\int_0^{${a}} f = ${fmt(-(a ** 3) / 6)}` }, { text: `c) Área $= ${fmt(a ** 3 / 6)}$ (la curva está debajo del eje entre 0 y ${a}).` }],
+        solution: [{ text: '', tex: `\\text{a) } \\frac{x^3}{3} - ${T(`${a / 2}*x^2`)} + C` }, { text: '', tex: `\\text{b) } \\int_0^{${a}} f = ${fmt(-(a ** 3) / 6)}` }, { text: `c) Área $= ${fmt(a ** 3 / 6)}$ (la curva está debajo del eje entre 0 y ${a}).` }],
         explanation: 'Un parcial típico encadena: primitiva → integral definida → interpretación geométrica.',
         estMinutes: 12, noCalc: true,
       }, { kind: 'multi', parts: [
-        { label: 'a', prompt: `Una primitiva de $f$:`, points: 1, kind: 'expression', answer: `x^3/3 - ${a}*x^2/2`, v: 'x', mode: 'upToConstant', domain: [0.3, 2.5], wrong: [{ expr: `2*x - ${a}`, why: 'Derivaste en vez de integrar.', errorTag: 'derivo-en-vez-de-integrar' }], source: { f, op: 'integral' } },
+        { label: 'a', prompt: `Una primitiva de $f$:`, points: 1, kind: 'expression', answer: `x^3/3 - ${a / 2}*x^2`, v: 'x', mode: 'upToConstant', domain: [0.3, 2.5], wrong: [{ expr: `2*x - ${a}`, why: 'Derivaste en vez de integrar.', errorTag: 'derivo-en-vez-de-integrar' }], source: { f, op: 'integral' } },
         { label: 'b', prompt: `$\\int_0^{${a}} f(x)\\,dx =$`, points: 1, kind: 'numeric', answer: -(a ** 3) / 6 },
         { label: 'c', prompt: `Área entre $f$ y el eje $x$ en $[0, ${a}]$:`, points: 1, kind: 'numeric', answer: a ** 3 / 6, wrong: [{ value: -(a ** 3) / 6, why: 'El área es positiva: tomá valor absoluto.', errorTag: 'area-negativa' }] },
         { label: 'd', prompt: 'Interpretación:', points: 1, kind: 'tf', statement: `Como $\\int_0^{${a}} f < 0$, la función es negativa en todo $(0, ${a})$.`, answer: true, reasons: r.shuffle([{ text: `Verdadero, pero por otro motivo: $f(x) = x(x - ${a}) < 0$ para $0 < x < ${a}$ (la integral negativa sola no lo garantiza).`, correct: true }, { text: 'Verdadero: si la integral es negativa, la función es negativa en todo el intervalo.', why: 'Eso no vale en general: puede tener partes positivas más chicas.', errorTag: 'integral-signo' }, { text: 'Falso: la función es positiva en todo el intervalo.', why: `Probá $x = ${a / 2}$.` }]) },
@@ -689,18 +689,31 @@ export const INTEGRALES: Template[] = [
   },
   {
     id: 'i9.final', area: A, unit: 'i9', title: 'Problema tipo final', levels: [6],
-    gen: (r) => make({
-      subtopic: 'Integrador final', concepts: ['i6.partes', 'i7.tfc', 'd9.extremos', 'i8.area'], level: 6, levelWhy: LV[6] + ' Combina partes, TFC y extremos (Derivadas).',
-      prompt: 'Sea $F(x) = \\displaystyle\\int_0^x t\\,e^{t}\\,dt$.',
-      hints: ['a) Por partes con $u = t$, $dv = e^t dt$.', 'b) TFC: $F\'(x) = x e^x$.', 'c) Puntos críticos: $F\'(x) = 0$.', 'd) Evaluá la primitiva entre 0 y 1.'],
-      solution: [{ text: '', tex: '\\text{a) } \\int x e^x dx = (x - 1)e^x + C' }, { text: '', tex: "\\text{b) } F'(1) = e" }, { text: "c) $F'(x) = xe^x$ cambia de $-$ a $+$ en $x = 0$: mínimo." }, { text: '', tex: '\\text{d) } F(1) = [(t - 1)e^t]_0^1 = 0 - (-1) = 1' }],
-      explanation: 'El TFC permite estudiar $F$ (crecimiento, extremos) **sin** calcular la integral; partes permite calcularla explícitamente.',
-      estMinutes: 18, noCalc: true,
-    }, { kind: 'multi', parts: [
-      { label: 'a', prompt: 'Una primitiva de $x\\,e^x$:', points: 1, kind: 'expression', answer: '(x - 1)*e^x', v: 'x', mode: 'upToConstant', domain: [0.3, 2.5], wrong: [{ expr: 'x*e^x', why: 'Esa es la misma función.' }], source: { f: 'x*e^x', op: 'integral' } },
-      { label: 'b', prompt: "$F'(1) =$", points: 1, kind: 'numeric', answer: Math.E, tol: { rel: 1e-4 }, wrong: [{ value: 0, why: 'Por el TFC, $F\'(x) = xe^x$.' }] },
-      { label: 'c', prompt: '$F$ tiene en $x = 0$…', points: 1, kind: 'mc', options: r.shuffle([{ text: 'un mínimo relativo', correct: true }, { text: 'un máximo relativo', why: "$F'$ pasa de negativa a positiva.", errorTag: 'max-vs-min' }, { text: 'un punto de inflexión sin extremo', why: "$F'$ cambia de signo, así que es extremo." }]) },
-      { label: 'd', prompt: '$F(1) =$', points: 1, kind: 'numeric', answer: 1, wrong: [{ value: Math.E, why: 'Ese es $F\'(1)$; te piden $F(1)$.' }] },
-    ] }),
+    gen: (r) => {
+      // F(x) = ∫_0^x t e^{k t} dt, con k y el punto b sorteados
+      const k = r.pick([1, 2, 3]), b = r.pick([1, 2])
+      const ek = k === 1 ? 'e^{t}' : `e^{${k}t}`
+      const F = (x: number) => Math.exp(k * x) * (x / k - 1 / (k * k)) + 1 / (k * k)
+      const prim = k === 1 ? '(x - 1)*e^x' : `e^(${k}*x)*(x/${k} - 1/${k * k})`
+      return make({
+        subtopic: 'Integrador final', concepts: ['i6.partes', 'i7.tfc', 'd9.extremos', 'i8.area'], level: 6, levelWhy: LV[6] + ' Combina partes, TFC y extremos (Derivadas).',
+        prompt: `Sea $F(x) = \\displaystyle\\int_0^x t\\,${ek}\\,dt$.`,
+        hints: [`a) Por partes con $u = t$, $dv = ${ek}dt$.`, `b) TFC: $F'(x) = x\\,${ek.replace(/t/g, 'x')}$.`, "c) Puntos críticos: $F'(x) = 0$, y mirá el signo de $F'$ alrededor.", 'd) Evaluá la primitiva de (a) entre 0 y ' + b + ' (Barrow).'],
+        solution: [
+          { text: '', tex: `\\text{a) } \\int x\\,${ek.replace(/t/g, 'x')}dx = ${T(prim)} + C` },
+          { text: '', tex: `\\text{b) } F'(${b}) = ${b === 1 ? '' : b}e^{${k * b}} \\approx ${fmt(b * Math.exp(k * b), 4)}` },
+          { text: `c) $F'(x) = x\\,${ek.replace(/t/g, 'x')}$ tiene el signo de $x$: pasa de $-$ a $+$ en $x = 0$, mínimo relativo.` },
+          { text: '', tex: `\\text{d) } F(${b}) = \\left[${T(prim.replace(/x/g, 't'), ['t'])}\\right]_0^{${b}} \\approx ${fmt(F(b), 4)}` },
+        ],
+        explanation: 'El TFC permite estudiar $F$ (crecimiento, extremos) **sin** calcular la integral; partes permite calcularla explícitamente. Las dos vías tienen que ser coherentes: la derivada de la primitiva de (a) es el integrando.',
+        commonErrors: ['Olvidar el factor $\\frac1k$ al integrar $e^{kx}$.', 'Confundir $F(b)$ con $F\'(b)$.'],
+        estMinutes: 18, noCalc: false,
+      }, { kind: 'multi', parts: [
+        { label: 'a', prompt: `Una primitiva de $x\\,${ek.replace(/t/g, 'x')}$:`, points: 1, kind: 'expression', answer: prim, v: 'x', mode: 'upToConstant', domain: [0.2, 1.5], wrong: [{ expr: k === 1 ? 'x*e^x' : `x*e^(${k}*x)`, why: 'Esa es la misma función.' }, { expr: k === 1 ? 'x*e^x - e^x' : `x*e^(${k}*x)/${k} - e^(${k}*x)`, why: `Al integrar $e^{${k}x}$ en el segundo término hay que dividir por ${k}.`, errorTag: 'factor' }], source: { f: k === 1 ? 'x*e^x' : `x*e^(${k}*x)`, op: 'integral' } },
+        { label: 'b', prompt: `$F'(${b}) =$`, points: 1, kind: 'numeric', answer: b * Math.exp(k * b), tol: { rel: 1e-4 }, wrong: [{ value: 0, why: `Por el TFC, $F'(x) = x\\,${ek.replace(/t/g, 'x')}$.` }, { value: F(b), why: `Ese es $F(${b})$; te piden la derivada.` }] },
+        { label: 'c', prompt: '$F$ tiene en $x = 0$…', points: 1, kind: 'mc', options: r.shuffle([{ text: 'un mínimo relativo', correct: true }, { text: 'un máximo relativo', why: "$F'$ pasa de negativa a positiva.", errorTag: 'max-vs-min' }, { text: 'un punto de inflexión sin extremo', why: "$F'$ cambia de signo, así que es extremo." }]) },
+        { label: 'd', prompt: `$F(${b}) =$`, points: 1, kind: 'numeric', answer: F(b), tol: { rel: 1e-4 }, wrong: [{ value: b * Math.exp(k * b), why: `Ese es $F'(${b})$; te piden $F(${b})$.` }] },
+      ] })
+    },
   },
 ]

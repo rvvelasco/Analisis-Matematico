@@ -182,7 +182,7 @@ export const MATRICES: Template[] = [
         const X = rmat(r, 2, 2, level === 1 ? 0 : -6, level === 1 ? 6 : 6)
         const d = detN(X)
         return make({
-          subtopic: 'Determinante 2×2', concepts: ['m4.determinante'], level, levelWhy: level === 1 ? 'Nivel Explorador: aplicar la fórmula con números positivos.' : LV[2],
+          data: { kind: 'det', M: X }, subtopic: 'Determinante 2×2', concepts: ['m4.determinante'], level, levelWhy: level === 1 ? 'Nivel Explorador: aplicar la fórmula con números positivos.' : LV[2],
           prompt: `Calculá $\\det ${S(X)}$.`,
           hints: ['$\\det\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix} = ad - bc$', 'Diagonal principal menos diagonal secundaria.'],
           solution: [{ text: '', tex: `${par(X[0][0])}\\cdot ${par(X[1][1])} - ${par(X[0][1])}\\cdot ${par(X[1][0])} = ${d}` }],
@@ -192,7 +192,7 @@ export const MATRICES: Template[] = [
       const X = rmat(r, 3, 3, -3, 4)
       const d = detN(X)
       return make({
-        subtopic: 'Determinante 3×3', concepts: ['m4.determinante'], level, levelWhy: 'Nivel Analista: Sarrus o Laplace, muchas cuentas con signos.',
+        data: { kind: 'det', M: X }, subtopic: 'Determinante 3×3', concepts: ['m4.determinante'], level, levelWhy: 'Nivel Analista: Sarrus o Laplace, muchas cuentas con signos.',
         prompt: `Calculá $\\det ${S(X)}$.`,
         hints: ['Podés usar la regla de Sarrus o desarrollar por una fila (Laplace).', 'Laplace por la fila 1: $a_{11}M_{11} - a_{12}M_{12} + a_{13}M_{13}$ (signos alternados).', 'Si una fila tiene ceros, desarrollá por esa fila.'],
         solution: [{ text: 'Por la fila 1:', tex: `${X[0][0]}\\cdot(${X[1][1] * X[2][2] - X[1][2] * X[2][1]}) - ${par(X[0][1])}\\cdot(${X[1][0] * X[2][2] - X[1][2] * X[2][0]}) + ${par(X[0][2])}\\cdot(${X[1][0] * X[2][1] - X[1][1] * X[2][0]}) = ${d}` }],
@@ -233,7 +233,7 @@ export const MATRICES: Template[] = [
       const kF = frac(bb * c, aa)
       const kVal = fval(kF)
       return make({
-        subtopic: 'Determinante con parámetro', concepts: ['m4.determinante', 'm5.inversa'], level: 3, levelWhy: 'Nivel Analista: plantear y resolver una ecuación a partir del determinante.',
+        data: { kind: 'singularK', M: X }, subtopic: 'Determinante con parámetro', concepts: ['m4.determinante', 'm5.inversa'], level: 3, levelWhy: 'Nivel Analista: plantear y resolver una ecuación a partir del determinante.',
         prompt: `¿Para qué valor de $k$ la matriz $\\begin{pmatrix} ${X[0][0]} & ${X[0][1]} \\\\ ${X[1][0]} & k \\end{pmatrix}$ **no** es invertible?`,
         hints: ['No es invertible ⇔ determinante 0.', `$\\det = ${X[0][0]}k - (${X[0][1]})(${X[1][0]})$`],
         solution: [{ text: '', tex: `${X[0][0]}k - ${par(X[0][1] * X[1][0])} = 0 \\Rightarrow k = ${fstr(kF)}` }],
@@ -255,7 +255,7 @@ export const MATRICES: Template[] = [
       const Inv = inverse(M(X))!
       const d = detN(X)
       return make({
-        subtopic: 'Inversa', concepts: ['m5.inversa'], level, levelWhy: level === 2 ? 'Nivel Aprendiz: fórmula 2×2 con determinante ±1.' : level === 3 ? 'Nivel Analista: la inversa tiene fracciones.' : 'Nivel Experto: inversa 3×3 por Gauss-Jordan o adjunta.',
+        data: { kind: 'inverse', A: X }, subtopic: 'Inversa', concepts: ['m5.inversa'], level, levelWhy: level === 2 ? 'Nivel Aprendiz: fórmula 2×2 con determinante ±1.' : level === 3 ? 'Nivel Analista: la inversa tiene fracciones.' : 'Nivel Experto: inversa 3×3 por Gauss-Jordan o adjunta.',
         prompt: `Calculá $A^{-1}$ para $A = ${S(X)}$.`,
         hints: X.length === 2 ? ['Primero el determinante: si es 0, no hay inversa.', '$\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}^{-1} = \\dfrac{1}{ad - bc}\\begin{pmatrix}d&-b\\\\-c&a\\end{pmatrix}$', `$\\det A = ${d}$.`] : ['Armá $(A \\mid I)$ y llevá $A$ a la identidad con operaciones de fila.', 'Lo que queda a la derecha es $A^{-1}$.', `$\\det A = ${d}$, así que existe la inversa.`],
         solution: [{ text: `$\\det A = ${d}$.` }, { text: '', tex: `A^{-1} = ${matTeX(Inv)}` }, { text: 'Control: $A\\cdot A^{-1} = I$.' }],
@@ -275,7 +275,7 @@ export const MATRICES: Template[] = [
       const Inv = inverse(M(X))!
       const Sol = left ? mmul(Inv, M(B)) : mmul(M(B), Inv)
       return make({
-        subtopic: 'Ecuaciones matriciales', concepts: ['m5.inversa', 'm3.producto'], level: 4, levelWhy: 'Nivel Experto: despejar respetando el orden del producto (no conmutativo).',
+        data: { kind: 'matEq', A: X, B, left }, subtopic: 'Ecuaciones matriciales', concepts: ['m5.inversa', 'm3.producto'], level: 4, levelWhy: 'Nivel Experto: despejar respetando el orden del producto (no conmutativo).',
         prompt: `Resolvé $${left ? 'AX' : 'XA'} = B$ con $A = ${S(X)}$ y $B = ${S(B)}$.`,
         hints: ['No se "divide" por una matriz: se multiplica por la inversa.', left ? 'Multiplicá por $A^{-1}$ **a la izquierda** en ambos lados: $X = A^{-1}B$.' : 'Multiplicá por $A^{-1}$ **a la derecha**: $X = BA^{-1}$.'],
         solution: [{ text: '', tex: `A^{-1} = ${matTeX(Inv)}` }, { text: '', tex: `X = ${left ? 'A^{-1}B' : 'BA^{-1}'} = ${matTeX(Sol)}` }],
@@ -292,12 +292,13 @@ export const MATRICES: Template[] = [
     gen: (r, level) => {
       const n = level === 2 ? 2 : 3
       let X: number[][]
-      do X = rmat(r, n, n, -3, 3); while (detN(X) === 0)
+      // cada ecuación con al menos dos incógnitas (si no, el "sistema" ya viene resuelto)
+      do X = rmat(r, n, n, -3, 3); while (detN(X) === 0 || X.some((row) => row.filter((v) => v !== 0).length < 2))
       const sol = Array.from({ length: n }, () => r.int(-4, 4))
       const b = X.map((row) => row.reduce((s, v, j) => s + v * sol[j], 0))
       const vars = ['x', 'y', 'z'].slice(0, n)
       return make({
-        subtopic: 'Sistemas de ecuaciones', concepts: ['m6.sistemas', 'm6.gauss'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: Gauss en 3×3, muchas operaciones encadenadas.',
+        data: { kind: 'system', A: X, b }, subtopic: 'Sistemas de ecuaciones', concepts: ['m6.sistemas', 'm6.gauss'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: Gauss en 3×3, muchas operaciones encadenadas.',
         prompt: `Resolvé el sistema $${systemTeX(X, b, vars)}$`,
         hints: ['Armá la matriz ampliada $(A \\mid b)$.', 'Con operaciones de fila, hacé ceros debajo de cada pivote.', 'Despejá desde la última ecuación hacia arriba (sustitución hacia atrás).'],
         solution: [{ text: 'Matriz ampliada:', tex: matTeX(M(X.map((row, i) => row.concat([b[i]]))), n) }, { text: `Eliminando y sustituyendo: ${vars.map((v, i) => `$${v} = ${sol[i]}$`).join(', ')}.` }, { text: 'Control: reemplazando en las ecuaciones originales se verifican todas.' }],
@@ -324,7 +325,7 @@ export const MATRICES: Template[] = [
       const res = solveSystem(M(Am), b.map((v) => frac(v)))
       const kind = res.kind
       return make({
-        subtopic: 'Clasificación de sistemas', concepts: ['m6.clasificacion'], level, levelWhy: level === 3 ? 'Nivel Analista: escalonar y comparar rangos.' : 'Nivel Experto: hay que justificar con rangos, no "a ojo".',
+        data: { kind: 'classify', A: Am, b }, subtopic: 'Clasificación de sistemas', concepts: ['m6.clasificacion'], level, levelWhy: level === 3 ? 'Nivel Analista: escalonar y comparar rangos.' : 'Nivel Experto: hay que justificar con rangos, no "a ojo".',
         prompt: `Clasificá el sistema $${systemTeX(Am, b)}$`,
         hints: ['Escalona la matriz ampliada.', 'Rouché–Frobenius: si $\\operatorname{rg}A \\neq \\operatorname{rg}(A|b)$ es incompatible; si son iguales a la cantidad de incógnitas, determinado; si son iguales pero menores, indeterminado.', 'Mirá si alguna fila es combinación de las otras.'],
         solution: [{ text: `$\\operatorname{rg}A = ${res.rankA}$, $\\operatorname{rg}(A|b) = ${res.rankAb}$, incógnitas: 3.` }, { text: `Es **${KIND_TEXT[kind]}**.` }],
@@ -406,7 +407,7 @@ export const MATRICES: Template[] = [
       const s = r.pick([1, 2, 3])
       const area = Math.abs(detN(X)) * s * s
       return make({
-        subtopic: 'Interpretación del determinante', concepts: ['m7.transformaciones', 'm4.determinante'], level: 4, levelWhy: 'Nivel Experto: conectar álgebra (determinante) con geometría (áreas).',
+        data: { kind: 'areaFactor', M: X, side: s }, subtopic: 'Interpretación del determinante', concepts: ['m7.transformaciones', 'm4.determinante'], level: 4, levelWhy: 'Nivel Experto: conectar álgebra (determinante) con geometría (áreas).',
         prompt: `Un cuadrado de lado ${s} se transforma con $A = ${S(X)}$. ¿Cuál es el área de la figura resultante?`,
         hints: ['Las transformaciones lineales multiplican todas las áreas por el mismo número.', 'Ese número es $|\\det A|$.'],
         solution: [{ text: '', tex: `|\\det A|\\cdot ${s * s} = ${Math.abs(detN(X))}\\cdot ${s * s} = ${area}` }],
@@ -427,7 +428,7 @@ export const MATRICES: Template[] = [
       const kind0 = solveSystem(M(Am(k0)), [b1, b2, b3].map((v) => frac(v))).kind
       const sol1 = solveSystem(M(Am(k1)), [b1, b2, b3].map((v) => frac(v))).solution!
       return make({
-        subtopic: 'Sistemas con parámetro', concepts: ['m6.clasificacion', 'm4.determinante', 'm6.gauss'], level: 5, levelWhy: LV[5],
+        data: { kind: 'paramSystem', a, b: [b1, b2, b3], k0, k1 }, subtopic: 'Sistemas con parámetro', concepts: ['m6.clasificacion', 'm4.determinante', 'm6.gauss'], level: 5, levelWhy: LV[5],
         prompt: `Dado el sistema $\\begin{cases} x + y + z = ${b1} \\\\ x + 2y + ${a}z = ${b2} \\\\ x + 3y + kz = ${b3} \\end{cases}$`,
         hints: ['a) El sistema es SCD si y solo si $\\det A \\neq 0$.', `$\\det A = k - ${k0}$.`, `b) Reemplazá $k = ${k0}$ y escalona.`, `c) Con $k = ${k1}$ resolvé por Gauss.`],
         solution: [{ text: '', tex: `\\det A = 1(2k - ${3 * a}) - 1(k - ${a}) + 1(3 - 2) = k - ${k0}` }, { text: `a) Es SCD para $k \\neq ${k0}$.` }, { text: `b) Con $k = ${k0}$: $F_2 - F_1$ y $F_3 - F_2$ dan la misma parte izquierda; ${sci ? 'los términos independientes también coinciden → SCI' : 'los términos independientes no coinciden → SI'}.` }, { text: `c) Con $k = ${k1}$: $x = ${fstr(sol1[0])}$, $y = ${fstr(sol1[1])}$, $z = ${fstr(sol1[2])}$.` }],

@@ -521,11 +521,11 @@ export const FUNCIONES: Template[] = [
         prompt: `Para $f(x) = ${T(f)}$, hallá la amplitud, el período y el valor máximo.`,
         plot: { fns: [{ expr: f, label: 'f' }], x: [-1, 7], y: [-8, 8] },
         hints: ['Amplitud = $|A|$ en $A\\operatorname{sen}(Bx) + D$.', 'Período = $\\dfrac{2\\pi}{|B|}$.', 'Máximo = $D + |A|$.'],
-        solution: [{ text: `Amplitud $= ${Aamp}$. Período $= 2\\pi/${B}$. Máximo $= ${D} + ${Aamp} = ${D + Aamp}$.` }],
+        solution: [{ text: `Amplitud $= ${Aamp}$. Período $= \\frac{2\\pi}{${B}}${B === 1 ? '' : B === 2 ? ' = \\pi' : ''}$. Máximo $= ${D} + ${Aamp} = ${D + Aamp}$.` }],
         explanation: '$B$ comprime horizontalmente (más oscilaciones), $A$ estira verticalmente y $D$ traslada hacia arriba o abajo.',
         commonErrors: ['Período $= 2\\pi B$ en vez de $2\\pi/B$.'],
         noCalc: true,
-      }, { kind: 'fill', parts: ['Amplitud:', { blank: true, id: 'A', answer: String(Aamp), mode: 'number' }, '· Período:', { blank: true, id: 'P', answer: `2*pi/${B}`, mode: 'number' }, '· Máximo:', { blank: true, id: 'M', answer: String(D + Aamp), mode: 'number' }] })
+      }, { kind: 'fill', parts: ['Amplitud:', { blank: true, id: 'A', answer: String(Aamp), mode: 'number' }, '· Período:', { blank: true, id: 'P', answer: B === 1 ? '2*pi' : B === 2 ? 'pi' : `2*pi/${B}`, mode: 'number' }, '· Máximo:', { blank: true, id: 'M', answer: String(D + Aamp), mode: 'number' }] })
     },
   },
   fixed('f7.solve', A, 'f7', 'Ecuación trigonométrica', (r) => make({
@@ -594,7 +594,8 @@ export const FUNCIONES: Template[] = [
   {
     id: 'f9.compose', area: A, unit: 'f9', title: 'Composición de funciones', levels: [1, 2, 3],
     gen: (r, level) => {
-      const a = r.nonZero(-3, 3), b = r.int(-4, 4), c = r.int(-3, 3)
+      // g nunca es la identidad (a = 1, b = 0 haría trivial la composición)
+      const a = r.pick([-3, -2, -1, 2, 3]), b = r.int(-4, 4), c = r.int(-3, 3)
       const f = `x^2 ${sgn(c)}`, g = `${a}*x ${sgn(b)}`
       if (level === 1) {
         const x0 = r.int(-2, 3)
@@ -629,7 +630,7 @@ export const FUNCIONES: Template[] = [
       if (level === 2) {
         const a = r.nonZero(-5, 5), b = r.int(-6, 6)
         return make({
-          subtopic: 'Función inversa', concepts: ['f9.inversa'], level, levelWhy: LV[2],
+          data: { kind: 'inverseFn', f: `${a}*x ${sgn(b)}` }, subtopic: 'Función inversa', concepts: ['f9.inversa'], level, levelWhy: LV[2],
           prompt: `Hallá la inversa de $f(x) = ${T(`${a}*x ${sgn(b)}`)}$.`,
           hints: ['Escribí $y = f(x)$ y despejá $x$.', `$y = ${a}x ${sgn(b)} \\Rightarrow x = \\frac{y ${sgn(-b)}}{${a}}$.`, 'Al final renombrá la variable como $x$.'],
           solution: [{ text: 'Despejamos:', tex: `y = ${a}x ${sgn(b)} \\Rightarrow x = \\frac{y ${sgn(-b)}}{${a}}` }, { text: 'Renombramos:', tex: `f^{-1}(x) = \\frac{x ${sgn(-b)}}{${a}}` }],
@@ -641,7 +642,7 @@ export const FUNCIONES: Template[] = [
       const a = r.nonZero(1, 4), b = r.int(1, 5), d = r.int(-4, -1)
       // f(x) = (a x + b)/(x + d)  → f^{-1}(x) = (b - d x)/(x - a)
       return make({
-        subtopic: 'Función inversa', concepts: ['f9.inversa'], level, levelWhy: 'Nivel Analista: el despeje requiere agrupar los términos con $x$ y sacar factor común.',
+        data: { kind: 'inverseFn', f: `(${a}*x + ${b})/(x ${sgn(d)})` }, subtopic: 'Función inversa', concepts: ['f9.inversa'], level, levelWhy: 'Nivel Analista: el despeje requiere agrupar los términos con $x$ y sacar factor común.',
         prompt: `Hallá la inversa de $f(x) = ${T(`(${a}*x + ${b})/(x ${sgn(d)})`)}$.`,
         hints: ['$y(x ' + sgn(d) + ') = ' + a + 'x + ' + b + '$: distribuí.', 'Pasá todos los términos con $x$ de un lado y sacá factor común.', `$x(y - ${a}) = ${b} ${sgn(-d)}y$`],
         solution: [{ text: 'Multiplicamos por el denominador:', tex: `y x ${sgn(d)}y = ${a}x + ${b}` }, { text: 'Agrupamos:', tex: `x(y - ${a}) = ${b} ${sgn(-d)}y \\Rightarrow x = \\frac{${b} ${sgn(-d)}y}{y - ${a}}` }, { text: 'Renombramos:', tex: `f^{-1}(x) = ${T(`(${b} ${sgn(-d)}*x)/(x - ${a})`)}` }],
@@ -674,7 +675,7 @@ export const FUNCIONES: Template[] = [
         // (x - a)(x - b)/(x - a)
         const num = poly([1, -(a + b), a * b])
         return make({
-          subtopic: 'Límites', concepts: ['f10.limites'], level, levelWhy: LV[2],
+          data: { kind: 'limit', e: `(${num})/(x ${sgn(-a)})`, at: a }, subtopic: 'Límites', concepts: ['f10.limites'], level, levelWhy: LV[2],
           prompt: `Calculá $\\displaystyle\\lim_{x\\to ${a}} \\frac{${T(num)}}{x ${sgn(-a)}}$.`,
           plot: { fns: [{ expr: `x ${sgn(-b)}`, label: 'f' }], points: [{ x: a, y: a - b, open: true }], x: [a - 5, a + 5], y: [a - b - 5, a - b + 5] },
           hints: ['Reemplazar da $0/0$: es una indeterminación, no un resultado.', `Factorizá el numerador: tiene a $(x ${sgn(-a)})$ como factor.`, 'Simplificá y recién después reemplazá.'],
@@ -687,7 +688,7 @@ export const FUNCIONES: Template[] = [
       const sq = a * a
       const aa = Math.abs(a)
       return make({
-        subtopic: 'Límites', concepts: ['f10.limites'], level, levelWhy: 'Nivel Analista: hay que racionalizar (multiplicar por el conjugado) antes de simplificar.',
+        data: { kind: 'limit', e: `(sqrt(x) - ${aa})/(x - ${sq})`, at: sq }, subtopic: 'Límites', concepts: ['f10.limites'], level, levelWhy: 'Nivel Analista: hay que racionalizar (multiplicar por el conjugado) antes de simplificar.',
         prompt: `Calculá $\\displaystyle\\lim_{x\\to ${sq}} \\frac{\\sqrt{x} - ${aa}}{x - ${sq}}$.`,
         hints: ['Da $0/0$. Con raíces, multiplicá por el conjugado.', `Conjugado de $\\sqrt x - ${aa}$: $\\sqrt x + ${aa}$.`, `$(\\sqrt x - ${aa})(\\sqrt x + ${aa}) = x - ${sq}$.`],
         solution: [{ text: 'Multiplicamos y dividimos por el conjugado:', tex: `\\frac{\\sqrt x - ${aa}}{x - ${sq}}\\cdot\\frac{\\sqrt x + ${aa}}{\\sqrt x + ${aa}} = \\frac{x - ${sq}}{(x - ${sq})(\\sqrt x + ${aa})} = \\frac{1}{\\sqrt x + ${aa}}` }, { text: `Límite: $\\frac{1}{${2 * aa}}$.` }],
