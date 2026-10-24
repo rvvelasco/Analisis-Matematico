@@ -17,6 +17,7 @@ export interface Meta {
   estMinutes?: number
   plot?: PlotSpec
   noCalc?: boolean
+  data?: Record<string, unknown>
 }
 
 export function make(meta: Meta, body: ExerciseBody): ExerciseDraft {
@@ -35,6 +36,7 @@ export function make(meta: Meta, body: ExerciseBody): ExerciseDraft {
     estMinutes: meta.estMinutes ?? Math.max(1, meta.level),
     plot: meta.plot,
     noCalc: meta.noCalc,
+    data: meta.data,
   } as ExerciseDraft
 }
 

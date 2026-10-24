@@ -58,7 +58,7 @@ y copiá el contenido de `dist\` a la carpeta que sirva tu hosting. En este repo
 ### Contenido
 - **5 áreas, 43 unidades**, ordenadas pedagógicamente con prerrequisitos (Funciones → Matrices → Vectores → Derivadas → Integrales; Derivadas e Integrales son las más completas: 11 y 9 unidades).
 - **Lecciones en 10 etapas**: Descubrí · Entendé · Visualizá · Teoría · Ejemplo resuelto · Practicá · Desafiá tu intuición · Jugá · Demostrá · Repasá.
-- **132 plantillas de ejercicios** con parámetros controlados (miles de variantes) en **6 niveles**: Explorador, Aprendiz, Analista, Experto, Parcial y Final. Cada ejercicio explica **por qué pertenece a su nivel**.
+- **138 plantillas de ejercicios** con parámetros controlados (miles de variantes) en **6 niveles**: Explorador, Aprendiz, Analista, Experto, Parcial y Final. Cada ejercicio explica **por qué pertenece a su nivel**.
 - **Tipos de ejercicio**: opción múltiple, verdadero/falso con justificación, numérico, expresión algebraica, completar casilleros, ordenar pasos, relacionar, matriz, encontrar el error (con corrección), problemas con partes (tipo parcial/final) y desafíos con controles deslizantes.
 
 ### Corrección inteligente
@@ -124,11 +124,13 @@ mathverse/
 
 ## Pruebas
 
-`npm test` ejecuta 177 pruebas:
+`npm test` ejecuta 250 pruebas:
 
 - **Motor matemático**: lectura de expresiones, derivadas, equivalencias, matrices, vectores, métodos numéricos e impresión TeX.
 - **Banco de ejercicios**: para **cada plantilla, en cada nivel, con 40 semillas**, verifica que la respuesta correcta se acepte, que ningún "error típico" coincida con la respuesta, que las opciones múltiples tengan una sola correcta, que haya pistas, resolución y explicación, y (en integrales) que la derivada de la primitiva sea el integrando.
 - **Currículo**: unidades con ejercicios, prerrequisitos válidos y sin ciclos, fórmulas de las visualizaciones legibles.
+- **Verificación independiente** (`src/engine/audit.test.ts`): recalcula las respuestas con métodos distintos a los del motor (derivadas numéricas, Simpson propio, determinantes por Laplace, sustitución en sistemas, búsqueda exhaustiva de extremos, límites evaluados cerca del punto) y prueba que el auditor detecte respuestas alteradas.
+- **Equivalencias** (`src/engine/equivalence.audit.test.ts`): formas equivalentes que deben aceptarse (factorizada/desarrollada, identidades, `+ C`, `ln|x|`, redondeos razonables) y errores que deben rechazarse.
 - **Progreso**: validación de datos dañados, exportar/importar, dominio, desbloqueos, repaso espaciado, XP y misiones.
 
 ## Cómo seguir desarrollando

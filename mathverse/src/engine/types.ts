@@ -57,6 +57,8 @@ interface Base {
   estMinutes: number
   /** si el ejercicio está pensado para hacerse sin calculadora */
   noCalc?: boolean
+  /** parámetros crudos del ejercicio, para verificaciones independientes (no se muestran) */
+  data?: Record<string, unknown>
 }
 
 export interface MCOption {
@@ -118,7 +120,7 @@ export interface Feedback {
 /** Lo que el estudiante respondió (depende del tipo). */
 export type Answer =
   | { kind: 'mc'; index: number }
-  | { kind: 'tf'; value: boolean; reason: number }
+  | { kind: 'tf'; value: boolean | null; reason: number }
   | { kind: 'numeric'; text: string }
   | { kind: 'expression'; text: string }
   | { kind: 'fill'; values: Record<string, string> }

@@ -99,11 +99,29 @@ function checkExpressionBody(ex: Extract<ExerciseBody, { kind: 'expression' }>, 
   return no(`No coincide. En ${ex.v} = ${fmt(x0, 3)} tu expresión vale ${fmt(r.got ?? NaN, 4)} y debería valer ${fmt(r.expected ?? NaN, 4)}.`)
 }
 
+/** Valor exacto legible: fracción, múltiplo de π o raíz cuadrada si se reconoce. */
+function exactText(v: number): string {
+  for (let d = 1; d <= 60; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return d === 1 ? String(n) : `${n}/${d}` }
+  for (let d = 1; d <= 12; d++) { const n = Math.round((v / Math.PI) * d); if (n && Math.abs((n * Math.PI) / d - v) < 1e-9) return `${n === 1 ? '' : n === -1 ? '-' : n}π${d === 1 ? '' : '/' + d}` }
+  for (let d = 1; d <= 12; d++) for (let r = 2; r <= 200; r++) {
+    if (Number.isInteger(Math.sqrt(r))) continue
+    const n = Math.round((v * d) / Math.sqrt(r))
+    if (n && Math.abs((n * Math.sqrt(r)) / d - v) < 1e-9) return `${n === 1 ? '' : n === -1 ? '-' : n}√${r}${d === 1 ? '' : '/' + d}`
+  }
+  return fmt(v, 6)
+}
+
 function checkNumber(text: string, answer: number, tol: { abs?: number; rel?: number } | undefined, wrong?: { value: number; why: string; errorTag?: string }[]): Feedback {
   const v = parseNumber(text)
   if (v === null) return { verdict: 'invalid', message: 'Escribí un número (podés usar fracciones como 3/4, raíces como sqrt(2) o π).', score: 0 }
   const t = tol ?? { rel: 1e-6, abs: 1e-9 }
   if (numbersClose(v, answer, t)) return ok()
+  // redondeos: si escribió un decimal con 2 o más cifras decimales, se acepta si es el valor exacto bien redondeado
+  const dec = /^\s*[-−]?\d+[.,](\d+)\s*$/.exec(text)
+  if (dec && dec[1].length >= 2 && !Number.isInteger(answer)) {
+    const half = 0.5 * Math.pow(10, -dec[1].length)
+    if (Math.abs(v - answer) <= half * 1.0001 + 1e-12) return ok(`¡Correcto! Es el valor redondeado; el exacto es ${exactText(answer)}.`)
+  }
   for (const w of wrong ?? []) if (numbersClose(v, w.value, { rel: 1e-6, abs: 1e-9 })) return no(w.why, w.errorTag)
   if (numbersClose(v, -answer, t) && answer !== 0) return no('Revisá el **signo**: el valor absoluto es correcto, pero el signo no.', 'signo')
   return no('No es correcto. Revisá el procedimiento o pedí una pista.')
@@ -117,7 +135,7 @@ export function validate(ex: Exercise | (ExerciseBody & { label?: string }), ans
       return o.correct ? ok(o.why ? `¡Correcto! ${o.why}` : '¡Correcto!') : no(o.why ?? 'Esa no es. Pensá qué dice la definición.', o.errorTag)
     }
     case 'tf': {
-      if (ans.kind !== 'tf' || ans.reason < 0) return { verdict: 'invalid', message: 'Elegí verdadero o falso **y** una justificación.', score: 0 }
+      if (ans.kind !== 'tf' || ans.value === null || ans.reason < 0) return { verdict: 'invalid', message: 'Elegí verdadero o falso **y** una justificación.', score: 0 }
       const valueOk = ans.value === ex.answer
       const reason = ex.reasons[ans.reason]
       if (valueOk && reason.correct) return ok(reason.why ? `¡Correcto! ${reason.why}` : '¡Correcto, y bien justificado!')
@@ -220,8 +238,12 @@ export function validate(ex: Exercise | (ExerciseBody & { label?: string }), ans
 export function correctAnswerText(ex: Exercise | ExerciseBody): string {
   switch (ex.kind) {
     case 'mc': return ex.options.find((o) => o.correct)?.text ?? ''
-    case 'tf': return `${ex.answer ? 'Verdadero' : 'Falso'}: ${ex.reasons.find((r) => r.correct)?.text ?? ''}`
-    case 'numeric': return ex.answerText ?? fmt(ex.answer, 6)
+    case 'tf': {
+      const r = ex.reasons.find((o) => o.correct)?.text ?? ''
+      const w = ex.answer ? 'Verdadero' : 'Falso'
+      return r.startsWith(w) ? r : `${w}: ${r}`
+    }
+    case 'numeric': if (!ex.answerText) return exactText(ex.answer); return ex.answerText
     case 'expression': return `$${toTeXSafe(ex.answer, ex.v)}${ex.mode === 'upToConstant' ? ' + C' : ''}$`
     case 'fill': return ex.parts.map((p) => (typeof p === 'string' ? p : ` **${p.answer}** `)).join(' ')
     case 'order': return ex.items.map((t, i) => `${i + 1}. ${t}`).join('  ')

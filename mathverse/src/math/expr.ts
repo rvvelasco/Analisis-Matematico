@@ -344,7 +344,120 @@ export function simplify(n: Node): Node {
     if (s === prev) break
     prev = s
   }
-  return cur
+  return normPoly(cur)
+}
+
+/* ---------- normalización de polinomios (exponentes racionales en x) ---------- */
+type Poly = Map<number, number> // exponente → coeficiente
+const PV = 'x'
+const keyOf = (e: number) => Math.round(e * 1e9) / 1e9
+
+function polyAdd(a: Poly, b: Poly, sign = 1): Poly {
+  const r = new Map(a)
+  for (const [e, c] of b) r.set(e, (r.get(e) ?? 0) + sign * c)
+  return r
+}
+const isMonomial = (p: Poly) => p.size <= 1
+
+/**
+ * Intenta ver el nodo como suma de términos c·x^e. Devuelve null si aparece cualquier otra cosa
+ * (funciones de x, potencias de binomios, productos de dos sumas): esas formas se conservan.
+ */
+function asPoly(n: Node): Poly | null {
+  switch (n.k) {
+    case 'num': return new Map([[0, n.v]])
+    case 'var': return n.n === PV ? new Map([[1, 1]]) : null
+    case 'const': return null
+    case 'neg': { const a = asPoly(n.a); return a && polyAdd(new Map(), a, -1) }
+    case 'add': case 'sub': { const a = asPoly(n.l), b = asPoly(n.r); return a && b ? polyAdd(a, b, n.k === 'add' ? 1 : -1) : null }
+    case 'mul': {
+      const a = asPoly(n.l), b = asPoly(n.r)
+      if (!a || !b || (!isMonomial(a) && !isMonomial(b))) return null
+      const r: Poly = new Map()
+      for (const [e1, c1] of a) for (const [e2, c2] of b) { const k = keyOf(e1 + e2); r.set(k, (r.get(k) ?? 0) + c1 * c2) }
+      return r
+    }
+    case 'div': {
+      const a = asPoly(n.l), b = asPoly(n.r)
+      if (!a || !b || !isMonomial(b) || b.size === 0) return null
+      const [[e2, c2]] = [...b]
+      if (c2 === 0) return null
+      const r: Poly = new Map()
+      for (const [e1, c1] of a) r.set(keyOf(e1 - e2), c1 / c2)
+      return r
+    }
+    case 'pow': {
+      if (n.l.k === 'var' && n.l.n === PV && n.r.k === 'num') return new Map([[keyOf(n.r.v), 1]])
+      if (n.l.k === 'num' && n.r.k === 'num') return new Map([[0, Math.pow(n.l.v, n.r.v)]])
+      if (n.r.k === 'num' && Number.isInteger(n.r.v)) {
+        const b = asPoly(n.l)
+        if (b && b.size === 1) { const [[e, c]] = [...b]; return new Map([[keyOf(e * n.r.v), Math.pow(c, n.r.v)]]) }
+      }
+      return null
+    }
+    case 'fn':
+      if (n.f === 'sqrt' && n.a.k === 'var' && n.a.n === PV) return new Map([[0.5, 1]])
+      if (n.f === 'cbrt' && n.a.k === 'var' && n.a.n === PV) return new Map([[keyOf(1 / 3), 1]])
+      return null
+  }
+}
+
+function termNode(c: number, e: number): Node {
+  const x = vr(PV)
+  let base: Node | null
+  let inv = false
+  const ae = Math.abs(e)
+  if (e === 0) return num(roundNice(c))
+  if (e < 0) inv = true
+  if (ae === 1) base = x
+  else if (ae === 0.5) base = fn('sqrt', x)
+  else base = pow(x, num(ae))
+  const f = niceFrac(c, 1000)
+  if (inv) {
+    // c/x^e con c = n/d  →  n / (d·x^e)
+    if (f && f.d !== 1) return div(num(f.n), mul(num(f.d), base))
+    return div(num(roundNice(c)), base)
+  }
+  return c === 1 ? base : mul(num(roundNice(c)), base)
+}
+
+function buildPoly(p: Poly): Node {
+  const terms = [...p].filter(([, c]) => Math.abs(c) > 1e-12).sort((a, b) => b[0] - a[0])
+  if (!terms.length) return num(0)
+  let out: Node | null = null
+  for (const [e, c] of terms) {
+    if (!out) { out = c < 0 ? neg(termNode(-c, e)) : termNode(c, e); continue }
+    out = c < 0 ? sub(out, termNode(-c, e)) : add(out, termNode(c, e))
+  }
+  return out!
+}
+
+/** Cantidad de nodos (para decidir si la forma normalizada es más simple). */
+function size(n: Node): number {
+  switch (n.k) {
+    case 'num': case 'var': case 'const': return 1
+    case 'neg': case 'fn': return 1 + size(n.a)
+    default: return 1 + size(n.l) + size(n.r)
+  }
+}
+
+function normPoly(n: Node): Node {
+  if (n.k === 'num' || n.k === 'var' || n.k === 'const') return n
+  const p = n.k === 'fn' && n.f !== 'sqrt' && n.f !== 'cbrt' ? null : asPoly(n)
+  if (p) {
+    const b = buildPoly(p)
+    // solo si queda igual o más simple (evita, por ejemplo, convertir 1/(2√x) en algo más largo)
+    if (size(b) <= size(n) + 3) return b
+  }
+  switch (n.k) {
+    case 'neg': return neg(normPoly(n.a))
+    case 'fn': return fn(n.f, normPoly(n.a))
+    case 'add': return add(normPoly(n.l), normPoly(n.r))
+    case 'sub': return sub(normPoly(n.l), normPoly(n.r))
+    case 'mul': return mul(normPoly(n.l), normPoly(n.r))
+    case 'div': return div(normPoly(n.l), normPoly(n.r))
+    case 'pow': return pow(normPoly(n.l), normPoly(n.r))
+  }
 }
 
 function simp(n: Node): Node {
@@ -379,6 +492,7 @@ function simp(n: Node): Node {
       if (r.k === 'neg') return sub(l, r.a)
       if (isNum(r) && r.v < 0) return sub(l, num(-r.v))
       if (r.k === 'mul' && isNum(r.l) && r.l.v < 0) return sub(l, mul(num(-r.l.v), r.r))
+      if (r.k === 'div' && isNum(r.l) && r.l.v < 0) return sub(l, div(num(-r.l.v), r.r))
       if (equalsStruct(l, r)) return mul(num(2), l)
       const cl = coeff(l), cr = coeff(r)
       if (equalsStruct(cl.rest, cr.rest) && !isNum(cl.rest)) return mkCoeff(cl.c + cr.c, cl.rest)
@@ -391,6 +505,8 @@ function simp(n: Node): Node {
       if (isV(l, 0)) return simp(neg(r))
       if (r.k === 'neg') return add(l, r.a)
       if (isNum(r) && r.v < 0) return add(l, num(-r.v))
+      if (r.k === 'div' && isNum(r.l) && r.l.v < 0) return add(l, div(num(-r.l.v), r.r))
+      if (r.k === 'mul' && isNum(r.l) && r.l.v < 0) return add(l, mul(num(-r.l.v), r.r))
       if (equalsStruct(l, r)) return num(0)
       const cl = coeff(l), cr = coeff(r)
       if (equalsStruct(cl.rest, cr.rest) && !isNum(cl.rest)) return mkCoeff(cl.c - cr.c, cl.rest)
@@ -415,6 +531,9 @@ function simp(n: Node): Node {
       const bl = baseExp(l), br = baseExp(r)
       if (equalsStruct(bl.base, br.base) && isNum(bl.exp) && isNum(br.exp)) return simp(pow(bl.base, num(roundNice(bl.exp.v + br.exp.v))))
       if (r.k === 'div' && isV(r.l, 1)) return div(l, r.r)
+      if (isNum(l) && r.k === 'div') return simp(div(mul(l, r.l), r.r))
+      if (l.k === 'div' && !isNum(r) && r.k !== 'div') return simp(div(mul(l.l, r), l.r))
+      if (r.k === 'div' && !isNum(l) && l.k !== 'div') return simp(div(mul(l, r.l), r.r))
       return mul(l, r)
     }
     case 'div': {
@@ -432,6 +551,12 @@ function simp(n: Node): Node {
         const q = l.l.v / r.v
         if (Number.isInteger(q)) return simp(mul(num(q), l.r))
       }
+      // coeficientes numéricos arriba y abajo: se simplifican
+      const cl = coeff(l), cr = coeff(r)
+      if (!isNum(cr.rest) && cr.c !== 1 && cr.c !== 0 && Number.isInteger(cl.c) && Number.isInteger(cr.c)) {
+        const g = gcdInt(cl.c, cr.c) * (cr.c < 0 ? -1 : 1)
+        if (g !== 1) return simp(div(mkCoeff(cl.c / g, cl.rest), mkCoeff(cr.c / g, cr.rest)))
+      }
       return div(l, r)
     }
     case 'pow': {
@@ -448,6 +573,11 @@ function simp(n: Node): Node {
   }
 }
 
+function gcdInt(a: number, b: number): number {
+  a = Math.abs(a); b = Math.abs(b)
+  while (b) [a, b] = [b, a % b]
+  return a || 1
+}
 function coeff(n: Node): { c: number; rest: Node } {
   if (n.k === 'mul' && isNum(n.l)) return { c: n.l.v, rest: n.r }
   if (n.k === 'neg') { const q = coeff(n.a); return { c: -q.c, rest: q.rest } }
@@ -551,7 +681,7 @@ export function toTeX(n: Node): string {
 
 function numTeX(v: number): string {
   if (Number.isInteger(v)) return String(v)
-  const f = niceFrac(v)
+  const f = niceFrac(v, 1000)
   if (f) return (f.n < 0 ? '-' : '') + `\\tfrac{${Math.abs(f.n)}}{${f.d}}`
   return fmtNum(v).replace('.', '{,}')
 }
@@ -569,6 +699,10 @@ function negated(n0: Node): Node | null {
   if (n.k === 'mul') {
     const l = nnum(n.l)
     if (l.k === 'num' && l.v < 0) return l.v === -1 ? n.r : { k: 'mul', l: { k: 'num', v: -l.v }, r: n.r }
+  }
+  if (n.k === 'div') {
+    const p = negated(n.l)
+    if (p) return { k: 'div', l: p, r: n.r }
   }
   return null
 }
@@ -596,23 +730,48 @@ function tex(n: Node, parentPrec: number): string {
       return pos ? wrap(`${tex(n.l, 1)} + ${tex(pos, 1.5)}`, 1) : wrap(`${tex(n.l, 1)} - ${tex(n.r, 1.5)}`, 1)
     }
     case 'mul': {
-      // coeficientes 1 y −1 no se escriben; un coeficiente negativo adelante va sin paréntesis
-      const ln = nnum(n.l)
-      if (ln.k === 'num' && ln.v === 1) return tex(n.r, parentPrec)
-      if (ln.k === 'num' && ln.v < 0) {
-        const rest: Node = ln.v === -1 ? n.r : { k: 'mul', l: { k: 'num', v: -ln.v }, r: n.r }
-        return wrap('-' + tex(rest, 2), 3)
+      // producto aplanado: coeficiente numérico adelante, después potencias de x, funciones y paréntesis
+      const fs: Node[] = []
+      const walk = (m: Node) => { if (m.k === 'mul') { walk(m.l); walk(m.r) } else fs.push(nnum(m)) }
+      walk(n)
+      let c = 1
+      const rest: Node[] = []
+      for (const f of fs) { if (f.k === 'num') c *= f.v; else rest.push(f) }
+      if (!rest.length) return tex({ k: 'num', v: c }, parentPrec)
+      if (c === 0) return '0'
+      const rank = (f: Node): number => {
+        if (f.k === 'var' || (f.k === 'pow' && f.l.k === 'var')) return 1
+        if (f.k === 'fn' && (f.f === 'sqrt' || f.f === 'cbrt' || f.f === 'abs')) return 2
+        if (f.k === 'const' || (f.k === 'pow' && f.l.k === 'const')) return 3
+        if (f.k === 'fn' || f.k === 'pow') return 4
+        if (f.k === 'div') return 6
+        return 5
       }
-      const l = tex(n.l, 2), r = tex(n.r, 2.1)
-      if (n.l.k === 'num' && (n.r.k === 'var' || n.r.k === 'pow' || n.r.k === 'fn' || n.r.k === 'const' || n.r.k === 'add' || n.r.k === 'sub')) return wrap(`${l}${r}`, 2)
-      const implicit = n.l.k !== 'num' && n.r.k !== 'num' && n.r.k !== 'neg'
-      return wrap(implicit ? `${l}\\,${r}` : `${l} \\cdot ${r}`, 2)
+      rest.sort((p, q) => rank(p) - rank(q))
+      let body = ''
+      rest.forEach((f, i) => {
+        const t = tex(f, 2.1)
+        if (i === 0) { body = t; return }
+        const prev = rest[i - 1]
+        const sep = prev.k === 'fn' && prev.f !== 'sqrt' && prev.f !== 'cbrt' && prev.f !== 'abs' ? '\\,' : /^[0-9]/.test(t) ? ' \\cdot ' : ''
+        body += sep + t
+      })
+      if (c === 1) return wrap(body, 2)
+      if (c === -1) return wrap('-' + body, 3)
+      const ct = numTeX(Math.abs(c))
+      const needsDot = /^[0-9]/.test(body)
+      return wrap((c < 0 ? '-' : '') + ct + (needsDot ? ' \\cdot ' : '') + body, c < 0 ? 3 : 2)
     }
-    case 'div': return wrap(`\\frac{${tex(n.l, 0)}}{${tex(n.r, 0)}}`, 5)
+    case 'div': {
+      const p = negated(n.l)
+      if (p) return wrap(`-\\frac{${tex(p, 0)}}{${tex(n.r, 0)}}`, 3)
+      return wrap(`\\frac{${tex(n.l, 0)}}{${tex(n.r, 0)}}`, 5)
+    }
     case 'pow': {
       if (n.l.k === 'fn' && n.l.f !== 'sqrt' && n.l.f !== 'abs' && n.l.f !== 'cbrt' && n.r.k === 'num' && Number.isInteger(n.r.v) && n.r.v > 0) {
         return `${FN_TEX[n.l.f]}^{${n.r.v}}\\left(${tex(n.l.a, 0)}\\right)`
       }
+      if (n.r.k === 'num' && n.r.v === 1) return tex(n.l, parentPrec)
       const b = stripZero(n.l)
       const base = (b.k === 'num' && b.v >= 0) || b.k === 'var' || b.k === 'const' ? tex(b, 6) : `\\left(${tex(b, 0)}\\right)`
       return wrap(`${base}^{${tex(n.r, 0)}}`, 4)

@@ -62,7 +62,7 @@ export const DERIVADAS: Template[] = [
       const y1 = polyEval([a, b, c], x1), y2 = polyEval([a, b, c], x2)
       const tvm = (y2 - y1) / (x2 - x1)
       return make({
-        subtopic: 'Tasa de cambio media', concepts: ['d1.tasa'], level, levelWhy: level === 1 ? 'Nivel Explorador: es la pendiente de una secante, una sola cuenta.' : LV[2],
+        data: { kind: 'tvm', f, a: x1, b: x2 }, subtopic: 'Tasa de cambio media', concepts: ['d1.tasa'], level, levelWhy: level === 1 ? 'Nivel Explorador: es la pendiente de una secante, una sola cuenta.' : LV[2],
         prompt: `Calculá la tasa de variación media de $f(x) = ${T(f)}$ en el intervalo $[${x1}, ${x2}]$.`,
         plot: { fns: [{ expr: f, label: 'f' }, { expr: `${y1} + (${tvm})*(x - (${x1}))`, dashed: true, label: 'secante' }], points: [{ x: x1, y: y1 }, { x: x2, y: y2 }], x: [x1 - 3, x2 + 3], y: [Math.min(y1, y2) - 6, Math.max(y1, y2) + 6] },
         hints: ['TVM = cuánto cambió $f$ dividido cuánto cambió $x$.', '$\\text{TVM} = \\dfrac{f(b) - f(a)}{b - a}$', `$f(${x2}) = ${y2}$ y $f(${x1}) = ${y1}$.`],
@@ -198,7 +198,7 @@ export const DERIVADAS: Template[] = [
       const x0 = r.int(-2, 2)
       const val = polyEval(polyDer(c), x0)
       return make({
-        subtopic: 'Pendiente de la tangente', concepts: ['d3.potencia', 'd1.tangente'], level: 2, levelWhy: LV[2],
+        data: { kind: 'derivAt', f: poly(c), x: x0 }, subtopic: 'Pendiente de la tangente', concepts: ['d3.potencia', 'd1.tangente'], level: 2, levelWhy: LV[2],
         prompt: `¿Cuál es la pendiente de la recta tangente a $f(x) = ${T(poly(c))}$ en $x = ${x0}$?`,
         hints: ['La pendiente de la tangente es $f\'(x_0)$.', 'Primero derivá, **después** reemplazá.'],
         solution: [{ text: 'Derivamos:', tex: `f'(x) = ${T(poly(polyDer(c)))}` }, { text: 'Evaluamos:', tex: `f'(${x0}) = ${val}` }],
@@ -402,7 +402,7 @@ export const DERIVADAS: Template[] = [
         const sx = r.pick([1, -1]), sy = r.pick([1, -1])
         const x0 = sx * trip[0], y0 = sy * trip[1], R2 = trip[2] ** 2
         return make({
-          subtopic: 'Derivación implícita', concepts: ['d7.implicita'], level, levelWhy: 'Nivel Analista: hay que derivar tratando a $y$ como función de $x$ (regla de la cadena oculta).',
+          data: { kind: 'implicit', F: `x^2 + y^2 - ${R2}`, p: x0, q: y0 }, subtopic: 'Derivación implícita', concepts: ['d7.implicita'], level, levelWhy: 'Nivel Analista: hay que derivar tratando a $y$ como función de $x$ (regla de la cadena oculta).',
           prompt: `Hallá la pendiente de la recta tangente a $x^2 + y^2 = ${R2}$ en el punto $(${x0}, ${y0})$.`,
           plot: { fns: [{ expr: `sqrt(${R2} - x^2)` }, { expr: `-sqrt(${R2} - x^2)` }], points: [{ x: x0, y: y0, label: 'P' }], x: [-trip[2] - 3, trip[2] + 3], y: [-trip[2] - 3, trip[2] + 3] },
           hints: ['Derivá los dos miembros respecto de $x$.', "$\\frac{d}{dx}(y^2) = 2y\\,y'$ (cadena: $y$ depende de $x$).", "Despejá $y'$ y reemplazá el punto."],
@@ -412,15 +412,23 @@ export const DERIVADAS: Template[] = [
           noCalc: true,
         }, { kind: 'numeric', answer: -x0 / y0, answerText: fracStr(-x0, y0), wrong: [{ value: x0 / y0, why: 'Revisá el signo: $y\' = -x/y$.', errorTag: 'signo' }, { value: -y0 / x0, why: 'Invertiste el cociente: es $-x/y$.', errorTag: 'implicita' }] })
       }
+      // x²y + xy² = c en un punto entero (p, q): y' = −(2xy + y²)/(x² + 2xy)
+      const [p, q] = r.pick([[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [1, -3], [-1, 3], [3, -1]] as const)
+      const c = p * p * q + p * q * q
+      const num = 2 * p * q + q * q, den = p * p + 2 * p * q
       return make({
-        subtopic: 'Derivación implícita', concepts: ['d7.implicita'], level, levelWhy: 'Nivel Experto: aparece un producto $xy$ que requiere regla del producto dentro de la derivación implícita.',
-        prompt: 'Hallá la pendiente de la tangente a la curva $x^3 + y^3 = 6xy$ en el punto $(3, 3)$.',
-        hints: ['Derivá ambos miembros. A la derecha hay un **producto** $x\\cdot y$.', "$\\frac{d}{dx}(6xy) = 6y + 6x\\,y'$.", "Agrupá los términos con $y'$ y despejá; recién después reemplazá $(3,3)$."],
-        solution: [{ text: 'Derivando:', tex: "3x^2 + 3y^2 y' = 6y + 6x y'" }, { text: 'Despejando:', tex: "y'(3y^2 - 6x) = 6y - 3x^2 \\Rightarrow y' = \\frac{6y - 3x^2}{3y^2 - 6x}" }, { text: 'En $(3,3)$:', tex: "y' = \\frac{18 - 27}{27 - 18} = -1" }],
-        explanation: 'Primero se comprueba que el punto está en la curva: $27 + 27 = 54 = 6\\cdot 9$ ✓.',
-        commonErrors: ["Olvidar la regla del producto en $6xy$."],
+        data: { kind: 'implicit', F: `x^2*y + x*y^2 - (${c})`, p, q }, subtopic: 'Derivación implícita', concepts: ['d7.implicita'], level, levelWhy: 'Nivel Experto: hay productos $x^2y$ y $xy^2$ que requieren la regla del producto dentro de la derivación implícita.',
+        prompt: `Hallá la pendiente de la recta tangente a la curva $x^2y + xy^2 = ${c}$ en el punto $(${p}, ${q})$.`,
+        hints: ['Derivá ambos miembros respecto de $x$. Cada término es un **producto**.', "$\\frac{d}{dx}(x^2y) = 2xy + x^2y'$ y $\\frac{d}{dx}(xy^2) = y^2 + 2xy\\,y'$.", "Agrupá los términos con $y'$, despejá y recién después reemplazá el punto."],
+        solution: [
+          { text: `Primero se comprueba que el punto está en la curva: $${p * p}\\cdot ${par(q)} + ${par(p)}\\cdot ${q * q} = ${c}$ ✓.` },
+          { text: 'Derivando:', tex: "2xy + x^2y' + y^2 + 2xy\\,y' = 0 \\Rightarrow y' = -\\frac{2xy + y^2}{x^2 + 2xy}" },
+          { text: `En $(${p}, ${q})$:`, tex: `y' = -\\frac{${num}}{${den}} = ${fracStr(-num, den)}` },
+        ],
+        explanation: 'Aunque $y$ no esté despejada, cerca del punto sigue siendo una función de $x$; por eso al derivar $y^2$ aparece $2y\\,y\'$ (cadena) y al derivar $x^2y$ se usa la regla del producto.',
+        commonErrors: ["Derivar $x^2y$ como $2xy$ (olvidar el término $x^2y'$).", 'Reemplazar el punto antes de despejar y confundirse con los signos.'],
         noCalc: true,
-      }, { kind: 'numeric', answer: -1, wrong: [{ value: 1, why: 'Revisá el signo del numerador: $6\\cdot3 - 3\\cdot 9 = -9$.', errorTag: 'signo' }] })
+      }, { kind: 'numeric', answer: -num / den, answerText: fracStr(-num, den), wrong: [{ value: num / den, why: 'Revisá el signo: al pasar de miembro queda un menos.', errorTag: 'signo' }, { value: -(2 * p * q) / (p * p), why: "Olvidaste los términos que vienen de $xy^2$.", errorTag: 'producto' }] })
     },
   },
 
@@ -436,11 +444,11 @@ export const DERIVADAS: Template[] = [
       const slope = normal ? -1 / m : m
       const ans = `${slope}*(x - (${x0})) + (${y0})`
       return make({
-        subtopic: normal ? 'Recta normal' : 'Recta tangente', concepts: ['d8.tangente'], level: normal ? 3 : 2, levelWhy: normal ? 'Nivel Analista: combina tangente con perpendicularidad.' : LV[2],
+        data: { kind: normal ? 'normalLine' : 'tangentLine', f: poly(c), x: x0 }, subtopic: normal ? 'Recta normal' : 'Recta tangente', concepts: ['d8.tangente'], level: normal ? 3 : 2, levelWhy: normal ? 'Nivel Analista: combina tangente con perpendicularidad.' : LV[2],
         prompt: `Hallá la ecuación de la recta ${normal ? '**normal**' : 'tangente'} a $f(x) = ${T(f)}$ en $x_0 = ${x0}$.`,
         plot: { fns: [{ expr: f, label: 'f' }], points: [{ x: x0, y: y0, label: 'P' }], x: [x0 - 4, x0 + 4], y: [y0 - 8, y0 + 8] },
         hints: ['Necesitás un punto y una pendiente.', `Punto: $(${x0}, f(${x0}))$. Pendiente de la tangente: $f'(${x0})$.`, normal ? 'La normal es perpendicular a la tangente: pendiente $-1/f\'(x_0)$.' : 'Usá $y - y_0 = m(x - x_0)$.'],
-        solution: [{ text: `Punto: $f(${x0}) = ${y0}$.` }, { text: 'Pendiente de la tangente:', tex: `f'(x) = ${T(poly(polyDer(c)))} \\Rightarrow f'(${x0}) = ${m}` }, ...(normal ? [{ text: `Pendiente de la normal: $-1/${par(m)} = ${fracStr(-1, m).replace(/(-?\d+)\/(\d+)/, '\\frac{$1}{$2}')}$.` }] : []), { text: 'Recta:', tex: `y - ${par(y0)} = ${String(slope).length > 6 ? fracStr(-1, m) : slope}(x - ${par(x0)})` }],
+        solution: [{ text: `Punto: $f(${x0}) = ${y0}$.` }, { text: 'Pendiente de la tangente:', tex: `f'(x) = ${T(poly(polyDer(c)))} \\Rightarrow f'(${x0}) = ${m}` }, ...(normal ? [{ text: `Pendiente de la normal: $-1/${par(m)} = ${fracStr(-1, m).replace(/(-?\d+)\/(\d+)/, '\\frac{$1}{$2}')}$.` }] : []), { text: 'Recta (punto-pendiente):', tex: `y = ${T(`${y0} + (${slope})*(x - (${x0}))`)}` }],
         explanation: 'La tangente es la recta que mejor aproxima a la curva cerca del punto. La normal es la perpendicular a la tangente en ese punto.',
         commonErrors: ['Usar $f(x_0)$ como pendiente.', 'Usar la fórmula general $f\'(x)$ en lugar del número $f\'(x_0)$.'],
         noCalc: true,
@@ -499,7 +507,7 @@ export const DERIVADAS: Template[] = [
           noCalc: true,
         }, { kind: 'fill', parts: ['$x_1 =$', { blank: true, id: 'p', answer: String(p), mode: 'number' }, '· $x_2 =$', { blank: true, id: 'q', answer: String(q), mode: 'number' }] })
       return make({
-        subtopic: 'Máximos y mínimos', concepts: ['d9.extremos', 'd9.crecimiento'], level, levelWhy: 'Nivel Analista: además de hallar los críticos hay que clasificarlos con el signo de $f\'$.',
+        data: { kind: 'localMax', f, a: Math.min(p, q) - 3, b: Math.max(p, q) + 3 }, subtopic: 'Máximos y mínimos', concepts: ['d9.extremos', 'd9.crecimiento'], level, levelWhy: 'Nivel Analista: además de hallar los críticos hay que clasificarlos con el signo de $f\'$.',
         prompt: `Para $f(x) = ${T(f)}$: ¿cuál es el **valor** del máximo relativo?`,
         plot: { fns: [{ expr: f, label: 'f' }], x: [p - 2, q + 2], y: [Math.min(fp, fq) - 6, Math.max(fp, fq) + 6] },
         hints: ["Derivá, igualá a 0 y obtené los críticos.", "Mirá el signo de $f'$: el máximo está donde $f'$ pasa de $+$ a $-$.", `Con $a = ${k} > 0$ en la cúbica, el máximo está en el crítico de la izquierda, $x = ${p}$.`],
@@ -539,7 +547,7 @@ export const DERIVADAS: Template[] = [
       const vals = cands.map((x) => polyEval(c, x))
       const mx = Math.max(...vals), mn = Math.min(...vals)
       return make({
-        subtopic: 'Extremos absolutos', concepts: ['d9.extremos'], level, levelWhy: level === 3 ? 'Nivel Analista: candidatos interiores y bordes del intervalo.' : 'Nivel Experto: hay varios candidatos y alguno del borde puede ganarle al extremo relativo.',
+        data: { kind: 'absExtrema', f: poly(c), a: lo, b: hi }, subtopic: 'Extremos absolutos', concepts: ['d9.extremos'], level, levelWhy: level === 3 ? 'Nivel Analista: candidatos interiores y bordes del intervalo.' : 'Nivel Experto: hay varios candidatos y alguno del borde puede ganarle al extremo relativo.',
         prompt: `Hallá el máximo y el mínimo **absolutos** de $f(x) = ${T(poly(c))}$ en $[${lo}, ${hi}]$.`,
         hints: ['Candidatos: puntos críticos **dentro** del intervalo y los **extremos** del intervalo.', `$f'(x) = 3x^2 - ${3 * a * a} = 0 \\Rightarrow x = \\pm ${a}$.`, 'Evaluá $f$ en todos los candidatos y compará.'],
         solution: [{ text: `Candidatos: ${cands.join(', ')}.` }, { text: cands.map((x, i) => `$f(${x}) = ${vals[i]}$`).join(', ') }, { text: `Máximo absoluto ${mx}, mínimo absoluto ${mn}.` }],
@@ -561,7 +569,7 @@ export const DERIVADAS: Template[] = [
       const c = [k, -3 * k * h, b, d0]
       const f = poly(c)
       return make({
-        subtopic: 'Concavidad e inflexión', concepts: ['d10.concavidad'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: hay que justificar el cambio de concavidad, no solo resolver $f\'\' = 0$.',
+        data: { kind: 'inflection', f }, subtopic: 'Concavidad e inflexión', concepts: ['d10.concavidad'], level, levelWhy: level === 2 ? LV[2] : 'Nivel Analista: hay que justificar el cambio de concavidad, no solo resolver $f\'\' = 0$.',
         prompt: `¿En qué abscisa tiene $f(x) = ${T(f)}$ un punto de inflexión?`,
         hints: ["La concavidad la decide el signo de $f''$.", "Calculá $f''$ e igualá a 0.", "Verificá que $f''$ cambie de signo ahí."],
         solution: [{ text: '', tex: `f''(x) = ${T(poly(polyDer(polyDer(c))))} = ${6 * k}(x ${sgn(-h)})` }, { text: `$f''$ cambia de signo en $x = ${h}$: punto de inflexión.` }],
@@ -605,21 +613,23 @@ export const DERIVADAS: Template[] = [
           { label: 'd', prompt: '¿En qué intervalo $f$ es cóncava hacia abajo?', points: 1, kind: 'mc', options: r.shuffle([{ text: `$(-\\infty, ${fmt(infl)})$`, correct: true }, { text: `$(${fmt(infl)}, +\\infty)$`, why: "Ahí $f'' > 0$: cóncava hacia arriba.", errorTag: 'concavidad' }, { text: `$(${p}, ${q})$`, why: 'Ese es el intervalo de decrecimiento (signo de $f\'$, no de $f\'\'$).', errorTag: 'crecimiento-vs-concavidad' }]) },
         ] })
       }
-      // nivel 6: racional x^2/(x-1)
+      // nivel 6: racional x^2/(x - a), con a sorteado
+      const q = r.pick([1, 2, 3])
+      const fr = `x^2/(x - ${q})`
       return make({
         subtopic: 'Estudio completo', concepts: ['d9.extremos', 'd10.concavidad', 'f5.asintotas'], level, levelWhy: LV[6] + ' Combina dominio, asíntotas (Funciones) con derivadas.',
-        prompt: 'Estudio completo de $f(x) = \\dfrac{x^2}{x - 1}$.',
-        plot: { fns: [{ expr: 'x^2/(x-1)', label: 'f' }, { expr: 'x+1', dashed: true }], x: [-5, 7], y: [-8, 12], vlines: [{ x: 1, label: 'x = 1' }] },
-        hints: ['Dominio: $\\mathbb{R} - \\{1\\}$.', 'Dividí: $\\frac{x^2}{x-1} = x + 1 + \\frac{1}{x-1}$ (asíntota oblicua).', "$f'(x) = \\frac{x(x-2)}{(x-1)^2}$, $f''(x) = \\frac{2}{(x-1)^3}$."],
-        solution: [{ text: 'Dominio $\\mathbb{R}-\\{1\\}$; AV $x = 1$; AO $y = x + 1$.' }, { text: "$f'(x) = \\frac{x(x-2)}{(x-1)^2}$: máx. relativo $(0, 0)$, mín. relativo $(2, 4)$." }, { text: "$f''(x) = \\frac{2}{(x-1)^3}$: cóncava hacia abajo en $(-\\infty, 1)$, hacia arriba en $(1, +\\infty)$; sin inflexión porque $x = 1$ no está en el dominio." }],
-        explanation: 'El máximo relativo (valor 0) es **menor** que el mínimo relativo (valor 4): "relativo" significa que es el mayor o el menor **de su zona**, no de toda la función.',
-        commonErrors: ['Poner un punto de inflexión en $x = 1$ (no está en el dominio).'],
+        prompt: `Estudio completo de $f(x) = \\dfrac{x^2}{x - ${q}}$.`,
+        plot: { fns: [{ expr: fr, label: 'f' }, { expr: `x + ${q}`, dashed: true }], x: [q - 6, q + 7], y: [-6 * q - 2, 6 * q + 8], vlines: [{ x: q, label: `x = ${q}` }] },
+        hints: [`Dominio: $\\mathbb{R} - \\{${q}\\}$.`, `Dividí: $\\frac{x^2}{x - ${q}} = x + ${q} + \\frac{${q * q}}{x - ${q}}$ (asíntota oblicua).`, `$f'(x) = \\frac{x(x - ${2 * q})}{(x - ${q})^2}$, $f''(x) = \\frac{${2 * q * q}}{(x - ${q})^3}$.`],
+        solution: [{ text: `Dominio $\\mathbb{R}-\\{${q}\\}$; AV $x = ${q}$; AO $y = x + ${q}$ (porque $\\frac{${q * q}}{x - ${q}} \\to 0$).` }, { text: `$f'(x) = \\frac{x(x - ${2 * q})}{(x - ${q})^2}$: $f'$ pasa de $+$ a $-$ en $x = 0$ (máx. relativo $(0, 0)$) y de $-$ a $+$ en $x = ${2 * q}$ (mín. relativo $(${2 * q}, ${4 * q})$).` }, { text: `$f''(x) = \\frac{${2 * q * q}}{(x - ${q})^3}$: cóncava hacia abajo en $(-\\infty, ${q})$, hacia arriba en $(${q}, +\\infty)$; sin inflexión porque $x = ${q}$ no está en el dominio.` }],
+        explanation: `El máximo relativo (valor 0) es **menor** que el mínimo relativo (valor ${4 * q}): "relativo" significa que es el mayor o el menor **de su zona**, no de toda la función.`,
+        commonErrors: [`Poner un punto de inflexión en $x = ${q}$ (no está en el dominio).`, 'Confundir la asíntota oblicua con la recta $y = x$.'],
         estMinutes: 18, noCalc: true,
       }, { kind: 'multi', parts: [
-        { label: 'a', prompt: 'Asíntota vertical: $x =$', points: 1, kind: 'numeric', answer: 1 },
-        { label: 'b', prompt: 'Asíntota oblicua $y = mx + b$:', points: 1, kind: 'expression', answer: 'x + 1', v: 'x', mode: 'exact', domain: [-3, 3], prefix: 'y =' },
-        { label: 'c', prompt: 'Valor del mínimo relativo:', points: 1, kind: 'numeric', answer: 4, wrong: [{ value: 2, why: 'Esa es la abscisa del mínimo.', errorTag: 'abscisa-vs-valor' }] },
-        { label: 'd', prompt: '¿Tiene punto de inflexión?', points: 1, kind: 'tf', statement: '$f$ tiene un punto de inflexión en $x = 1$.', answer: false, reasons: r.shuffle([{ text: 'Falso: aunque cambia la concavidad, $x = 1$ no pertenece al dominio.', correct: true }, { text: "Verdadero: $f''$ cambia de signo en $x = 1$.", why: 'Para que haya inflexión, el punto tiene que estar en la gráfica.', errorTag: 'dominio' }, { text: "Falso: porque $f''$ nunca cambia de signo.", why: "Sí cambia: $(x - 1)^3$ es negativo a la izquierda y positivo a la derecha." }]) },
+        { label: 'a', prompt: 'Asíntota vertical: $x =$', points: 1, kind: 'numeric', answer: q },
+        { label: 'b', prompt: 'Asíntota oblicua $y = mx + b$:', points: 1, kind: 'expression', answer: `x + ${q}`, v: 'x', mode: 'exact', domain: [-3, 3], prefix: 'y =', wrong: [{ expr: 'x', why: `Falta la ordenada: al dividir, el cociente es $x + ${q}$.` }] },
+        { label: 'c', prompt: 'Valor del mínimo relativo:', points: 1, kind: 'numeric', answer: 4 * q, wrong: [{ value: 2 * q, why: 'Esa es la abscisa del mínimo; te piden el valor $f(x)$.', errorTag: 'abscisa-vs-valor' }] },
+        { label: 'd', prompt: '¿Tiene punto de inflexión?', points: 1, kind: 'tf', statement: `$f$ tiene un punto de inflexión en $x = ${q}$.`, answer: false, reasons: r.shuffle([{ text: `Falso: aunque cambia la concavidad, $x = ${q}$ no pertenece al dominio.`, correct: true }, { text: `Verdadero: $f''$ cambia de signo en $x = ${q}$.`, why: 'Para que haya inflexión, el punto tiene que estar en la gráfica.', errorTag: 'dominio' }, { text: "Falso: porque $f''$ nunca cambia de signo.", why: `Sí cambia: $(x - ${q})^3$ es negativo a la izquierda y positivo a la derecha.` }]) },
       ] })
     },
   },
@@ -632,7 +642,7 @@ export const DERIVADAS: Template[] = [
       if (level === 3) {
         const x = P / 4, y = P / 2
         return make({
-          subtopic: 'Optimización', concepts: ['d11.optimizacion'], level, levelWhy: 'Nivel Analista: hay que modelar (elegir variables, restricción y función) antes de derivar.',
+          data: { kind: 'maximize', obj: `x*(${P} - 2*x)`, a: 0, b: P / 2, ask: 'value' }, subtopic: 'Optimización', concepts: ['d11.optimizacion'], level, levelWhy: 'Nivel Analista: hay que modelar (elegir variables, restricción y función) antes de derivar.',
           prompt: `Con ${P} m de alambre se quiere cercar un terreno rectangular junto a un río (el lado del río no se cerca). ¿Cuál es el **área máxima** posible (en m²)?`,
           hints: ['Llamá $x$ a los lados perpendiculares al río e $y$ al paralelo.', `Restricción: $2x + y = ${P}$. Despejá $y$.`, `$A(x) = x(${P} - 2x)$: derivá e igualá a 0.`],
           solution: [{ text: 'Restricción y área:', tex: `y = ${P} - 2x, \\quad A(x) = ${P}x - 2x^2` }, { text: '', tex: `A'(x) = ${P} - 4x = 0 \\Rightarrow x = ${x}, \\; y = ${y}` }, { text: `$A''(x) = -4 < 0$: es un máximo. Área $= ${x}\\cdot ${y} = ${x * y}$ m².` }],
@@ -644,7 +654,7 @@ export const DERIVADAS: Template[] = [
       const L = r.pick([12, 18, 24, 30])
       const x = L / 6
       return make({
-        subtopic: 'Optimización', concepts: ['d11.optimizacion'], level, levelWhy: 'Nivel Experto: el modelo es cúbico, hay que descartar una solución sin sentido físico y justificar que es máximo.',
+        data: { kind: 'maximize', obj: `x*(${L} - 2*x)^2`, a: 0, b: L / 2, ask: 'arg' }, subtopic: 'Optimización', concepts: ['d11.optimizacion'], level, levelWhy: 'Nivel Experto: el modelo es cúbico, hay que descartar una solución sin sentido físico y justificar que es máximo.',
         prompt: `De una lámina cuadrada de ${L} cm de lado se cortan cuadrados de lado $x$ en las esquinas y se doblan los bordes para armar una caja sin tapa. ¿Qué valor de $x$ (en cm) da el **volumen máximo**?`,
         hints: [`La base queda de $(${L} - 2x)$ por $(${L} - 2x)$ y la altura es $x$.`, `$V(x) = x(${L} - 2x)^2$, con $0 < x < ${L / 2}$.`, `$V'(x) = (${L} - 2x)(${L} - 6x)$.`],
         solution: [{ text: '', tex: `V(x) = x(${L} - 2x)^2, \\quad V'(x) = (${L} - 2x)^2 - 4x(${L} - 2x) = (${L} - 2x)(${L} - 6x)` }, { text: `Críticos: $x = ${L / 2}$ (caja sin base: se descarta) y $x = ${x}$.` }, { text: `$V'$ pasa de $+$ a $-$ en $x = ${x}$: máximo. $V(${x}) = ${x * (L - 2 * x) ** 2}$ cm³.` }],
@@ -659,17 +669,17 @@ export const DERIVADAS: Template[] = [
       const k = r.pick([2, 3, 4, 5])
       const cases = level === 3
         ? [
-            { tex: `\\lim_{x\\to0}\\frac{e^{${k}x} - 1}{x}`, val: k, steps: [`0/0. Derivando arriba y abajo: $\\lim \\frac{${k}e^{${k}x}}{1} = ${k}$.`] },
-            { tex: `\\lim_{x\\to0}\\frac{\\operatorname{sen}(${k}x)}{x}`, val: k, steps: [`0/0. L'Hôpital: $\\lim \\frac{${k}\\cos(${k}x)}{1} = ${k}$.`] },
-            { tex: `\\lim_{x\\to0}\\frac{\\ln(1 + ${k}x)}{x}`, val: k, steps: [`0/0. L'Hôpital: $\\lim \\frac{${k}/(1 + ${k}x)}{1} = ${k}$.`] },
+            { e: `(e^(${k}*x) - 1)/x`, tex: `\\lim_{x\\to0}\\frac{e^{${k}x} - 1}{x}`, val: k, steps: [`0/0. Derivando arriba y abajo: $\\lim \\frac{${k}e^{${k}x}}{1} = ${k}$.`] },
+            { e: `sin(${k}*x)/x`, tex: `\\lim_{x\\to0}\\frac{\\operatorname{sen}(${k}x)}{x}`, val: k, steps: [`0/0. L'Hôpital: $\\lim \\frac{${k}\\cos(${k}x)}{1} = ${k}$.`] },
+            { e: `ln(1 + ${k}*x)/x`, tex: `\\lim_{x\\to0}\\frac{\\ln(1 + ${k}x)}{x}`, val: k, steps: [`0/0. L'Hôpital: $\\lim \\frac{${k}/(1 + ${k}x)}{1} = ${k}$.`] },
           ]
         : [
-            { tex: `\\lim_{x\\to0}\\frac{1 - \\cos(${k}x)}{x^2}`, val: (k * k) / 2, steps: [`0/0. L'Hôpital: $\\frac{${k}\\operatorname{sen}(${k}x)}{2x}$, otra vez 0/0.`, `L'Hôpital de nuevo: $\\frac{${k * k}\\cos(${k}x)}{2} \\to ${fracStr(k * k, 2)}$.`] },
-            { tex: `\\lim_{x\\to0}\\frac{e^{x} - 1 - x}{x^2}`, val: 0.5, steps: ['0/0. L\'Hôpital: $\\frac{e^x - 1}{2x}$, otra vez 0/0.', 'Otra vez: $\\frac{e^x}{2} \\to \\frac12$.'] },
+            { e: `(1 - cos(${k}*x))/x^2`, tex: `\\lim_{x\\to0}\\frac{1 - \\cos(${k}x)}{x^2}`, val: (k * k) / 2, steps: [`0/0. L'Hôpital: $\\frac{${k}\\operatorname{sen}(${k}x)}{2x}$, otra vez 0/0.`, `L'Hôpital de nuevo: $\\frac{${k * k}\\cos(${k}x)}{2} \\to ${fracStr(k * k, 2)}$.`] },
+            { e: '(e^x - 1 - x)/x^2', tex: `\\lim_{x\\to0}\\frac{e^{x} - 1 - x}{x^2}`, val: 0.5, steps: ['0/0. L\'Hôpital: $\\frac{e^x - 1}{2x}$, otra vez 0/0.', 'Otra vez: $\\frac{e^x}{2} \\to \\frac12$.'] },
           ]
       const c = r.pick(cases)
       return make({
-        subtopic: "Regla de L'Hôpital", concepts: ['d11.lhopital'], level, levelWhy: level === 3 ? 'Nivel Analista: reconocer la indeterminación y aplicar la regla.' : 'Nivel Experto: hay que aplicar la regla más de una vez, verificando la indeterminación cada vez.',
+        data: { kind: 'limit', e: c.e, at: 0 }, subtopic: "Regla de L'Hôpital", concepts: ['d11.lhopital'], level, levelWhy: level === 3 ? 'Nivel Analista: reconocer la indeterminación y aplicar la regla.' : 'Nivel Experto: hay que aplicar la regla más de una vez, verificando la indeterminación cada vez.',
         prompt: `Calculá $\\displaystyle ${c.tex}$.`,
         hints: ['Reemplazá: ¿es $0/0$ o $\\infty/\\infty$?', "L'Hôpital: derivá numerador y denominador **por separado** (no es la regla del cociente).", 'Si vuelve a dar $0/0$, se puede aplicar otra vez.'],
         solution: c.steps.map((s) => ({ text: s })),
