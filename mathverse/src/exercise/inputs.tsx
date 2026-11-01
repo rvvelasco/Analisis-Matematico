@@ -91,11 +91,11 @@ function Option({ selected, onClick, disabled, children, state }: { selected: bo
       disabled={disabled}
       onClick={onClick}
       className={
-        'flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left transition ' +
-        (state === 'ok' ? 'border-ok bg-ok/10' : state === 'bad' ? 'border-bad bg-bad/10' : selected ? 'border-brand bg-brand/10' : 'border-line bg-surface2/50 hover:border-brand/50')
+        'choice !items-start ' +
+        (state === 'ok' ? '!border-ok !bg-okbg' : state === 'bad' ? '!border-bad !bg-badbg' : selected ? 'choice-on' : '')
       }
     >
-      <span className={'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ' + (selected ? 'border-brand' : 'border-line')}>{selected && <span className="h-2.5 w-2.5 rounded-full bg-brand" />}</span>
+      <span className={'mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-lg border-2 text-xs font-black ' + (state === 'ok' ? 'border-ok bg-ok text-white' : state === 'bad' ? 'border-bad bg-bad text-white' : selected ? 'border-brand2 bg-brand2 text-white' : 'border-line text-muted')}>{state === 'ok' ? '✓' : state === 'bad' ? '✕' : selected ? '•' : ''}</span>
       <span className="min-w-0 flex-1">{children}</span>
     </button>
   )
@@ -116,16 +116,16 @@ function MCInput({ ex, draft, onChange, disabled, reveal, feedback }: P<'mc'>) {
 function TFInput({ ex, draft, onChange, disabled, reveal }: P<'tf'>) {
   return (
     <div className="grid gap-3">
-      <div className="rounded-xl border border-line bg-surface2/50 p-4"><Md text={ex.statement} /></div>
-      <div className="flex gap-2" role="radiogroup" aria-label="Verdadero o falso">
+      <div className="rounded-2xl border-2 border-line bg-surface2 p-4 text-lg font-bold"><Md text={ex.statement} /></div>
+      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Verdadero o falso">
         {[true, false].map((v) => (
           <button key={String(v)} type="button" role="radio" aria-checked={draft.value === v} disabled={disabled} onClick={() => onChange({ ...draft, value: v })}
-            className={'btn flex-1 border ' + (draft.value === v ? 'border-brand bg-brand/15 text-ink' : 'border-line bg-surface2/50 text-muted') + (reveal && ex.answer === v ? ' !border-ok' : '')}>
-            {v ? 'Verdadero' : 'Falso'}
+            className={'choice justify-center py-4 text-lg font-extrabold ' + (reveal && ex.answer === v ? '!border-ok !bg-okbg' : draft.value === v ? 'choice-on' : '')}>
+            <span aria-hidden>{v ? '👍' : '👎'}</span>{v ? 'Verdadero' : 'Falso'}
           </button>
         ))}
       </div>
-      <div className="label">Justificación</div>
+      <div className="label">¿Por qué?</div>
       <div role="radiogroup" aria-label="Justificación" className="grid gap-2">
         {ex.reasons.map((o, i) => (
           <Option key={i} selected={draft.reason === i} disabled={disabled} onClick={() => onChange({ ...draft, reason: i })} state={reveal && o.correct ? 'ok' : undefined}>
@@ -140,7 +140,7 @@ function TFInput({ ex, draft, onChange, disabled, reveal }: P<'tf'>) {
 function NumericInput({ ex, draft, onChange, disabled, feedback }: P<'numeric'>) {
   return (
     <div className="flex items-center gap-2">
-      <input className={'input max-w-xs ' + verdictRing(feedback?.verdict)} inputMode="text" autoComplete="off" spellCheck={false} aria-label="Tu respuesta (número)" placeholder="Ej: -3/4, 2.5, sqrt(2), pi" value={draft.text} disabled={disabled} onChange={(e) => onChange({ kind: 'numeric', text: e.target.value })} />
+      <input className={'input max-w-xs text-lg ' + verdictRing(feedback?.verdict)} inputMode="text" autoComplete="off" spellCheck={false} aria-label="Tu respuesta (número)" placeholder="Escribí un número. Ej: -3/4, 2.5, sqrt(2), pi" value={draft.text} disabled={disabled} onChange={(e) => onChange({ kind: 'numeric', text: e.target.value })} />
       {ex.unit && <span className="text-muted">{ex.unit}</span>}
     </div>
   )
@@ -187,7 +187,7 @@ export function ExprField({ value, onChange, v = 'x', integral = false, disabled
         </div>
       )}
       <div className="min-h-[1.75rem] text-sm" aria-live="polite">
-        {prev.tex && <span className="text-muted">Interpreto: <TeX tex={prev.tex} /></span>}
+        {prev.tex && <span className="font-semibold text-muted">Leo esto: <TeX tex={prev.tex} /></span>}
         {prev.error && <span className="text-warn">{prev.error}</span>}
       </div>
     </div>
@@ -227,7 +227,7 @@ function OrderInput({ ex, draft, onChange, disabled, reveal }: P<'order'>) {
     <ol className="grid gap-2" aria-label="Pasos para ordenar">
       {order.map((item, pos) => (
         <li key={item} draggable={!disabled} onDragStart={() => setDragIdx(pos)} onDragOver={(e) => e.preventDefault()} onDrop={() => { if (dragIdx !== null) move(dragIdx, pos); setDragIdx(null) }}
-          className={'flex items-center gap-3 rounded-xl border border-line bg-surface2/50 px-3 py-2.5 ' + (dragIdx === pos ? 'opacity-50' : '')}>
+          className={'choice cursor-default ' + (dragIdx === pos ? 'opacity-50' : '')}>
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-brand/15 font-mono text-sm font-bold text-brand">{pos + 1}</span>
           <span className="min-w-0 flex-1 cursor-grab"><Md text={ex.items[item]} /></span>
           {!disabled && (
@@ -255,20 +255,20 @@ function MatchInput({ ex, draft, onChange, disabled, reveal, seed = 1 }: P<'matc
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="grid gap-2">
-        <div className="label">Elegí un elemento…</div>
+        <div className="label">1. Tocá uno de acá…</div>
         {ex.pairs.map((p, i) => (
           <button key={i} type="button" disabled={disabled} onClick={() => setActive(i)} aria-pressed={active === i}
-            className={'flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left ' + (active === i ? 'border-brand bg-brand/10' : 'border-line bg-surface2/50')}>
+            className={'choice justify-between ' + (active === i ? 'choice-on' : '')}>
             <Md text={p.left} />
             <span className="chip">{map[i] >= 0 ? <Md text={ex.pairs[map[i]].right} /> : '—'}</span>
           </button>
         ))}
       </div>
       <div className="grid content-start gap-2">
-        <div className="label">…y después su pareja</div>
+        <div className="label">2. …y después su pareja</div>
         {rightOrder.map((ri) => (
           <button key={ri} type="button" disabled={disabled || active === null} onClick={() => active !== null && assign(active, ri)}
-            className={'rounded-xl border px-3 py-2.5 text-left transition ' + (map.includes(ri) ? 'border-line/50 bg-surface2/30 text-muted' : 'border-line bg-surface2/60 hover:border-brand/60')}>
+            className={'choice ' + (map.includes(ri) ? 'opacity-50' : '')}>
             <Md text={ex.pairs[ri].right} />
           </button>
         ))}
@@ -298,12 +298,12 @@ function ErrorStepInput({ ex, draft, onChange, disabled, reveal }: P<'errorStep'
   const step = reveal ? ex.wrongIndex : draft.step
   return (
     <div className="grid gap-3">
-      <div className="label">1. Tocá el paso con el primer error</div>
+      <div className="label">1. Tocá el paso donde está el primer error</div>
       <ol className="grid gap-2">
         {ex.steps.map((s, i) => (
           <li key={i}>
             <button type="button" disabled={disabled} onClick={() => onChange({ ...draft, step: i })} aria-pressed={step === i}
-              className={'flex w-full items-start gap-3 rounded-xl border px-3 py-2.5 text-left ' + (step === i ? (reveal ? 'border-ok bg-ok/10' : 'border-bad bg-bad/10') : 'border-line bg-surface2/50 hover:border-brand/50')}>
+              className={'choice !items-start ' + (step === i ? (reveal ? '!border-ok !bg-okbg' : 'choice-on') : '')}>
               <span className="font-mono text-sm text-muted">Paso {i + 1}</span><Md text={s} />
             </button>
           </li>
@@ -321,7 +321,7 @@ function ErrorStepInput({ ex, draft, onChange, disabled, reveal }: P<'errorStep'
       )}
       {ex.fix && step >= 0 && (
         <>
-          <div className="label">3. (Opcional) Escribí el resultado correcto</div>
+          <div className="label">3. Si querés, escribí cómo debería quedar</div>
           <ExprField value={reveal ? ex.fix.answer : draft.fix ?? ''} onChange={(t) => onChange({ ...draft, fix: t })} v={ex.fix.v} integral={ex.fix.mode === 'upToConstant'} disabled={disabled} />
         </>
       )}
@@ -335,7 +335,7 @@ function MultiInput({ ex, draft, onChange, disabled, feedback, reveal, seed = 1 
       {ex.parts.map((p, i) => {
         const pf = feedback?.parts?.[i]
         return (
-          <div key={i} className={'rounded-xl border p-4 ' + (pf ? (pf.verdict === 'correct' ? 'border-ok/60' : 'border-bad/60') : 'border-line')}>
+          <div key={i} className={'rounded-2xl border-2 p-4 ' + (pf ? (pf.verdict === 'correct' ? 'border-ok/60' : 'border-bad/60') : 'border-line')}>
             <div className="mb-2 flex items-baseline gap-2"><span className="font-display text-lg font-bold text-brand">{p.label})</span><Md text={p.prompt} /><span className="ml-auto chip">{p.points} pt</span></div>
             <AnswerInput ex={p} draft={draft.parts[i]} onChange={(d) => { const parts = draft.parts.slice(); parts[i] = d; onChange({ kind: 'multi', parts }) }} disabled={disabled} reveal={reveal} seed={seed + i} />
             {pf && <div className={'mt-2 text-sm ' + (pf.verdict === 'correct' ? 'text-ok' : 'text-bad')}><Md text={pf.message} /></div>}

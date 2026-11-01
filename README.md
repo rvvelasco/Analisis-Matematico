@@ -7,7 +7,7 @@ Portal de estudio interactivo para la carrera de Analista en Sistemas. Guías te
 | Archivo | Qué es |
 |---|---|
 | `index.html` | Portal principal. Punto de entrada del sitio. |
-| `mathverse-app/` | **MathVerse** (versión compilada, lista para GitHub Pages): app interactiva con lecciones en 10 etapas, 17 visualizaciones, 10 juegos, simulacros y progreso. Funciona sin conexión. |
+| `mathverse-app/` | **MathVerse** (versión compilada, lista para GitHub Pages): app interactiva estilo Duolingo: camino de aprendizaje con lecciones cortas, vidas y mascota, 17 visualizaciones, 10 juegos, exámenes de práctica y progreso. Funciona sin conexión. |
 | `mathverse/` | Código fuente de MathVerse (React + TypeScript + Vite). Instrucciones de instalación (incluido Windows) en `mathverse/README.md`. |
 | `guia-teoria-de-conjuntos.html` | **Análisis Matemático · Unidades 1 y 3**: teoría de conjuntos, producto cartesiano, matrices (tipos, propiedades, aplicaciones), determinantes de orden n (Sarrus, Laplace, cálculo con propiedades), adjunta e inversa, Gauss-Jordan, Cramer y sistemas (Rouché-Frobenius, conjunto solución, parámetros, problemas). |
 | `guia-vectores.html` | **Análisis Matemático · Unidad 2**: vectores de n componentes, operaciones, producto escalar, norma, proyecciones, producto vectorial, dependencia lineal, base, dimensión y transformaciones lineales (matriz, núcleo, imagen, composición). |

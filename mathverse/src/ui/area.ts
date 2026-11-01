@@ -12,9 +12,9 @@ export const AREA_CLS: Record<AreaId, { text: string; bg: string; border: string
 export const STATUS_TEXT = {
   bloqueada: 'Bloqueada',
   disponible: 'Disponible',
-  vista: 'En curso',
+  vista: 'Empezada',
   practicada: 'Practicada',
-  dominada: 'Dominada',
+  dominada: 'Aprendida',
 } as const
 
-export const CONCEPT_STATUS_TEXT = { nuevo: 'Nuevo', visto: 'Visto', practicado: 'Practicado', dominado: 'Dominado' } as const
+export const CONCEPT_STATUS_TEXT = { nuevo: 'Sin empezar', visto: 'Visto', practicado: 'Practicado', dominado: 'Aprendido' } as const

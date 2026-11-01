@@ -1,10 +1,11 @@
 import { lazy, Suspense, Component, type ReactNode } from 'react'
 import { HashRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { Layout } from './ui/Layout'
-import Home from './pages/Home'
+import Path from './pages/Path'
 import { AreaPage, LearnMap, NotFound } from './pages/Learn'
 
 const UnitPage = lazy(() => import('./pages/UnitPage'))
+const Lesson = lazy(() => import('./pages/Lesson'))
 const Games = lazy(() => import('./pages/Games'))
 const Lab = lazy(() => import('./pages/Lab'))
 const Exams = lazy(() => import('./pages/Exams'))
@@ -38,7 +39,7 @@ class Boundary extends Component<{ children: ReactNode }, { error: Error | null 
   render() {
     if (this.state.error)
       return (
-        <div className="card-pad mx-auto max-w-lg text-center">
+        <div className="card-pad mx-auto mt-10 max-w-lg text-center">
           <div className="text-4xl">🛠️</div>
           <h1 className="mt-2 text-xl font-bold">Algo salió mal en esta pantalla</h1>
           <p className="mt-1 text-sm text-muted">{this.state.error.message}</p>
@@ -58,7 +59,8 @@ export default function App() {
         <Boundary>
           <Suspense fallback={<Loading />}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Path />} />
+              <Route path="/leccion/:unitId/:node" element={<Lesson />} />
               <Route path="/aprender" element={<LearnMap />} />
               <Route path="/area/:id" element={<AreaPage />} />
               <Route path="/unidad/:id" element={<UnitPage />} />

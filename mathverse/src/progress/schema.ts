@@ -52,6 +52,7 @@ export interface Settings {
   reducedMotion: boolean
   fontScale: number
   showTimer: boolean
+  sound: boolean
   name: string
 }
 
@@ -79,9 +80,9 @@ export interface State {
 }
 
 export function defaultSettings(): Settings {
-  const prefersLight = typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: light)').matches
+  const prefersDark = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-color-scheme: dark)').matches
   const reduced = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  return { theme: prefersLight ? 'light' : 'dark', reducedMotion: reduced, fontScale: 1, showTimer: true, name: '' }
+  return { theme: prefersDark ? 'dark' : 'light', reducedMotion: reduced, fontScale: 1, showTimer: true, sound: true, name: '' }
 }
 
 export function defaultState(now = Date.now()): State {
@@ -139,6 +140,7 @@ export function sanitize(raw: unknown): State {
     reducedMotion: bool(st.reducedMotion, d.settings.reducedMotion),
     fontScale: num(st.fontScale, 1, 0.85, 1.4),
     showTimer: bool(st.showTimer, true),
+    sound: bool(st.sound, true),
     name: str(st.name).slice(0, 40),
   }
   if (isObj(raw.concepts)) {

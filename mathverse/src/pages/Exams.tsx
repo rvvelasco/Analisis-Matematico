@@ -57,7 +57,7 @@ function Config({ onStart }: { onStart: (c: Cfg) => void }) {
   const units = UNITS.filter((u) => cfg.areas.includes(u.area))
   return (
     <div>
-      <PageHeader title="Arena de parciales" subtitle="Simulacros con tiempo y sin pistas. La corrección llega al final, con el detalle de cada ejercicio y de cada concepto." />
+      <PageHeader title="Exámenes de práctica" subtitle="Como un parcial de verdad: con tiempo y sin pistas. Al final ves qué hiciste bien y qué conviene repasar." />
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <section className="grid content-start gap-4">
           <div className="grid gap-3 sm:grid-cols-2">
@@ -70,11 +70,11 @@ function Config({ onStart }: { onStart: (c: Cfg) => void }) {
             ))}
           </div>
           <div className="card-pad grid gap-4">
-            <h2 className="text-lg font-semibold">Armá tu simulacro</h2>
-            <div className="grid gap-1.5"><span className="label">Áreas</span>
+            <h2 className="text-lg font-semibold">Armá tu examen</h2>
+            <div className="grid gap-1.5"><span className="label">Temas</span>
               <div className="flex flex-wrap gap-2">{AREAS.map((a) => <button key={a.id} type="button" aria-pressed={cfg.areas.includes(a.id)} className={'btn btn-sm border ' + (cfg.areas.includes(a.id) ? 'border-brand bg-brand/15' : 'border-line bg-surface2/50 text-muted')} onClick={() => setCfg((c) => ({ ...c, units: [], areas: c.areas.includes(a.id) ? (c.areas.length > 1 ? c.areas.filter((x) => x !== a.id) : c.areas) : [...c.areas, a.id] }))}>{a.name}</button>)}</div>
             </div>
-            <div className="grid gap-1.5"><span className="label">Unidades (opcional; si no elegís, entran todas)</span>
+            <div className="grid gap-1.5"><span className="label">Unidades (si no elegís ninguna, entran todas)</span>
               <div className="flex flex-wrap gap-1.5">{units.map((u) => <button key={u.id} type="button" aria-pressed={cfg.units.includes(u.id)} className={'chip cursor-pointer ' + (cfg.units.includes(u.id) ? '!border-brand !text-ink' : '')} onClick={() => setCfg((c) => ({ ...c, units: c.units.includes(u.id) ? c.units.filter((x) => x !== u.id) : [...c.units, u.id] }))}>{u.id.toUpperCase()} · {u.title}</button>)}</div>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -86,8 +86,8 @@ function Config({ onStart }: { onStart: (c: Cfg) => void }) {
           </div>
         </section>
         <aside className="card-pad grid content-start gap-3">
-          <h2 className="text-lg font-semibold">Historial</h2>
-          {s.exams.length === 0 ? <p className="text-sm text-muted">Todavía no rendiste simulacros.</p> : (
+          <h2 className="text-lg font-semibold">Exámenes anteriores</h2>
+          {s.exams.length === 0 ? <p className="text-sm text-muted">Todavía no hiciste ningún examen de práctica.</p> : (
             <ul className="grid gap-2">{s.exams.slice().reverse().slice(0, 8).map((e, i) => (
               <li key={i} className="rounded-xl border border-line bg-surface2/40 p-3 text-sm">
                 <div className="flex justify-between gap-2"><span className="font-medium">{e.title}</span><b className={e.score / e.total >= 0.6 ? 'text-ok' : 'text-bad'}>{Math.round((e.score / e.total) * 100)}%</b></div>
@@ -156,7 +156,7 @@ function Result({ p, onAgain }: { p: Extract<Phase, { kind: 'result' }>; onAgain
   const weak = Object.entries(byConcept).filter(([, v]) => v.ok / v.total < 0.6)
   return (
     <div>
-      <PageHeader title="Resultado del simulacro" subtitle={p.cfg.title} />
+      <PageHeader title="Resultado del examen" subtitle={p.cfg.title} />
       <div className="grid gap-5 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <aside className="grid content-start gap-4">
           <div className="card-pad text-center">
@@ -165,12 +165,12 @@ function Result({ p, onAgain }: { p: Extract<Phase, { kind: 'result' }>; onAgain
             <div className="mt-2 chip">{pct >= 0.6 ? 'Aprobado (≥ 60%)' : 'No alcanzó el 60%'}</div>
           </div>
           <div className="card-pad grid gap-2">
-            <div className="label">Por concepto</div>
+            <div className="label">Por tema</div>
             {Object.entries(byConcept).map(([c, v]) => <div key={c} className="grid gap-1 text-sm"><div className="flex justify-between gap-2"><span>{conceptName(c)}</span><span className="text-muted">{fmtScore(v.ok)}/{v.total}</span></div><ProgressBar value={v.ok / v.total} color={v.ok / v.total >= 0.6 ? 'ok' : 'bad'} label={conceptName(c)} /></div>)}
           </div>
           {weak.length > 0 && (
             <div className="card-pad grid gap-2">
-              <div className="label">Para reforzar</div>
+              <div className="label">Para repasar</div>
               {weak.map(([c]) => <Link key={c} to={`/unidad/${conceptUnit(c)}?etapa=practica`} className="btn-ghost btn-sm justify-start">{conceptName(c)} →</Link>)}
             </div>
           )}

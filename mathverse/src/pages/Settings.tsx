@@ -4,8 +4,8 @@ import { PageHeader } from '../ui/Layout'
 
 function Toggle({ checked, onChange, label, desc }: { checked: boolean; onChange: (v: boolean) => void; label: string; desc?: string }) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-line bg-surface2/40 p-4">
-      <span><span className="block font-medium">{label}</span>{desc && <span className="block text-sm text-muted">{desc}</span>}</span>
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border-2 border-line p-4">
+      <span><span className="block font-extrabold">{label}</span>{desc && <span className="block text-sm text-muted">{desc}</span>}</span>
       <input type="checkbox" role="switch" className="h-5 w-9 cursor-pointer accent-[rgb(var(--brand))]" checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </label>
   )
@@ -35,7 +35,7 @@ export default function Settings() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader title="Configuración" />
+      <PageHeader title="Configuración" subtitle="Cambiá cómo se ve y se escucha la app." />
       <div className="grid gap-6">
         <section className="card-pad grid gap-3">
           <h2 className="text-lg font-semibold">Perfil</h2>
@@ -44,10 +44,11 @@ export default function Settings() {
         <section className="card-pad grid gap-3">
           <h2 className="text-lg font-semibold">Apariencia y accesibilidad</h2>
           <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tema">
-            {(['dark', 'light'] as const).map((t) => <button key={t} type="button" role="radio" aria-checked={s.settings.theme === t} onClick={() => updateSettings({ theme: t })} className={'btn border ' + (s.settings.theme === t ? 'border-brand bg-brand/15' : 'border-line bg-surface2/50')}>{t === 'dark' ? '🌙 Oscuro' : '☀️ Claro'}</button>)}
+            {(['light', 'dark'] as const).map((t) => <button key={t} type="button" role="radio" aria-checked={s.settings.theme === t} onClick={() => updateSettings({ theme: t })} className={'choice justify-center font-extrabold ' + (s.settings.theme === t ? 'choice-on' : '')}>{t === 'dark' ? '🌙 Oscuro' : '☀️ Claro'}</button>)}
           </div>
+          <Toggle checked={s.settings.sound} onChange={(v) => updateSettings({ sound: v })} label="Sonidos" desc="Un sonidito cuando acertás o te equivocás." />
           <Toggle checked={s.settings.reducedMotion} onChange={(v) => updateSettings({ reducedMotion: v })} label="Reducir animaciones" desc="Desactiva transiciones y movimientos." />
-          <Toggle checked={s.settings.showTimer} onChange={(v) => updateSettings({ showTimer: v })} label="Mostrar tiempo estimado" desc="Indica cuántos minutos lleva cada ejercicio." />
+          <Toggle checked={s.settings.showTimer} onChange={(v) => updateSettings({ showTimer: v })} label="Mostrar tiempo estimado" desc="Muestra cuántos minutos lleva, más o menos, cada ejercicio." />
           <label className="grid gap-2 rounded-xl border border-line bg-surface2/40 p-4">
             <span className="flex justify-between font-medium"><span>Tamaño del texto</span><span className="font-mono text-brand">{Math.round(s.settings.fontScale * 100)}%</span></span>
             <input type="range" min={0.85} max={1.4} step={0.05} value={s.settings.fontScale} onChange={(e) => updateSettings({ fontScale: Number(e.target.value) })} className="accent-[rgb(var(--brand))]" aria-label="Tamaño del texto" />
@@ -65,7 +66,7 @@ export default function Settings() {
           {msg && <p className={'text-sm ' + (msg.ok ? 'text-ok' : 'text-bad')} role="status">{msg.text}</p>}
           <div className="mt-2 rounded-xl border border-bad/40 p-4">
             <div className="font-medium text-bad">Borrar todo el progreso</div>
-            <p className="text-sm text-muted">Se pierden XP, rachas, dominio y logros. La configuración se mantiene.</p>
+            <p className="text-sm text-muted">Se pierden los puntos, la racha, lo aprendido y los logros. La configuración se mantiene.</p>
             {!confirmReset ? <button type="button" className="btn-ghost mt-2 !border-bad/50" onClick={() => setConfirmReset(true)}>Borrar progreso…</button> : (
               <div className="mt-2 flex flex-wrap gap-2"><button type="button" className="btn mt-0 bg-bad text-white" onClick={() => { resetProgress(); setConfirmReset(false); setMsg({ ok: true, text: 'Progreso borrado.' }) }}>Sí, borrar todo</button><button type="button" className="btn-ghost" onClick={() => setConfirmReset(false)}>Cancelar</button></div>
             )}
@@ -73,7 +74,7 @@ export default function Settings() {
         </section>
         <section className="card-pad text-sm text-muted">
           <h2 className="mb-2 text-lg font-semibold text-ink">Acerca de MathVerse</h2>
-          <p>Versión 1.0 · Funciona sin conexión una vez cargada. Las fórmulas se dibujan con KaTeX. Los ejercicios se generan a partir de plantillas con parámetros controlados y se corrigen comparando expresiones por equivalencia matemática (no por texto).</p>
+          <p>Versión 1.0 · Funciona sin conexión una vez cargada. Los ejercicios se arman solos con números distintos cada vez, y se corrigen fijándose si tu respuesta vale lo mismo que la correcta (aunque la escribas distinto).</p>
         </section>
       </div>
     </div>
