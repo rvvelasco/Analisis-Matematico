@@ -64,6 +64,10 @@ function fillValues(ex: Extract<ExerciseBody, { kind: 'fill' }>): number[] {
 }
 function numAns(ex: ExerciseBody): number {
   if (ex.kind === 'numeric') return ex.answer
+  // problema por partes: la última parte numérica es el resultado final
+  if (ex.kind === 'multi') { const p = [...ex.parts].reverse().find((q) => q.kind === 'numeric'); if (p) return numAns(p) }
+  // "cazá el error": el valor correcto es la corrección propuesta
+  if (ex.kind === 'errorStep' && ex.fix) return evaluate(parse(ex.fix.answer), {})
   throw new Error('no numérico')
 }
 

@@ -35,6 +35,7 @@ export const INTEGRALES_UNITS: Unit[] = [
       visual: { widget: { type: 'riemann', f: 'x^2', a: 0, b: 2, y: [-0.5, 4.5] }, caption: 'Cambiá la cantidad de rectángulos y el método. Compará la suma con el valor exacto (8/3).', tasks: ['¿Con cuántos rectángulos el error es menor que 0,01?', '¿Qué método converge más rápido?'] },
       theory: [
         { title: 'Suma de Riemann', text: '', formulas: ['S_n = \\sum_{i=1}^{n} f(x_i^*)\\,\\Delta x', '\\int_a^b f(x)\\,dx = \\lim_{n\\to\\infty} S_n'] },
+        { title: 'Área como límite de una suma', text: 'Si $f$ es **continua y no negativa** en $[a, b]$, el área entre la curva, el eje $x$ y las rectas $x = a$, $x = b$ es el límite de las sumas de Riemann. Si $f$ toma valores negativos, el mismo límite existe pero da un área **con signo** (lo que está debajo del eje resta).', formulas: ['A = \\int_a^b f(x)\\,dx = \\lim_{n\\to+\\infty}\\sum_{k=1}^{n} f(x_k)\\,\\Delta_k x \\quad (f \\ge 0)'] },
         { title: 'Trapecios', text: '', formulas: ['T_n = \\frac{\\Delta x}{2}\\left[f(x_0) + 2f(x_1) + \\dots + 2f(x_{n-1}) + f(x_n)\\right]'] },
       ],
       example: { prompt: 'Aproximá $\\int_0^2 x^2dx$ con 2 rectángulos (extremo derecho).', steps: [{ text: '$\\Delta x = 1$, alturas $f(1) = 1$, $f(2) = 4$.' }, { text: '$S = (1 + 4)\\cdot 1 = 5$ (el exacto es $8/3 \\approx 2{,}67$: sobreestima).' }] },
@@ -94,6 +95,7 @@ export const INTEGRALES_UNITS: Unit[] = [
       visual: { widget: { type: 'derivGraph', f: '(x^2 + 1)^3/6', x: [-2, 2], y: [-1, 8] }, caption: 'Arriba una primitiva; abajo su derivada x(x²+1)², el integrando original.', tasks: ['Verificá derivando con la cadena.'] },
       theory: [
         { title: 'Método', text: '', formulas: ["\\int f(u(x))\\,u'(x)\\,dx = \\int f(u)\\,du"] },
+        { title: 'Cambio de variable en integrales definidas', text: 'Si $x$ va de $a$ a $b$, la nueva variable $u = g(x)$ va de $g(a)$ a $g(b)$. Hay dos caminos correctos: (1) cambiar los límites y evaluar directamente en $u$, o (2) encontrar la primitiva, volver a $x$ y evaluar con los límites originales. El error típico es mezclar: primitiva en $u$ con límites de $x$.', formulas: ["\\int_a^b f(g(x))\\,g'(x)\\,dx = \\int_{g(a)}^{g(b)} f(u)\\,du", '\\text{Ej.: } \\int_0^1 2x(x^2+1)^2dx = \\int_1^2 u^2\\,du = \\tfrac{8 - 1}{3} = \\tfrac73'] },
       ],
       example: { prompt: 'Calculá $\\int x\\,e^{x^2}dx$.', steps: [{ text: '$u = x^2$, $du = 2x\\,dx \\Rightarrow x\\,dx = \\frac{du}{2}$.' }, { text: '', tex: '\\int e^u\\frac{du}{2} = \\frac{e^u}{2} + C = \\frac{e^{x^2}}{2} + C' }] },
       summary: ['Buscar "función + su derivada".', 'Compensar constantes.', 'Volver a $x$.'],
