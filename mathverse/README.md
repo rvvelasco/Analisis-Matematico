@@ -57,7 +57,8 @@ y copiá el contenido de `dist\` a la carpeta que sirva tu hosting. En este repo
 
 ### Contenido
 - **5 áreas, 43 unidades**, ordenadas pedagógicamente con prerrequisitos (Funciones → Matrices → Vectores → Derivadas → Integrales; Derivadas e Integrales son las más completas: 11 y 9 unidades).
-- **Lecciones en 10 etapas**: Descubrí · Entendé · Visualizá · Teoría · Ejemplo resuelto · Practicá · Desafiá tu intuición · Jugá · Demostrá · Repasá.
+- **Camino de aprendizaje** (estilo app para aprender idiomas): cada unidad es una serie de paradas que se abren en orden — 📖 La idea (explicación en diapositivas con la mascota, dibujos y un ejemplo paso a paso) · ✏️ Practicá · 🧠 Desafío · 🎮 A jugar · 🏆 Prueba final · 🎁 Repaso.
+- **Guía de cada unidad** con todo el tema junto (pregunta inicial, la idea, visualización, lo importante, ejemplo, práctica libre con elección de nivel, desafío, juego, prueba final y resumen).
 - **138 plantillas de ejercicios** con parámetros controlados (miles de variantes) en **6 niveles**: Explorador, Aprendiz, Analista, Experto, Parcial y Final. Cada ejercicio explica **por qué pertenece a su nivel**.
 - **Tipos de ejercicio**: opción múltiple, verdadero/falso con justificación, numérico, expresión algebraica, completar casilleros, ordenar pasos, relacionar, matriz, encontrar el error (con corrección), problemas con partes (tipo parcial/final) y desafíos con controles deslizantes.
 
@@ -81,7 +82,9 @@ Familias con parámetros, ondas, función inversa, límites, secante → tangent
 - Persistencia local versionada y validada; **exportar/importar** en JSON.
 
 ### Diseño
-Modo oscuro y claro, navegación lateral (escritorio) e inferior (celular), accesible con teclado, textos alternativos, tamaño de letra configurable y movimiento reducido.
+- Estilo de app para aprender: colores vivos, botones grandes "apretables", letra redondeada (Nunito), **Pi**, la mascota, y textos en lenguaje simple.
+- **Lecciones a pantalla completa**: barra de avance, ❤️ 5 vidas en la práctica, botón **COMPROBAR**, franja verde ("¡Muy bien!") o roja (con la respuesta correcta y "Ver cómo se resuelve"), "No sé", pistas con la mascota, los errores vuelven al final, racha de aciertos, sonidos (se pueden apagar) y pantalla final con puntos, aciertos y tiempo.
+- Modo claro (por defecto) y oscuro, navegación lateral (escritorio) e inferior (celular), accesible con teclado, tamaño de letra configurable y movimiento reducido.
 
 ---
 
@@ -108,6 +111,7 @@ mathverse/
    │  └─ sliderChecks.ts      criterios de los desafíos con controles
    ├─ content/                BANCO DE CONTENIDOS
    │  ├─ curriculum.ts        áreas, unidades, prerrequisitos y conceptos
+   │  ├─ path.ts              paradas del camino de aprendizaje y su orden
    │  ├─ lessons/*.ts         lecciones (10 etapas) por área
    │  └─ templates/*.ts       plantillas de ejercicios por área
    ├─ progress/               PROGRESO, GAMIFICACIÓN Y PERSISTENCIA
@@ -116,10 +120,10 @@ mathverse/
    │  ├─ gamification.ts      XP, niveles, logros, misiones
    │  └─ store.ts             almacén (localStorage) y acciones
    ├─ viz/                    VISUALIZACIONES
-   ├─ exercise/               reproductor de ejercicios y controles de respuesta
+   ├─ exercise/               reproductor de lecciones (Session), ejercicios sueltos y controles de respuesta
    ├─ games/                  los 10 juegos
    ├─ pages/                  pantallas
-   └─ ui/                     diseño: gráfico SVG, KaTeX, layout, íconos
+   └─ ui/                     diseño: gráfico SVG, KaTeX, layout, íconos, mascota y sonidos
 ```
 
 ## Pruebas

@@ -33,7 +33,7 @@ export default function Daily() {
         </div>
       ) : !playing ? (
         <div className="card-pad grid gap-3">
-          <p>5 ejercicios, uno de cada área, de nivel Aprendiz a Experto. Son los mismos para todos hoy. Podés usar pistas, pero el puntaje registrado cuenta los aciertos.</p>
+          <p className="font-semibold">5 ejercicios, uno de cada tema, de fáciles a difíciles. Hoy son los mismos para todos. Podés usar pistas, pero solo cuentan los que resolvés sin ayuda.</p>
           <div><button type="button" className="btn-primary" onClick={() => setPlaying(true)}>Empezar el desafío</button></div>
         </div>
       ) : (

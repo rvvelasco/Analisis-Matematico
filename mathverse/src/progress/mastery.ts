@@ -107,18 +107,18 @@ export interface Recommendation {
 export function recommendations(s: State, now = Date.now(), today = dayKey(now)): Recommendation[] {
   const out: Recommendation[] = []
   const due = s.errors.filter((e) => e.due <= today)
-  if (due.length) out.push({ kind: 'repasar', unitId: due[0].concept.split('.')[0], concept: due[0].concept, title: `Repasar ${due.length} error${due.length > 1 ? 'es' : ''} pendiente${due.length > 1 ? 's' : ''}`, reason: 'Volver a un ejercicio que fallaste, en el momento justo, es la forma más eficiente de fijarlo.' })
+  if (due.length) out.push({ kind: 'repasar', unitId: due[0].concept.split('.')[0], concept: due[0].concept, title: `Repasar ${due.length} error${due.length > 1 ? 'es' : ''} pendiente${due.length > 1 ? 's' : ''}`, reason: 'Volver a hacer lo que te salió mal es la mejor forma de que no se te olvide.' })
   // conceptos practicados con dominio bajo
   const weak = Object.entries(s.concepts)
     .filter(([, c]) => c.attempts >= 2 && effectiveMastery(c, now) < 0.5)
     .sort((a, b) => effectiveMastery(a[1], now) - effectiveMastery(b[1], now))
-  for (const [id] of weak.slice(0, 2)) out.push({ kind: 'reforzar', unitId: id.split('.')[0], concept: id, title: `Reforzar: ${conceptName(id)}`, reason: 'Lo practicaste, pero el dominio estimado todavía es bajo.' })
+  for (const [id] of weak.slice(0, 2)) out.push({ kind: 'reforzar', unitId: id.split('.')[0], concept: id, title: `Reforzar: ${conceptName(id)}`, reason: 'Ya lo practicaste, pero todavía te cuesta un poco.' })
   // unidad en curso
   const inProgress = UNITS.find((u) => { const st = unitStatus(s, u, now); return st === 'vista' || st === 'practicada' })
-  if (inProgress) out.push({ kind: 'continuar', unitId: inProgress.id, title: `Seguir con ${inProgress.title}`, reason: 'Ya empezaste esta unidad; dominarla desbloquea las siguientes.' })
+  if (inProgress) out.push({ kind: 'continuar', unitId: inProgress.id, title: `Seguir con ${inProgress.title}`, reason: 'Ya la empezaste. Terminarla te abre los temas que siguen.' })
   // próxima disponible
   const next = UNITS.find((u) => unitStatus(s, u, now) === 'disponible')
-  if (next) out.push({ kind: 'nueva', unitId: next.id, title: `Empezar ${next.title}`, reason: next.prereqs.length ? 'Ya tenés los prerrequisitos.' : 'Es un buen punto de partida.' })
+  if (next) out.push({ kind: 'nueva', unitId: next.id, title: `Empezar ${next.title}`, reason: next.prereqs.length ? 'Ya sabés lo necesario para empezarla.' : 'Es un buen lugar para empezar.' })
   return out.slice(0, 4)
 }
 

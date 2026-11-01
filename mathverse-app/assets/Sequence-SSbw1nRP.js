@@ -1,0 +1,1 @@
+import{c as e}from"./Layout-DMCLTiSk.js";import{t}from"./Session-OzUZkEAT.js";var n=e();function r({items:e,allowHelp:r=!0,source:i,onFinish:a,finishView:o,title:s}){return(0,n.jsx)(t,{embedded:!0,items:e,allowHelp:r,source:i,title:s,onFinish:a,endView:o,endTitle:e=>`${e.filter(e=>e.score>=.999).length} de ${e.length} bien`})}export{r as t};

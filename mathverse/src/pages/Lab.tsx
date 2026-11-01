@@ -31,7 +31,7 @@ export default function Lab() {
   const groups = [...new Set(ITEMS.map((x) => x.group))]
   return (
     <div>
-      <PageHeader title="Laboratorio" subtitle="Visualizaciones interactivas para experimentar sin miedo a equivocarte. Nada de lo que hagas acá afecta tu progreso." right={<Link to="/juegos/sandbox" className="btn-ghost">🪐 Abrir el Sandbox</Link>} />
+      <PageHeader title="Laboratorio" subtitle="Dibujos que podés mover para ver cómo funciona cada cosa. Acá no hay respuestas mal: nada de esto cuenta para tu progreso." right={<Link to="/juegos/sandbox" className="btn-ghost">🪐 Abrir el Sandbox</Link>} />
       <div className="grid gap-5 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <nav aria-label="Visualizaciones" className="grid content-start gap-4">
           {groups.map((g) => (
