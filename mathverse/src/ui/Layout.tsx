@@ -130,7 +130,7 @@ export function Layout({ children }: { children: ReactNode }) {
   useEffect(() => { window.scrollTo({ top: 0 }) }, [loc.pathname])
 
   // las lecciones se muestran a pantalla completa, sin menús
-  if (loc.pathname.startsWith('/leccion')) return <><Toasts />{children}</>
+  if (loc.pathname.startsWith('/leccion') || loc.pathname.startsWith('/parcial/practicar')) return <><Toasts />{children}</>
   const rail = loc.pathname === '/' || loc.pathname === '/repaso'
 
   return (
@@ -141,7 +141,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r-2 border-line bg-bg px-4 py-6 lg:flex">
         <div className="px-3"><Logo /></div>
         <nav className="mt-8 grid gap-1.5" aria-label="Principal">
-          {[...NAV, { to: '/configuracion', label: 'Más', icon: 'settings' as IconName, color: 'text-muted' }].map((n) => (
+          {[...NAV.slice(0, 1), { to: '/parcial', label: 'Parcial', icon: 'exam' as IconName, color: 'text-bad' }, ...NAV.slice(1), { to: '/configuracion', label: 'Más', icon: 'settings' as IconName, color: 'text-muted' }].map((n) => (
             <NavLink key={n.to} to={n.to} end={n.to === '/'} className={({ isActive }) => 'flex items-center gap-4 rounded-2xl border-2 px-4 py-2.5 text-[0.95rem] font-extrabold uppercase tracking-wide transition ' + (isActive ? 'border-brand2/60 bg-selbg text-brand2' : 'border-transparent text-muted hover:bg-surface2')}>
               <Icon name={n.icon} className={'h-7 w-7 ' + n.color} />{n.label}
             </NavLink>

@@ -81,7 +81,7 @@ export type FillPart = string | Blank
 export type ExerciseBody =
   | { kind: 'mc'; options: MCOption[] }
   | { kind: 'tf'; statement: string; answer: boolean; reasons: MCOption[] }
-  | { kind: 'numeric'; answer: number; tol?: { abs?: number; rel?: number }; unit?: string; wrong?: { value: number; why: string; errorTag?: string }[]; answerText?: string }
+  | { kind: 'numeric'; answer: number; tol?: { abs?: number; rel?: number }; measure?: string; wrong?: { value: number; why: string; errorTag?: string }[]; answerText?: string }
   | {
       kind: 'expression'
       answer: string

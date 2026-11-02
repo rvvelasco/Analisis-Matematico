@@ -141,7 +141,7 @@ function NumericInput({ ex, draft, onChange, disabled, feedback }: P<'numeric'>)
   return (
     <div className="flex items-center gap-2">
       <input className={'input max-w-xs text-lg ' + verdictRing(feedback?.verdict)} inputMode="text" autoComplete="off" spellCheck={false} aria-label="Tu respuesta (número)" placeholder="Escribí un número. Ej: -3/4, 2.5, sqrt(2), pi" value={draft.text} disabled={disabled} onChange={(e) => onChange({ kind: 'numeric', text: e.target.value })} />
-      {ex.unit && <span className="text-muted">{ex.unit}</span>}
+      {ex.measure && <span className="font-bold text-muted">{ex.measure}</span>}
     </div>
   )
 }

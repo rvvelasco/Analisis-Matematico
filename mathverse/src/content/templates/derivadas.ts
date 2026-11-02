@@ -109,7 +109,7 @@ export const DERIVADAS: Template[] = [
         solution: [{ text: '', tex: `v_m = \\frac{${s(t2)} - ${s(t1)}}{${t2 - t1}} = ${fmt(vm)}\\ \\text{m/s}` }],
         explanation: 'La velocidad media es la tasa de variación media de la posición. La velocidad **instantánea** es el límite cuando el intervalo se achica: la derivada.',
         noCalc: true,
-      }, { kind: 'numeric', answer: vm, unit: 'm/s', wrong: [{ value: s(t2) - s(t1), why: 'Ese es el desplazamiento; falta dividir por el tiempo.', errorTag: 'tvm-sin-dividir' }] })
+      }, { kind: 'numeric', answer: vm, measure: 'm/s', wrong: [{ value: s(t2) - s(t1), why: 'Ese es el desplazamiento; falta dividir por el tiempo.', errorTag: 'tvm-sin-dividir' }] })
     },
   },
 
@@ -649,7 +649,7 @@ export const DERIVADAS: Template[] = [
           explanation: 'Optimizar = escribir la cantidad a maximizar en función de **una** variable (usando la restricción) y buscar sus puntos críticos.',
           commonErrors: ['Cercar los cuatro lados (da un cuadrado, que no es la respuesta).'],
           estMinutes: 6, noCalc: true,
-        }, { kind: 'numeric', answer: x * y, unit: 'm²', wrong: [{ value: (P / 4) ** 2, why: 'Ese sería el cuadrado de perímetro ' + P + ', pero el lado del río **no** se cerca.', errorTag: 'modelado' }] })
+        }, { kind: 'numeric', answer: x * y, measure: 'm²', wrong: [{ value: (P / 4) ** 2, why: 'Ese sería el cuadrado de perímetro ' + P + ', pero el lado del río **no** se cerca.', errorTag: 'modelado' }] })
       }
       const L = r.pick([12, 18, 24, 30])
       const x = L / 6
@@ -660,7 +660,7 @@ export const DERIVADAS: Template[] = [
         solution: [{ text: '', tex: `V(x) = x(${L} - 2x)^2, \\quad V'(x) = (${L} - 2x)^2 - 4x(${L} - 2x) = (${L} - 2x)(${L} - 6x)` }, { text: `Críticos: $x = ${L / 2}$ (caja sin base: se descarta) y $x = ${x}$.` }, { text: `$V'$ pasa de $+$ a $-$ en $x = ${x}$: máximo. $V(${x}) = ${x * (L - 2 * x) ** 2}$ cm³.` }],
         explanation: 'Siempre hay que chequear que la solución tenga sentido en el problema (dominio físico) y que sea realmente un máximo.',
         estMinutes: 10, noCalc: true,
-      }, { kind: 'numeric', answer: x, unit: 'cm', wrong: [{ value: L / 2, why: `Con $x = ${L / 2}$ la base mide 0: es un mínimo (volumen 0), no un máximo.`, errorTag: 'solucion-sin-sentido' }] })
+      }, { kind: 'numeric', answer: x, measure: 'cm', wrong: [{ value: L / 2, why: `Con $x = ${L / 2}$ la base mide 0: es un mínimo (volumen 0), no un máximo.`, errorTag: 'solucion-sin-sentido' }] })
     },
   },
   {

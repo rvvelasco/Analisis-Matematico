@@ -58,6 +58,12 @@ export default function Path() {
         ))}
       </nav>
 
+      <Link to="/parcial" className="mb-6 flex items-center gap-3 rounded-2xl border-2 border-bad/40 bg-badbg p-4 anim-up hover:brightness-[1.02]">
+        <span className="text-3xl" aria-hidden>📝</span>
+        <span className="min-w-0 flex-1"><span className="block font-black text-bad">Parcial del jueves</span><span className="block text-sm font-semibold text-ink/80">Los 12 ejercicios del modelo, explicados y para practicar.</span></span>
+        <span className="btn-danger btn-sm shrink-0">Ir</span>
+      </Link>
+
       {isNew && (
         <div className="mb-6 anim-up">
           <Speech mood="happy" size={80}>

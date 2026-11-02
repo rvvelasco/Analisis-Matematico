@@ -153,7 +153,7 @@ export const VECTORES: Template[] = [
         hints: ['$\\cos\\theta = \\dfrac{\\vec u\\cdot\\vec v}{|\\vec u|\\,|\\vec v|}$', `$\\vec u\\cdot\\vec v = ${fmt(dot(q.u, q.v))}$.`, 'Después aplicá $\\arccos$ (en grados).'],
         solution: [{ text: '', tex: `\\cos\\theta = \\frac{${fmt(dot(q.u, q.v))}}{${fmt(norm(q.u), 3)}\\cdot ${fmt(norm(q.v), 3)}} \\Rightarrow \\theta \\approx ${fmt(deg, 2)}°` }],
         explanation: 'La fórmula sale de despejar $\\cos\\theta$ en $\\vec u\\cdot\\vec v = |\\vec u||\\vec v|\\cos\\theta$.',
-      }, { kind: 'numeric', answer: deg, tol: { abs: 0.6 }, unit: '°', wrong: Math.abs(deg - 90) > 1 ? [{ value: 180 - deg, why: 'Revisá el signo del producto escalar: el coseno negativo da un ángulo obtuso.', errorTag: 'signo' }] : [] })
+      }, { kind: 'numeric', answer: deg, tol: { abs: 0.6 }, measure: '°', wrong: Math.abs(deg - 90) > 1 ? [{ value: 180 - deg, why: 'Revisá el signo del producto escalar: el coseno negativo da un ángulo obtuso.', errorTag: 'signo' }] : [] })
     },
   },
   {

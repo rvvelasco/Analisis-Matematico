@@ -56,7 +56,7 @@ export const INTEGRALES: Template[] = [
           hints: ['Área de un rectángulo = base × altura.', 'La base es el tiempo y la altura, la velocidad.'],
           solution: [{ text: '', tex: `${t1}\\ \\text{h}\\cdot ${v1}\\ \\tfrac{\\text{km}}{\\text{h}} = ${v1 * t1}\\ \\text{km}` }, { text: 'El área bajo la velocidad es la **distancia recorrida**.' }],
           explanation: 'Esta es la idea de fondo de la integral: **acumular** una tasa (km/h) a lo largo del tiempo da una cantidad total (km).',
-        }, { kind: 'numeric', answer: v1 * t1, unit: 'km', wrong: [{ value: v1 + t1, why: 'Sumaste base y altura: el área de un rectángulo es base **por** altura.' }] })
+        }, { kind: 'numeric', answer: v1 * t1, measure: 'km', wrong: [{ value: v1 + t1, why: 'Sumaste base y altura: el área de un rectángulo es base **por** altura.' }] })
       }
       const v2 = r.pick([20, 30, 50, 70]), t2 = r.pick([1, 2])
       const d = v1 * t1 + v2 * t2
@@ -67,7 +67,7 @@ export const INTEGRALES: Template[] = [
         hints: ['Partí el gráfico en dos rectángulos.', 'Calculá cada área y sumalas.'],
         solution: [{ text: '', tex: `${v1}\\cdot ${t1} + ${v2}\\cdot ${t2} = ${d}\\ \\text{km}` }],
         explanation: 'Cuando la velocidad cambia, se suman las áreas de cada tramo. Si cambia todo el tiempo, se parte en muchísimos tramos chiquitos: eso es una integral.',
-      }, { kind: 'numeric', answer: d, unit: 'km', wrong: [{ value: v1 + v2, why: 'Sumaste velocidades: hay que multiplicar cada una por su tiempo.' }, { value: ((v1 + v2) / 2) * (t1 + t2), why: 'Promediaste las velocidades sin tener en cuenta cuánto tiempo duró cada tramo.', errorTag: 'promedio' }] })
+      }, { kind: 'numeric', answer: d, measure: 'km', wrong: [{ value: v1 + v2, why: 'Sumaste velocidades: hay que multiplicar cada una por su tiempo.' }, { value: ((v1 + v2) / 2) * (t1 + t2), why: 'Promediaste las velocidades sin tener en cuenta cuánto tiempo duró cada tramo.', errorTag: 'promedio' }] })
     },
   },
   {
@@ -618,7 +618,7 @@ export const INTEGRALES: Template[] = [
           hints: ['La distancia es la integral de la velocidad (si es positiva).', `$\\int_0^{${T0}}(${a}t + ${b})\\,dt$`],
           solution: [{ text: '', tex: `\\left[\\tfrac{${a}t^2}{2} + ${b}t\\right]_0^{${T0}} = ${fmt(dist)}\\ \\text{m}` }],
           explanation: 'Integrar la velocidad acumula los pequeños desplazamientos $v\\,dt$.',
-        }, { kind: 'numeric', answer: dist, unit: 'm', wrong: [{ value: a * T0 + b, why: 'Esa es la velocidad final, no la distancia.' }, { value: a, why: 'Esa es la aceleración (derivaste en lugar de integrar).', errorTag: 'derivo-en-vez-de-integrar' }] })
+        }, { kind: 'numeric', answer: dist, measure: 'm', wrong: [{ value: a * T0 + b, why: 'Esa es la velocidad final, no la distancia.' }, { value: a, why: 'Esa es la aceleración (derivaste en lugar de integrar).', errorTag: 'derivo-en-vez-de-integrar' }] })
       }
       const c = r.int(1, 3), T0 = c + r.int(1, 3)
       const disp = (T0 * T0) / 2 - c * T0
@@ -631,7 +631,7 @@ export const INTEGRALES: Template[] = [
         solution: [{ text: '', tex: `\\int_0^{${c}}|t - ${c}|dt + \\int_{${c}}^{${T0}}(t - ${c})dt = ${fmt((c * c) / 2)} + ${fmt(((T0 - c) ** 2) / 2)} = ${fmt(dist)}` }, { text: `(El desplazamiento neto es ${fmt(disp)} m.)` }],
         explanation: 'El desplazamiento es $\\int v$ (con signo); la distancia recorrida es $\\int |v|$ (siempre suma).',
         estMinutes: 7,
-      }, { kind: 'numeric', answer: dist, unit: 'm', wrong: disp !== dist ? [{ value: disp, why: 'Ese es el **desplazamiento** (con signo). La distancia recorrida suma también lo que retrocedió.', errorTag: 'desplazamiento-vs-distancia' }] : [] })
+      }, { kind: 'numeric', answer: dist, measure: 'm', wrong: disp !== dist ? [{ value: disp, why: 'Ese es el **desplazamiento** (con signo). La distancia recorrida suma también lo que retrocedió.', errorTag: 'desplazamiento-vs-distancia' }] : [] })
     },
   },
   {

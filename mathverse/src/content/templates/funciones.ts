@@ -469,7 +469,7 @@ export const FUNCIONES: Template[] = [
         explanation: 'En el crecimiento exponencial lo que se mantiene constante es el **factor** por unidad de tiempo, no la cantidad que se suma.',
         commonErrors: ['Pensar que se suma una cantidad fija (modelo lineal): multiplicar por 8 no es tardar 8 veces más.'],
         noCalc: true,
-      }, { kind: 'numeric', answer: t, unit: 'h', wrong: [{ value: T * mult, why: 'Eso sería si creciera linealmente. Duplicarse $n$ veces multiplica por $2^n$: para multiplicar por ' + mult + ' alcanzan ' + Math.log2(mult) + ' duplicaciones.', errorTag: 'lineal-vs-exponencial' }, { value: T * mult / 2, why: 'Razonamiento lineal: no es "la mitad de veces".', errorTag: 'lineal-vs-exponencial' }] })
+      }, { kind: 'numeric', answer: t, measure: 'h', wrong: [{ value: T * mult, why: 'Eso sería si creciera linealmente. Duplicarse $n$ veces multiplica por $2^n$: para multiplicar por ' + mult + ' alcanzan ' + Math.log2(mult) + ' duplicaciones.', errorTag: 'lineal-vs-exponencial' }, { value: T * mult / 2, why: 'Razonamiento lineal: no es "la mitad de veces".', errorTag: 'lineal-vs-exponencial' }] })
     },
   },
   fixed('f6.props', A, 'f6', 'Propiedades del logaritmo', (r) => make({
