@@ -10,6 +10,7 @@ import { Plot } from '../ui/Plot'
 import { Mascot, Speech } from '../ui/Mascot'
 import { Bar } from '../ui/Layout'
 import { NotFound } from './Learn'
+import { VIDEOS } from '../videos/scripts'
 
 interface Paso { t: string; tex?: string }
 interface Ej {
@@ -313,13 +314,17 @@ export default function Parcial() {
         <h2 className="text-xl">🗺️ Cómo estudiar</h2>
         <ol className="grid gap-3">
           {[
+            ['🎬', 'Mirá el video del ejercicio (si tiene).', 'Es la explicación completa en el pizarrón, con voz y subtítulos.'],
             ['📖', 'Abrí cada ejercicio, leé "Lo que tenés que saber" y seguí la resolución.', 'Si algo de la base no te cierra, tocá la guía del tema.'],
             ['✏️', 'Tocá "Practicar parecidos" hasta que te salgan sin pistas.', 'Son ejercicios iguales pero con otros números, y se corrigen solos.'],
             ['✅', 'Cuando lo entiendas, marcalo con "Lo entendí".', 'Así ves cuánto te falta.'],
             ['🏆', 'Al final, hacé el simulacro: uno de cada tipo, sin pistas.', 'Si fallás alguno, volvé a ese ejercicio.'],
           ].map(([i, t, s]) => <li key={t} className="flex gap-3"><span className="text-2xl" aria-hidden>{i}</span><div><div className="font-extrabold">{t}</div><div className="text-sm font-semibold text-muted">{s}</div></div></li>)}
         </ol>
-        <Link to="/parcial/practicar/simulacro" className="btn-primary mt-1">🏆 Hacer el simulacro</Link>
+        <div className="mt-1 grid gap-3 sm:grid-cols-2">
+          <Link to="/videos" className="btn-blue">🎬 Ver los videos</Link>
+          <Link to="/parcial/practicar/simulacro" className="btn-primary">🏆 Hacer el simulacro</Link>
+        </div>
       </section>
 
       <section className="grid grid-cols-[minmax(0,1fr)] gap-3" aria-label="Ejercicios">
@@ -364,6 +369,7 @@ function EjCard({ e, open, onToggle, done, onDone }: { e: Ej; open: boolean; onT
           <div className="rounded-2xl bg-okbg p-4 font-semibold"><span className="label !text-ok">✅ Resultado</span><Md as="div" text={e.resultado} className="mt-1" /></div>
           <div className="rounded-2xl bg-badbg p-4 font-semibold"><span className="label !text-bad">⚠️ La trampa</span><Md as="div" text={e.trampa} className="mt-1" /></div>
           <div className="flex flex-wrap gap-3">
+            {VIDEOS.filter((v) => v.ej.includes(e.n)).map((v) => <Link key={v.id} to={`/videos/${v.id}`} className="btn-ghost flex-1 sm:flex-none">🎬 Ver video</Link>)}
             <Link to={`/parcial/practicar/${e.n}`} className="btn-primary flex-1 sm:flex-none">✏️ Practicar parecidos</Link>
             <button type="button" onClick={onDone} className={(done ? 'btn-ghost' : 'btn-blue') + ' flex-1 sm:flex-none'}>{done ? 'Desmarcar' : '✓ Lo entendí'}</button>
           </div>
