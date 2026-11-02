@@ -58,6 +58,7 @@ y copiá el contenido de `dist\` a la carpeta que sirva tu hosting. En este repo
 ### Contenido
 - **5 áreas, 43 unidades**, ordenadas pedagógicamente con prerrequisitos (Funciones → Matrices → Vectores → Derivadas → Integrales; Derivadas e Integrales son las más completas: 11 y 9 unidades).
 - **Camino de aprendizaje** (estilo app para aprender idiomas): cada unidad es una serie de paradas que se abren en orden — 📖 La idea (explicación en diapositivas con la mascota, dibujos y un ejemplo paso a paso) · ✏️ Practicá · 🧠 Desafío · 🎮 A jugar · 🏆 Prueba final · 🎁 Repaso.
+- **Modelo de 2.º parcial** (`#/parcial`): los 12 ejercicios del repaso del 29/10/26 explicados en simple (qué te piden, lo que tenés que saber, paso a paso, resultado y trampa), práctica con ejercicios parecidos que se corrigen solos, simulacro y machete.
 - **Guía de cada unidad** con todo el tema junto (pregunta inicial, la idea, visualización, lo importante, ejemplo, práctica libre con elección de nivel, desafío, juego, prueba final y resumen).
 - **138 plantillas de ejercicios** con parámetros controlados (miles de variantes) en **6 niveles**: Explorador, Aprendiz, Analista, Experto, Parcial y Final. Cada ejercicio explica **por qué pertenece a su nivel**.
 - **Tipos de ejercicio**: opción múltiple, verdadero/falso con justificación, numérico, expresión algebraica, completar casilleros, ordenar pasos, relacionar, matriz, encontrar el error (con corrección), problemas con partes (tipo parcial/final) y desafíos con controles deslizantes.

@@ -6,6 +6,8 @@ import { AreaPage, LearnMap, NotFound } from './pages/Learn'
 
 const UnitPage = lazy(() => import('./pages/UnitPage'))
 const Lesson = lazy(() => import('./pages/Lesson'))
+const Parcial = lazy(() => import('./pages/Parcial'))
+const ParcialPractice = lazy(() => import('./pages/Parcial').then((m) => ({ default: m.ParcialPractice })))
 const Games = lazy(() => import('./pages/Games'))
 const Lab = lazy(() => import('./pages/Lab'))
 const Exams = lazy(() => import('./pages/Exams'))
@@ -61,6 +63,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Path />} />
               <Route path="/leccion/:unitId/:node" element={<Lesson />} />
+              <Route path="/parcial" element={<Parcial />} />
+              <Route path="/parcial/practicar/:ej" element={<ParcialPractice />} />
               <Route path="/aprender" element={<LearnMap />} />
               <Route path="/area/:id" element={<AreaPage />} />
               <Route path="/unidad/:id" element={<UnitPage />} />

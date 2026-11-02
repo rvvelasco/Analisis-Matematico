@@ -6,6 +6,7 @@ import { MATRICES } from './matrices'
 import { VECTORES } from './vectores'
 import { AVANZADOS } from './advanced'
 import { TEORIA } from './teoria'
+import { PARCIAL } from './parcial'
 
 /** Banco completo, en el orden pedagógico de las áreas. */
-export const ALL_TEMPLATES: Template[] = [...FUNCIONES, ...MATRICES, ...VECTORES, ...DERIVADAS, ...INTEGRALES, ...AVANZADOS, ...TEORIA]
+export const ALL_TEMPLATES: Template[] = [...FUNCIONES, ...MATRICES, ...VECTORES, ...DERIVADAS, ...INTEGRALES, ...AVANZADOS, ...TEORIA, ...PARCIAL]
