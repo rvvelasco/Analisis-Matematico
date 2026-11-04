@@ -136,6 +136,7 @@ function check(ex: Exercise): string | null {
       return close(numAns(ex), dnum(G, d.x), 1e-4) ? null : `TFC ${dnum(G, d.x)}`
     }
     case 'tvm': { const f = fx(d.f); return close(numAns(ex), (f(d.b) - f(d.a)) / (d.b - d.a)) ? null : 'TVM' }
+    case 'derivVF': { const f = fx(d.f), g = fx(d.cand); const eq = [0.6, 1.3, 2.2, 2.9].every((x) => close(dnum(f, x), g(x), 1e-5)); return eq === d.truth ? null : `V/F de derivada: equivalencia ${eq}, respuesta ${d.truth}` }
     case 'derivAt': return close(numAns(ex), dnum(fx(d.f), d.x), 1e-6) ? null : 'derivada en el punto'
     case 'implicit': {
       const F = (x: number, y: number) => evaluate(parse(d.F, { vars: ['x', 'y'] }), { x, y })

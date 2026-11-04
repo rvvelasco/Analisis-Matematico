@@ -8,6 +8,9 @@ const UnitPage = lazy(() => import('./pages/UnitPage'))
 const Lesson = lazy(() => import('./pages/Lesson'))
 const Parcial = lazy(() => import('./pages/Parcial'))
 const Videos = lazy(() => import('./pages/Videos'))
+const Formulario = lazy(() => import('./pages/Formulario'))
+const FormularioSimulacro = lazy(() => import('./pages/Formulario').then((m) => ({ default: m.FormularioSimulacro })))
+const FormularioPractica = lazy(() => import('./pages/Formulario').then((m) => ({ default: m.FormularioPractica })))
 const VideoPage = lazy(() => import('./pages/Videos').then((m) => ({ default: m.VideoPage })))
 const ParcialPractice = lazy(() => import('./pages/Parcial').then((m) => ({ default: m.ParcialPractice })))
 const Games = lazy(() => import('./pages/Games'))
@@ -67,6 +70,9 @@ export default function App() {
               <Route path="/leccion/:unitId/:node" element={<Lesson />} />
               <Route path="/parcial" element={<Parcial />} />
               <Route path="/videos" element={<Videos />} />
+              <Route path="/formulario" element={<Formulario />} />
+              <Route path="/formulario/simulacro" element={<FormularioSimulacro />} />
+              <Route path="/formulario/practicar" element={<FormularioPractica />} />
               <Route path="/videos/:id" element={<VideoPage />} />
               <Route path="/parcial/practicar/:ej" element={<ParcialPractice />} />
               <Route path="/aprender" element={<LearnMap />} />

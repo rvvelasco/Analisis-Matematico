@@ -130,7 +130,7 @@ export function Layout({ children }: { children: ReactNode }) {
   useEffect(() => { window.scrollTo({ top: 0 }) }, [loc.pathname])
 
   // las lecciones se muestran a pantalla completa, sin menús
-  if (loc.pathname.startsWith('/leccion') || loc.pathname.startsWith('/parcial/practicar') || loc.pathname.startsWith('/videos/')) return <><Toasts />{children}</>
+  if (loc.pathname.startsWith('/leccion') || loc.pathname.startsWith('/parcial/practicar') || loc.pathname.startsWith('/videos/') || loc.pathname.startsWith('/formulario/')) return <><Toasts />{children}</>
   const rail = loc.pathname === '/' || loc.pathname === '/repaso'
 
   return (
