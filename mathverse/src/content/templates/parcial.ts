@@ -93,7 +93,67 @@ const CONSTANTES = [
   { tex: '\\cos\\left(\\frac{\\pi}{3}\\right)', f: 'cos(pi/3)', trap: -Math.sin(Math.PI / 3), why: '$\\cos(\\pi/3) = 1/2$ es un número.' },
 ]
 
+/* ---------- V/F: ¿esta es la derivada? (preguntas 37 a 42 del simulacro) ---------- */
+type DB = 'cos' | 'sen' | 'inv' | 'x'
+const DFUN = {
+  sen: { F: 'sin(x)', T: '\\operatorname{sen} x', d: 'cos' as DB, s: 1, rule: "(\\operatorname{sen} x)' = \\cos x" },
+  cos: { F: 'cos(x)', T: '\\cos x', d: 'sen' as DB, s: -1, rule: "(\\cos x)' = -\\operatorname{sen} x" },
+  ln: { F: 'ln(x)', T: '\\ln x', d: 'inv' as DB, s: 1, rule: "(\\ln x)' = \\frac{1}{x}" },
+  x2: { F: 'x^2', T: 'x^2', d: 'x' as DB, s: 2, rule: "(x^2)' = 2x" },
+}
+const DBE: Record<DB, string> = { cos: 'cos(x)', sen: 'sin(x)', inv: '1/x', x: 'x' }
+interface DTerm { c: number; f: DB }
+function termTeX(t: DTerm, first: boolean): string {
+  const sg = t.c < 0 ? '-' : first ? '' : '+'
+  const a = Math.abs(t.c)
+  const body = t.f === 'inv' ? `\\frac{${a}}{x}` : `${a === 1 ? '' : a}${t.f === 'cos' ? '\\cos x' : t.f === 'sen' ? '\\operatorname{sen} x' : 'x'}`
+  return first ? sg + body : ` ${sg} ${body}`
+}
+const sumTeX = (ts: DTerm[]) => ts.map((t, i) => termTeX(t, i === 0)).join('')
+const sumExpr = (ts: DTerm[]) => ts.map((t) => `(${t.c})*${DBE[t.f]}`).join(' + ')
+function gcdn(a: number, b: number): number { return b ? gcdn(b, a % b) : Math.abs(a) }
+
+const DERIV_VF: Template = {
+  id: 'px.derivVF', area: 'derivadas', unit: 'd4', title: 'V o F: ¿es esa la derivada?', levels: [2],
+  gen: (r) => {
+    const keys = r.shuffle(['sen', 'cos', 'ln', 'x2'] as (keyof typeof DFUN)[]).slice(0, 2)
+    const A = DFUN[keys[0]], B = DFUN[keys[1]]
+    const a = r.pick([2, 3, 4, 6]), b = r.pick([2, 3, 4, 5, 6])
+    const ok: DTerm[] = [{ c: a * A.s, f: A.d }, { c: b * B.s, f: B.d }]
+    const truth = r.chance(0.5)
+    // error típico: el signo de un término (el del coseno, si hay)
+    const flip = keys.indexOf('cos') >= 0 ? keys.indexOf('cos') : r.pick([0, 1])
+    const shown = truth ? ok : ok.map((t, i) => (i === flip ? { ...t, c: -t.c } : t))
+    const g = gcdn(shown[0].c, shown[1].c)
+    let candTeX = sumTeX(shown), candExpr = sumExpr(shown), factor = ''
+    if (g > 1 && r.chance(0.65)) {
+      const k = r.chance(0.5) ? -g : g
+      const inner = shown.map((t) => ({ ...t, c: t.c / k }))
+      candTeX = `${k < 0 ? `(${k})` : k}\\cdot\\left(${sumTeX(inner)}\\right)`
+      candExpr = `(${k})*(${sumExpr(inner)})`
+      factor = `Para comparar, distribuí el factor: $${candTeX} = ${sumTeX(shown)}$.`
+    }
+    const okTeX = sumTeX(ok)
+    const why = `Derivo término a término: $${A.rule}$ y $${B.rule}$. Entonces $F'(x) = ${okTeX}$.`
+    return make({
+      data: { kind: 'derivVF', f: `${a}*${A.F} + ${b}*${B.F}`, cand: candExpr, truth },
+      subtopic: 'Derivadas: verdadero o falso', concepts: ['d4.tabla'], level: 2, levelWhy: 'Nivel Aprendiz: derivar con la tabla y comparar dos expresiones (a veces con factor común).',
+      prompt: 'Decidí si es verdadero o falso y elegí la justificación:',
+      hints: ['Derivá vos primero, término a término.', 'Si la respuesta propuesta tiene un número afuera del paréntesis, **distribuilo** antes de comparar.', "Ojo: $(\\cos x)' = -\\operatorname{sen} x$ (con menos)."],
+      solution: [{ text: why }, ...(factor ? [{ text: factor }] : []), { text: truth ? '**Coinciden: es verdadero.**' : '**No coinciden: es falso.** Un término tiene el signo cambiado.' }],
+      explanation: 'Dos expresiones pueden verse distintas y ser iguales (por ejemplo, con un factor común afuera). Para comparar, distribuí y ordená los términos.',
+      commonErrors: ["Decir que $(\\cos x)' = \\operatorname{sen} x$ (falta el menos).", 'Marcar falso sin distribuir el factor común.'],
+    }, {
+      kind: 'tf', statement: `La derivada de $F(x) = ${a}${A.T} + ${b}${B.T}$ es $\\frac{dF}{dx} = ${candTeX}$`, answer: truth,
+      reasons: r.shuffle(truth
+        ? [{ text: `Verdadero: $F'(x) = ${okTeX}$, que es lo mismo que lo propuesto${factor ? ' (distribuyendo el factor común)' : ''}.`, correct: true }, { text: 'Falso: una derivada no se puede escribir con factor común.', why: 'Sí se puede: es la misma expresión escrita de otra forma.' }, { text: 'Falso: la derivada del coseno es $+\\operatorname{sen} x$.', why: 'Es $-\\operatorname{sen} x$.', errorTag: 'cos' }]
+        : [{ text: `Falso: lo correcto es $F'(x) = ${okTeX}$; hay un signo cambiado.`, correct: true }, { text: 'Verdadero: es la regla de la tabla.', why: 'Si derivás y distribuís, un signo no coincide.', errorTag: 'signo' }, { text: 'Verdadero: el factor común no cambia nada.', why: 'El factor no cambia nada, pero un signo de adentro sí está mal.' }]),
+    })
+  },
+}
+
 export const PARCIAL: Template[] = [
+  DERIV_VF,
   /* 1a) leer un intervalo de análisis */
   fixed('px.intervalo', 'funciones', 'f2', 'Intervalo de análisis', (r) => {
     const I = r.pick(INTERVALOS)

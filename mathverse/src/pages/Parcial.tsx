@@ -323,6 +323,7 @@ export default function Parcial() {
         </ol>
         <div className="mt-1 grid gap-3 sm:grid-cols-2">
           <Link to="/videos" className="btn-blue">🎬 Ver los videos</Link>
+          <Link to="/formulario" className="btn-danger sm:col-span-2">📋 Simulacro del formulario (45 preguntas)</Link>
           <Link to="/parcial/practicar/simulacro" className="btn-primary">🏆 Hacer el simulacro</Link>
         </div>
       </section>
